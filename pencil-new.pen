@@ -1,0 +1,5016 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "klfk8",
+      "x": 1600,
+      "y": 0,
+      "name": "Bohack — Design System",
+      "width": 760,
+      "fill": "$color/paper",
+      "layout": "vertical",
+      "gap": 48,
+      "padding": 48,
+      "children": [
+        {
+          "type": "frame",
+          "id": "iicAF",
+          "name": "dsHead",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "ri6Yj",
+              "fill": "$color/muted-on-bone",
+              "content": "BOHACK · 2026 / DESIGN SYSTEM V1",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "$size/eyebrow",
+              "fontWeight": "normal",
+              "letterSpacing": 2
+            },
+            {
+              "type": "text",
+              "id": "2MFoj",
+              "fill": "$color/ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Editorial hackathon brand.",
+              "lineHeight": 0.95,
+              "fontFamily": "Space Grotesk",
+              "fontSize": 56,
+              "fontWeight": "700",
+              "letterSpacing": -2
+            },
+            {
+              "type": "text",
+              "id": "BDdjs",
+              "fill": "$color/muted-on-bone",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "A living tokens + components kit for the Bohack landing page. Warm ink / bone ground, lime accent, editorial mono + grotesk pairing.",
+              "lineHeight": 1.5,
+              "fontFamily": "Space Grotesk",
+              "fontSize": "$size/body",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yZSaY",
+          "name": "colorSection",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "t0khY",
+              "name": "colorTitle",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WlHBb",
+                  "fill": "$color/ink",
+                  "content": "01 / Color",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "$size/eyebrow",
+                  "fontWeight": "normal",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "kbtWZ",
+                  "fill": "$color/muted-on-bone",
+                  "content": "oklch-tuned warm palette",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qXRy6",
+              "name": "swatchGrid",
+              "width": "fill_container",
+              "fill": "$color/rule-light",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yQCuN",
+                  "name": "row1",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "tYb3J",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/ink",
+                      "name": "s1",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--ink"
+                        },
+                        "MDFcD": {
+                          "content": "#1B1612"
+                        }
+                      }
+                    },
+                    {
+                      "id": "X5pG4",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/ink-2",
+                      "name": "s2",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--ink-2"
+                        },
+                        "MDFcD": {
+                          "content": "#2A231B"
+                        }
+                      }
+                    },
+                    {
+                      "id": "s0O6Z",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/ink-3",
+                      "name": "s3",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--ink-3"
+                        },
+                        "MDFcD": {
+                          "content": "#3C3327"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nNgNI",
+                  "name": "row2",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "5jUaA",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/bone",
+                      "name": "s4",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--bone",
+                          "fill": "$color/ink"
+                        },
+                        "MDFcD": {
+                          "content": "#F2ECE1",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "gknIC",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/bone-2",
+                      "name": "s5",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--bone-2",
+                          "fill": "$color/ink"
+                        },
+                        "MDFcD": {
+                          "content": "#E6DECE",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bma9g",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/paper",
+                      "name": "s6",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--paper",
+                          "fill": "$color/ink"
+                        },
+                        "MDFcD": {
+                          "content": "#FAF6EC",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "f8dmM",
+                  "name": "row3",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "HXATb",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/lime",
+                      "name": "s7",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--lime",
+                          "fill": "$color/ink"
+                        },
+                        "MDFcD": {
+                          "content": "#D3F14D",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "prsUb",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/coral",
+                      "name": "s8",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--coral",
+                          "fill": "$color/ink"
+                        },
+                        "MDFcD": {
+                          "content": "#F08865",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "DcWf9",
+                      "type": "ref",
+                      "ref": "W4UUe",
+                      "width": "fill_container",
+                      "fill": "$color/violet",
+                      "name": "s9",
+                      "descendants": {
+                        "YkjTd": {
+                          "content": "--violet",
+                          "fill": "#FFFFFF"
+                        },
+                        "MDFcD": {
+                          "content": "#8458E6",
+                          "fill": "#FFFFFF"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "jgbcc",
+          "name": "typeSection",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "ApQgW",
+              "name": "tHead",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "04n5d",
+                  "fill": "$color/ink",
+                  "content": "02 / Typography",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "$size/eyebrow",
+                  "fontWeight": "normal",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "3uDfA",
+                  "fill": "$color/muted-on-bone",
+                  "content": "Space Grotesk + JetBrains Mono",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ns4UC",
+              "name": "tBox",
+              "width": "fill_container",
+              "fill": "$color/bone",
+              "layout": "vertical",
+              "padding": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "LrNju",
+                  "name": "tRow1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    0,
+                    20,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pw3fH",
+                      "fill": "$color/muted-on-bone",
+                      "content": "Display XL · 240 · Grotesk 700 · -6% tracking",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "vNzK5",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "BOHACK",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 140,
+                      "fontWeight": "700",
+                      "letterSpacing": -8
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RDZje",
+                  "name": "tRow2",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    20,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xkwM5",
+                      "fill": "$color/muted-on-bone",
+                      "content": "Heading / H1 · 72 · Grotesk 700",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "bI037",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Forty-eight hours. One absurdly good idea.",
+                      "lineHeight": 0.98,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 56,
+                      "fontWeight": "700",
+                      "letterSpacing": -2
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wSOpm",
+                  "name": "tRow3",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    20,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "2pd8h",
+                      "fill": "$color/muted-on-bone",
+                      "content": "Lede · 28 · Grotesk 500",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "BFPRo",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bohack is a collegiate hackathon for builders who treat a weekend like a loaded question.",
+                      "lineHeight": 1.2,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 26,
+                      "fontWeight": "500",
+                      "letterSpacing": -0.5
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bwHWh",
+                  "name": "tRow4",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    20,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BKTTh",
+                      "fill": "$color/muted-on-bone",
+                      "content": "Body · 17 · Grotesk 400 · 1.6 lh",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "BwO4S",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sixteen universities. Six hundred students. One converted aircraft hangar in upstate New York, rigged with 48 hours of high-voltage creative panic.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "J5qgM",
+                  "name": "tRow5",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    20,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dNOdO",
+                      "fill": "$color/muted-on-bone",
+                      "content": "Eyebrow / Meta · 11 · Mono uppercase · 0.18em",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.2
+                    },
+                    {
+                      "type": "text",
+                      "id": "Qpmea",
+                      "fill": "$color/ink",
+                      "content": "CHAPTER 01 / PREMISE  —  48 HOURS  —  APPLY BY APR 29",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ze71q",
+          "name": "compSection",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "r8qHr",
+              "name": "cHead",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kapoo",
+                  "fill": "$color/ink",
+                  "content": "03 / Components",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "Ziwp3",
+                  "fill": "$color/muted-on-bone",
+                  "content": "9 reusable symbols",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.4
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "luoUV",
+              "name": "cGrid",
+              "width": "fill_container",
+              "fill": "$color/rule-light",
+              "layout": "vertical",
+              "gap": 2,
+              "padding": 2,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ioz1E",
+                  "name": "cRow1",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "1gJ8q",
+                      "name": "cCellA",
+                      "width": "fill_container",
+                      "height": 160,
+                      "fill": "$color/paper",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "shXbj",
+                          "fill": "$color/muted-on-bone",
+                          "content": "BUTTON / PRIMARY",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.4
+                        },
+                        {
+                          "id": "UxKjJ",
+                          "type": "ref",
+                          "ref": "lr4Mr"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "e6Trq",
+                      "name": "cCellB",
+                      "width": "fill_container",
+                      "height": 160,
+                      "fill": "$color/ink",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "9P4v1",
+                          "fill": "$color/muted-on-ink",
+                          "content": "BUTTON / GHOST",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.4
+                        },
+                        {
+                          "id": "N5b6l",
+                          "type": "ref",
+                          "ref": "E1Ox5"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cXFAH",
+                  "name": "cRow2",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "CwbYQ",
+                      "name": "cCellC",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "$color/paper",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FnkWc",
+                          "fill": "$color/muted-on-bone",
+                          "content": "EYEBROW",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.4
+                        },
+                        {
+                          "id": "obDVo",
+                          "type": "ref",
+                          "ref": "9aJ2G"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dB9jz",
+                      "name": "cCellD",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "$color/ink",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hUBfs",
+                          "fill": "$color/muted-on-ink",
+                          "content": "FLOATER",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.4
+                        },
+                        {
+                          "id": "Utp63",
+                          "type": "ref",
+                          "ref": "JORU8"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BfHfF",
+                      "name": "cCellE",
+                      "width": "fill_container",
+                      "height": 120,
+                      "fill": "$color/paper",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Eue76",
+                          "fill": "$color/muted-on-bone",
+                          "content": "PRIZE CHIP",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.4
+                        },
+                        {
+                          "id": "VHa8P",
+                          "type": "ref",
+                          "ref": "jfp7v"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "W4UUe",
+      "x": 2480,
+      "y": 0,
+      "name": "Component/Swatch",
+      "reusable": true,
+      "width": 200,
+      "height": 140,
+      "fill": "#000000",
+      "layout": "vertical",
+      "padding": 16,
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "text",
+          "id": "YkjTd",
+          "name": "swatch-name",
+          "fill": "#FFFFFF",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "--ink",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 1.4
+        },
+        {
+          "type": "text",
+          "id": "MDFcD",
+          "name": "swatch-hex",
+          "fill": "#FFFFFF",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "#1B1612",
+          "fontFamily": "Space Grotesk",
+          "fontSize": 22,
+          "fontWeight": "700",
+          "letterSpacing": -0.5
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "lr4Mr",
+      "x": 2480,
+      "y": 200,
+      "name": "Component/Button/Primary",
+      "reusable": true,
+      "fill": "$color/lime",
+      "cornerRadius": "$radius/pill",
+      "gap": 14,
+      "padding": [
+        22,
+        36
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "Izc6q",
+          "name": "btn-label",
+          "fill": "$color/ink",
+          "content": "APPLY TO BOHACK",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 12,
+          "fontWeight": "normal",
+          "letterSpacing": 1.6
+        },
+        {
+          "type": "text",
+          "id": "aFb1f",
+          "name": "btn-arrow",
+          "fill": "$color/ink",
+          "content": "↗",
+          "fontFamily": "Space Grotesk",
+          "fontSize": 16,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "E1Ox5",
+      "x": 2780,
+      "y": 200,
+      "name": "Component/Button/Ghost",
+      "reusable": true,
+      "cornerRadius": "$radius/pill",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$color/bone"
+      },
+      "gap": 14,
+      "padding": [
+        22,
+        36
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "4hQSy",
+          "name": "btn-label",
+          "fill": "$color/bone",
+          "content": "SPONSOR THE EVENT",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 12,
+          "fontWeight": "normal",
+          "letterSpacing": 1.6
+        },
+        {
+          "type": "text",
+          "id": "AD0vb",
+          "name": "btn-arrow",
+          "fill": "$color/bone",
+          "content": "↗",
+          "fontFamily": "Space Grotesk",
+          "fontSize": 16,
+          "fontWeight": "700"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "9aJ2G",
+      "x": 2480,
+      "y": 310,
+      "name": "Component/Eyebrow",
+      "reusable": true,
+      "gap": 10,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "Kjfoi",
+          "name": "eyebrow-dot",
+          "fill": "$color/lime",
+          "width": 6,
+          "height": 6
+        },
+        {
+          "type": "text",
+          "id": "0BTs6",
+          "name": "eyebrow-label",
+          "fill": "$color/muted-on-bone",
+          "content": "CHAPTER 01 / PREMISE",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 2
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "JORU8",
+      "x": 2780,
+      "y": 310,
+      "name": "Component/Floater",
+      "reusable": true,
+      "cornerRadius": "$radius/pill",
+      "stroke": {
+        "thickness": 1,
+        "fill": "#FFFFFF2E"
+      },
+      "gap": 6,
+      "padding": [
+        8,
+        14
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "1xc8D",
+          "name": "floater-label",
+          "fill": "$color/bone",
+          "content": "◆ 600+ BUILDERS",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 10,
+          "fontWeight": "normal",
+          "letterSpacing": 1.8
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jfp7v",
+      "x": 2480,
+      "y": 390,
+      "name": "Component/PrizeChip",
+      "reusable": true,
+      "cornerRadius": "$radius/pill",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$color/muted-on-bone"
+      },
+      "padding": [
+        6,
+        10
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "5RF5d",
+          "name": "chip-label",
+          "fill": "$color/ink",
+          "content": "$10K TOP PRIZE",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 10,
+          "fontWeight": "normal",
+          "letterSpacing": 1.6
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Pa2U2",
+      "x": 2480,
+      "y": 470,
+      "name": "Component/TrackCard",
+      "reusable": true,
+      "width": 420,
+      "height": 420,
+      "fill": "$color/ink",
+      "stroke": {
+        "thickness": 1,
+        "fill": "$color/rule-dark"
+      },
+      "layout": "vertical",
+      "padding": [
+        40,
+        32,
+        48,
+        32
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vXsZX",
+          "name": "tcTop",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "zZeGx",
+              "name": "track-num",
+              "fill": "$color/muted-on-ink",
+              "content": "TRACK / 01",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 2
+            },
+            {
+              "type": "text",
+              "id": "8kFcq",
+              "name": "track-glyph",
+              "fill": "$color/lime",
+              "content": "◢",
+              "lineHeight": 1,
+              "fontFamily": "Space Grotesk",
+              "fontSize": 100,
+              "fontWeight": "700",
+              "letterSpacing": -4
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kKGcm",
+          "name": "tcBottom",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "vSAE8",
+              "name": "track-title",
+              "fill": "$color/bone",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Ambient Intelligence",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 28,
+              "fontWeight": "600",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "qjCoZ",
+              "name": "track-desc",
+              "fill": "$color/muted-on-ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Agents, assistants, and software that reads the room. LLMs welcome; novelty required.",
+              "lineHeight": 1.55,
+              "fontFamily": "Space Grotesk",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "C59Az",
+              "name": "tcChipWrap",
+              "padding": [
+                8,
+                0,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "3CjCZ",
+                  "name": "track-chip",
+                  "cornerRadius": 999,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "$color/muted-on-ink"
+                  },
+                  "padding": [
+                    6,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "eEbVh",
+                      "fill": "$color/bone",
+                      "content": "$10K TOP PRIZE",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 10,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.6
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Jk6ci",
+      "x": 2920,
+      "y": 470,
+      "name": "Component/PrizeCard",
+      "reusable": true,
+      "clip": true,
+      "width": 320,
+      "height": 260,
+      "fill": "$color/ink",
+      "layout": "vertical",
+      "padding": 40,
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "ellipse",
+          "id": "RKIqW",
+          "layoutPosition": "absolute",
+          "x": 180,
+          "y": -40,
+          "name": "prize-deco",
+          "opacity": 0.14,
+          "fill": "$color/coral",
+          "width": 180,
+          "height": 180
+        },
+        {
+          "type": "text",
+          "id": "AeNn4",
+          "name": "prize-rank",
+          "fill": "$color/muted-on-ink",
+          "content": "TRACK WINNERS × 6",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 2
+        },
+        {
+          "type": "frame",
+          "id": "UKeZ3",
+          "name": "pcBot",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "EvEbg",
+              "name": "prize-amt",
+              "fill": "$color/bone",
+              "content": "$3K",
+              "lineHeight": 1,
+              "fontFamily": "Space Grotesk",
+              "fontSize": 72,
+              "fontWeight": "700",
+              "letterSpacing": -3
+            },
+            {
+              "type": "text",
+              "id": "HpXkq",
+              "name": "prize-label",
+              "fill": "$color/muted-on-ink",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "One per track.",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "fPrkv",
+      "x": 2480,
+      "y": 920,
+      "name": "Component/ScheduleRow",
+      "reusable": true,
+      "width": 760,
+      "height": 72,
+      "gap": 24,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "X7xl2",
+          "name": "schLeft",
+          "width": 156,
+          "gap": 24,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "FGA4W",
+              "name": "sch-time",
+              "fill": "$color/muted-on-bone",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "16:00",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 13,
+              "fontWeight": "normal",
+              "letterSpacing": 1.2
+            }
+          ]
+        },
+        {
+          "type": "ellipse",
+          "id": "ekMia",
+          "name": "sch-dot",
+          "fill": "$color/bone",
+          "width": 12,
+          "height": 12,
+          "stroke": {
+            "thickness": 2,
+            "fill": "$color/ink"
+          }
+        },
+        {
+          "type": "text",
+          "id": "yeqWS",
+          "name": "sch-title",
+          "fill": "$color/ink",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Doors + check-in",
+          "fontFamily": "Space Grotesk",
+          "fontSize": 22,
+          "fontWeight": "500",
+          "letterSpacing": -0.3
+        },
+        {
+          "type": "frame",
+          "id": "D9DYF",
+          "name": "sch-tag-wrap",
+          "cornerRadius": 999,
+          "stroke": {
+            "thickness": 1,
+            "fill": "$color/muted-on-bone"
+          },
+          "padding": [
+            6,
+            10
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "of1Fx",
+              "name": "sch-tag",
+              "fill": "$color/ink",
+              "content": "ARRIVAL",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1.6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "joSb9",
+      "x": 2480,
+      "y": 1020,
+      "name": "Component/FaqItem",
+      "reusable": true,
+      "width": 760,
+      "stroke": {
+        "thickness": {
+          "bottom": 1
+        },
+        "fill": "$color/rule-dark"
+      },
+      "layout": "vertical",
+      "gap": 12,
+      "padding": [
+        28,
+        0
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "HbXeJ",
+          "name": "faqQ",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "N50AS",
+              "name": "faq-q",
+              "fill": "$color/bone",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Do I need a team?",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 22,
+              "fontWeight": "500",
+              "letterSpacing": -0.3
+            },
+            {
+              "type": "text",
+              "id": "yZQig",
+              "name": "faq-plus",
+              "fill": "$color/bone",
+              "content": "+",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 22,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "HOAqW",
+      "x": 3280,
+      "y": 920,
+      "name": "Component/SponsorTile",
+      "reusable": true,
+      "width": 220,
+      "height": 140,
+      "stroke": {
+        "thickness": 1,
+        "fill": "$color/rule-light"
+      },
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "lxoFj",
+          "layoutPosition": "absolute",
+          "x": 8,
+          "y": 8,
+          "name": "sponsor-tier",
+          "fill": "$color/muted-on-bone",
+          "content": "◆◆◆",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 9,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "EO8A5",
+          "name": "sponsor-name",
+          "fill": "$color/ink",
+          "content": "HANGAR",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 12,
+          "fontWeight": "normal",
+          "letterSpacing": 1.8
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "k43OO",
+      "x": 3520,
+      "y": 920,
+      "name": "Component/CountdownCell",
+      "reusable": true,
+      "clip": true,
+      "width": 240,
+      "height": 220,
+      "fill": "$color/bone",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": [
+        32,
+        24
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "iBvp7",
+          "name": "cd-num",
+          "fill": "$color/ink",
+          "content": "24",
+          "lineHeight": 1,
+          "fontFamily": "Space Grotesk",
+          "fontSize": 108,
+          "fontWeight": "700",
+          "letterSpacing": -5
+        },
+        {
+          "type": "text",
+          "id": "RRMDh",
+          "name": "cd-lbl",
+          "fill": "$color/muted-on-bone",
+          "content": "DAYS",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 2
+        },
+        {
+          "type": "rectangle",
+          "id": "kDAsq",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 217,
+          "name": "cd-bar",
+          "fill": "$color/lime",
+          "width": 240,
+          "height": 3
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Sa8AR",
+      "x": 0,
+      "y": 0,
+      "name": "Bohack — Landing Page / Desktop 1440",
+      "clip": true,
+      "width": 1440,
+      "fill": "$color/ink",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "YTmaw",
+          "name": "Nav",
+          "width": "fill_container",
+          "height": 68,
+          "fill": "$color/ink",
+          "padding": [
+            0,
+            32
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "K1e2S",
+              "name": "brand",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 4,
+                  "id": "isPWS",
+                  "fill": "$color/lime",
+                  "width": 18,
+                  "height": 18
+                },
+                {
+                  "type": "text",
+                  "id": "Zwfh9",
+                  "fill": "$color/bone",
+                  "content": "BOHACK / 2026",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "V16rT",
+              "name": "navLinks",
+              "gap": 28,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "8ysos",
+                  "fill": "$color/muted-on-ink",
+                  "content": "ABOUT",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "8kXMb",
+                  "fill": "$color/muted-on-ink",
+                  "content": "TRACKS",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "ZS5vq",
+                  "fill": "$color/muted-on-ink",
+                  "content": "SCHEDULE",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "Te4vJ",
+                  "fill": "$color/muted-on-ink",
+                  "content": "PRIZES",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "L8Hvl",
+                  "fill": "$color/muted-on-ink",
+                  "content": "SPONSORS",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "yxMqh",
+                  "fill": "$color/muted-on-ink",
+                  "content": "FAQ",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "U4HH9",
+              "name": "navCta",
+              "cornerRadius": 999,
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/bone"
+              },
+              "gap": 4,
+              "padding": [
+                8,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Fkgqy",
+                  "fill": "$color/bone",
+                  "content": "APPLY →",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zglsw",
+          "name": "Hero",
+          "clip": true,
+          "width": "fill_container",
+          "height": 900,
+          "fill": "$color/ink",
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "f9PYI",
+              "x": 0,
+              "y": 0,
+              "name": "hero-bg",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 0.9,
+                  "height": 0.8
+                },
+                "colors": [
+                  {
+                    "color": "#2A231B",
+                    "position": 0
+                  },
+                  {
+                    "color": "#1B1612",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "rectangle",
+              "id": "NiYy6",
+              "x": 0,
+              "y": 0,
+              "name": "grid-layer",
+              "opacity": 0.06,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "",
+                "mode": "fill"
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "ellipse",
+              "id": "lwZDB",
+              "x": 180,
+              "y": 220,
+              "name": "dot1",
+              "opacity": 0.7,
+              "fill": "$color/lime",
+              "width": 6,
+              "height": 6
+            },
+            {
+              "type": "ellipse",
+              "id": "UQpvm",
+              "x": 1220,
+              "y": 180,
+              "name": "dot2",
+              "opacity": 0.5,
+              "fill": "$color/bone",
+              "width": 4,
+              "height": 4
+            },
+            {
+              "type": "ellipse",
+              "id": "IWQMw",
+              "x": 1320,
+              "y": 640,
+              "name": "dot3",
+              "opacity": 0.7,
+              "fill": "$color/coral",
+              "width": 8,
+              "height": 8
+            },
+            {
+              "type": "ellipse",
+              "id": "ZuScp",
+              "x": 280,
+              "y": 720,
+              "name": "dot4",
+              "opacity": 0.4,
+              "fill": "$color/bone",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "id": "NDnDJ",
+              "type": "ref",
+              "ref": "JORU8",
+              "x": 96,
+              "y": 180,
+              "name": "fl1",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/lime"
+              },
+              "descendants": {
+                "1xc8D": {
+                  "content": "◆ 600+ BUILDERS",
+                  "fill": "$color/lime"
+                }
+              }
+            },
+            {
+              "id": "5SDBo",
+              "type": "ref",
+              "ref": "JORU8",
+              "x": 1160,
+              "y": 230,
+              "name": "fl2",
+              "descendants": {
+                "1xc8D": {
+                  "content": "↗ 48 HOURS"
+                }
+              }
+            },
+            {
+              "id": "VVs1e",
+              "type": "ref",
+              "ref": "JORU8",
+              "x": 160,
+              "y": 640,
+              "name": "fl3",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/coral"
+              },
+              "descendants": {
+                "1xc8D": {
+                  "content": "★ $50K PRIZES",
+                  "fill": "$color/coral"
+                }
+              }
+            },
+            {
+              "id": "jkyAJ",
+              "type": "ref",
+              "ref": "JORU8",
+              "x": 1140,
+              "y": 700,
+              "name": "fl4",
+              "descendants": {
+                "1xc8D": {
+                  "content": "✦ MAY 15—17"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "e0zGW",
+              "layoutPosition": "absolute",
+              "x": 48,
+              "y": 200,
+              "name": "hero-content",
+              "width": 1344,
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j9m1k",
+                  "name": "heroLive",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OPeK1",
+                      "fill": "$color/lime",
+                      "content": "◉ LIVE",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "RGrGP",
+                      "fill": "$color/muted-on-ink",
+                      "content": "— APPLICATIONS OPEN",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.8
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lZRBS",
+                  "name": "heroTitle",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rk6qR",
+                      "fill": "$color/bone",
+                      "content": "BO",
+                      "lineHeight": 0.86,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 280,
+                      "fontWeight": "700",
+                      "letterSpacing": -18
+                    },
+                    {
+                      "type": "text",
+                      "id": "Cs7VK",
+                      "fill": "$color/lime",
+                      "content": "HACK",
+                      "lineHeight": 0.86,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 280,
+                      "fontWeight": "700",
+                      "letterSpacing": -18,
+                      "fontStyle": "italic"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "avio5",
+                  "name": "hero-meta",
+                  "width": "fill_container",
+                  "gap": 40,
+                  "padding": [
+                    32,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "u3XHV",
+                      "fill": "$color/muted-on-ink",
+                      "textGrowth": "fixed-width",
+                      "width": 420,
+                      "content": "THE BOREAL COLLEGIATE HACKATHON. 48 HOURS, ONE CONTINENT, INFINITE CAFFEINE. BUILD SOMETHING WEIRD, WIN SOMETHING REAL.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.8
+                    },
+                    {
+                      "type": "frame",
+                      "id": "3mWj1",
+                      "name": "stats",
+                      "gap": 48,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "znAME",
+                          "name": "stA",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "tma0d",
+                              "fill": "$color/bone",
+                              "content": "48",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 36,
+                              "fontWeight": "700",
+                              "letterSpacing": -1
+                            },
+                            {
+                              "type": "text",
+                              "id": "Bjhbx",
+                              "fill": "$color/muted-on-ink",
+                              "content": "HOURS",
+                              "fontFamily": "JetBrains Mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.6
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "w4z7u",
+                          "name": "stB",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "oBLr1",
+                              "fill": "$color/bone",
+                              "content": "600+",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 36,
+                              "fontWeight": "700",
+                              "letterSpacing": -1
+                            },
+                            {
+                              "type": "text",
+                              "id": "pC7cx",
+                              "fill": "$color/muted-on-ink",
+                              "content": "HACKERS",
+                              "fontFamily": "JetBrains Mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.6
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Hbhec",
+                          "name": "stC",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "O42sM",
+                              "fill": "$color/bone",
+                              "content": "$50K",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 36,
+                              "fontWeight": "700",
+                              "letterSpacing": -1
+                            },
+                            {
+                              "type": "text",
+                              "id": "dvsdW",
+                              "fill": "$color/muted-on-ink",
+                              "content": "PRIZES",
+                              "fontFamily": "JetBrains Mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.6
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "YqABP",
+                          "name": "stD",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "4Vo3S",
+                              "fill": "$color/bone",
+                              "content": "24",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 36,
+                              "fontWeight": "700",
+                              "letterSpacing": -1
+                            },
+                            {
+                              "type": "text",
+                              "id": "QfPHa",
+                              "fill": "$color/muted-on-ink",
+                              "content": "CAMPUSES",
+                              "fontFamily": "JetBrains Mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.6
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "3yaU4",
+              "x": 640,
+              "y": 860,
+              "name": "scroll",
+              "fill": "$color/muted-on-ink",
+              "content": "— SCROLL TO ENTER",
+              "fontFamily": "JetBrains Mono",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1.8
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "8nYP4",
+          "name": "Ticker/Lime",
+          "clip": true,
+          "width": "fill_container",
+          "height": 84,
+          "fill": "$color/lime",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "top": 1,
+              "bottom": 1
+            },
+            "fill": "$color/ink"
+          },
+          "gap": 40,
+          "padding": [
+            0,
+            0,
+            0,
+            40
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "6Xkfo",
+              "fill": "$color/ink",
+              "content": "BOHACK 2026",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "qfAAB",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "qbxud",
+              "fill": "$color/ink",
+              "content": "MAY 15—17",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "7CbdI",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "z02N1",
+              "fill": "$color/ink",
+              "content": "UPSTATE NY",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "U4gmY",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "hFqCG",
+              "fill": "$color/ink",
+              "content": "600 HACKERS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "ZFGOj",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "uOM5h",
+              "fill": "$color/ink",
+              "content": "48 HOURS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "rnHPv",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "SNtOp",
+              "fill": "$color/ink",
+              "content": "$50K PRIZES",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "PBrpw",
+              "fill": "$color/ink",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "htFML",
+              "fill": "$color/ink",
+              "content": "APPLY BY APR 29",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "jhZOE",
+          "name": "Section/About",
+          "width": "fill_container",
+          "fill": "$color/bone",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "9eke6",
+              "name": "aboutHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "48eqC",
+                  "name": "aHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "ed9vg",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "aEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 01 / PREMISE"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "clEyJ",
+                      "opacity": 0.92,
+                      "fill": "$color/ink",
+                      "content": "01",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "u0rzz",
+                  "fill": "$color/ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Forty-eight hours.\nOne absurdly good idea.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PqeU8",
+              "name": "aboutGrid",
+              "width": "fill_container",
+              "gap": 80,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gkY6m",
+                  "name": "aLede",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TZasH",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bohack is a collegiate hackathon for builders who treat",
+                      "lineHeight": 1.08,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 42,
+                      "fontWeight": "500",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "M5e0k",
+                      "name": "hlRow",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "BKXmM",
+                          "name": "hlChip",
+                          "fill": "$color/lime",
+                          "cornerRadius": 6,
+                          "padding": [
+                            2,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OpCU7",
+                              "fill": "$color/ink",
+                              "content": "a weekend",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 42,
+                              "fontWeight": "500",
+                              "letterSpacing": -1
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "5tThf",
+                          "fill": "$color/ink",
+                          "content": "like a loaded question.",
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 42,
+                          "fontWeight": "500",
+                          "letterSpacing": -1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "jOdpq",
+                      "fill": "$color/ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bring a laptop. Bring friends. Bring a half-formed hunch. We'll handle the rest — the food, the mentors, the ambient chaos.",
+                      "lineHeight": 1.08,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 42,
+                      "fontWeight": "500",
+                      "letterSpacing": -1
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "isiih",
+                  "name": "aSide",
+                  "width": 480,
+                  "layout": "vertical",
+                  "gap": 40,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WfRVY",
+                      "fill": "$color/muted-on-bone",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sixteen universities. Six hundred students. One converted aircraft hangar in upstate New York, rigged with 48 hours of high-voltage creative panic.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "0cZss",
+                      "fill": "$color/muted-on-bone",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You'll ship something that actually runs — on silicon, on servers, on stage — and leave with a demo, a team, and a story.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IDj0W",
+                      "name": "aStats",
+                      "width": "fill_container",
+                      "fill": "$color/rule-light",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "JjiAB",
+                          "name": "aStatsR1",
+                          "width": "fill_container",
+                          "gap": 1,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "7ZhKy",
+                              "name": "sA1",
+                              "width": "fill_container",
+                              "height": 140,
+                              "fill": "$color/bone",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 28,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "p5rAr",
+                                  "fill": "$color/ink",
+                                  "content": "600",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Space Grotesk",
+                                  "fontSize": 52,
+                                  "fontWeight": "700",
+                                  "letterSpacing": -2
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "cZaQJ",
+                                  "fill": "$color/muted-on-bone",
+                                  "content": "STUDENT HACKERS",
+                                  "fontFamily": "JetBrains Mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 1.6
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "HFu4w",
+                              "name": "sA2",
+                              "width": "fill_container",
+                              "height": 140,
+                              "fill": "$color/bone",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 28,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "uCZxw",
+                                  "fill": "$color/ink",
+                                  "content": "16",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Space Grotesk",
+                                  "fontSize": 52,
+                                  "fontWeight": "700",
+                                  "letterSpacing": -2
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "xAQlr",
+                                  "fill": "$color/muted-on-bone",
+                                  "content": "PARTNER UNIVERSITIES",
+                                  "fontFamily": "JetBrains Mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 1.6
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oUHaZ",
+                          "name": "aStatsR2",
+                          "width": "fill_container",
+                          "gap": 1,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "8gaLz",
+                              "name": "sA3",
+                              "width": "fill_container",
+                              "height": 140,
+                              "fill": "$color/bone",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 28,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "LQvQm",
+                                  "fill": "$color/ink",
+                                  "content": "$50K",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Space Grotesk",
+                                  "fontSize": 52,
+                                  "fontWeight": "700",
+                                  "letterSpacing": -2
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "v6k4G",
+                                  "fill": "$color/muted-on-bone",
+                                  "content": "PRIZE POOL",
+                                  "fontFamily": "JetBrains Mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 1.6
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "SbxJg",
+                              "name": "sA4",
+                              "width": "fill_container",
+                              "height": 140,
+                              "fill": "$color/bone",
+                              "layout": "vertical",
+                              "gap": 10,
+                              "padding": 28,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "2TP7O",
+                                  "fill": "$color/ink",
+                                  "content": "∞",
+                                  "lineHeight": 1,
+                                  "fontFamily": "Space Grotesk",
+                                  "fontSize": 52,
+                                  "fontWeight": "700",
+                                  "letterSpacing": -2
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Mcv5V",
+                                  "fill": "$color/muted-on-bone",
+                                  "content": "COLD BREW",
+                                  "fontFamily": "JetBrains Mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 1.6
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RMyoP",
+              "name": "Countdown",
+              "width": "fill_container",
+              "height": 220,
+              "fill": "$color/ink",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/ink"
+              },
+              "gap": 1,
+              "children": [
+                {
+                  "id": "LMZLr",
+                  "type": "ref",
+                  "ref": "k43OO",
+                  "width": "fill_container",
+                  "name": "cd1",
+                  "descendants": {
+                    "iBvp7": {
+                      "content": "25"
+                    },
+                    "RRMDh": {
+                      "content": "DAYS"
+                    },
+                    "kDAsq": {
+                      "width": 320
+                    }
+                  }
+                },
+                {
+                  "id": "4Qdgq",
+                  "type": "ref",
+                  "ref": "k43OO",
+                  "width": "fill_container",
+                  "name": "cd2",
+                  "descendants": {
+                    "iBvp7": {
+                      "content": "11"
+                    },
+                    "RRMDh": {
+                      "content": "HOURS"
+                    },
+                    "kDAsq": {
+                      "width": 200
+                    }
+                  }
+                },
+                {
+                  "id": "2kyXi",
+                  "type": "ref",
+                  "ref": "k43OO",
+                  "width": "fill_container",
+                  "name": "cd3",
+                  "descendants": {
+                    "iBvp7": {
+                      "content": "42"
+                    },
+                    "RRMDh": {
+                      "content": "MINUTES"
+                    },
+                    "kDAsq": {
+                      "width": 140
+                    }
+                  }
+                },
+                {
+                  "id": "jwI3j",
+                  "type": "ref",
+                  "ref": "k43OO",
+                  "width": "fill_container",
+                  "name": "cd4",
+                  "descendants": {
+                    "iBvp7": {
+                      "content": "17"
+                    },
+                    "RRMDh": {
+                      "content": "SECONDS"
+                    },
+                    "kDAsq": {
+                      "width": 60,
+                      "fill": "$color/coral"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BOMZB",
+          "name": "Ticker/Dark",
+          "clip": true,
+          "width": "fill_container",
+          "height": 84,
+          "fill": "$color/ink",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "top": 1,
+              "bottom": 1
+            },
+            "fill": "$color/lime"
+          },
+          "gap": 40,
+          "padding": [
+            0,
+            0,
+            0,
+            40
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Pq9da",
+              "fill": "$color/lime",
+              "content": "◆ 6 TRACKS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "GF1aL",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "2xKuG",
+              "fill": "$color/lime",
+              "content": "◆ 16 UNIVERSITIES",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "Gh1Uz",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "QKJxU",
+              "fill": "$color/lime",
+              "content": "◆ 40+ MENTORS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "VD17L",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "ewCS2",
+              "fill": "$color/lime",
+              "content": "◆ FREE MERCH",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "gz17a",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "ZmmWa",
+              "fill": "$color/lime",
+              "content": "◆ HANGAR VENUE",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "BRIIQ",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "CRbTw",
+              "fill": "$color/lime",
+              "content": "◆ COLD BREW ON TAP",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "aIESj",
+          "name": "Section/Tracks",
+          "width": "fill_container",
+          "fill": "$color/ink",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "DwJyF",
+              "name": "tHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "a5KxM",
+                  "name": "tHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "Jhec9",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "tEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 02 / WHERE TO AIM",
+                          "fill": "$color/muted-on-ink"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "JLWhr",
+                      "fill": "$color/bone",
+                      "content": "02",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "cTEZd",
+                  "fill": "$color/bone",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Six tracks.\nPick one, break it.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RIyI4",
+              "name": "tGrid",
+              "width": "fill_container",
+              "stroke": {
+                "thickness": {
+                  "top": 1
+                },
+                "fill": "$color/rule-dark"
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BJy4C",
+                  "name": "tR1",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "dRTWD",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/ink",
+                      "name": "tr1",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 01"
+                        },
+                        "8kFcq": {
+                          "content": "◢"
+                        },
+                        "vSAE8": {
+                          "content": "Ambient Intelligence"
+                        },
+                        "qjCoZ": {
+                          "content": "Agents, assistants, and software that reads the room. LLMs welcome; novelty required."
+                        },
+                        "eEbVh": {
+                          "content": "$10K TOP PRIZE"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Bh9km",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/ink",
+                      "name": "tr2",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 02"
+                        },
+                        "8kFcq": {
+                          "content": "◎",
+                          "fill": "$color/coral"
+                        },
+                        "vSAE8": {
+                          "content": "Civic Infrastructure"
+                        },
+                        "qjCoZ": {
+                          "content": "Tools for transit, housing, voting, and everything else that breaks on Mondays."
+                        },
+                        "eEbVh": {
+                          "content": "$8K + PILOT GRANT"
+                        }
+                      }
+                    },
+                    {
+                      "id": "aAnnL",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/ink",
+                      "name": "tr3",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 03"
+                        },
+                        "8kFcq": {
+                          "content": "▲"
+                        },
+                        "vSAE8": {
+                          "content": "Hardware Punk"
+                        },
+                        "qjCoZ": {
+                          "content": "Soldered, 3D-printed, duct-taped. If it blinks, beeps, or bruises, it counts."
+                        },
+                        "eEbVh": {
+                          "content": "$8K + LAB ACCESS"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zEUCZ",
+                  "name": "tR2",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "nvGOU",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/lime",
+                      "name": "tr4",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 04",
+                          "fill": "$color/ink"
+                        },
+                        "8kFcq": {
+                          "content": "✦",
+                          "fill": "$color/ink"
+                        },
+                        "vSAE8": {
+                          "content": "Creative Tools",
+                          "fill": "$color/ink"
+                        },
+                        "qjCoZ": {
+                          "content": "Instruments for makers — music, code, prose, pixels. Reinvent one workflow.",
+                          "fill": "$color/ink"
+                        },
+                        "3CjCZ": {
+                          "stroke": {
+                            "thickness": 1,
+                            "fill": "$color/ink"
+                          }
+                        },
+                        "eEbVh": {
+                          "content": "$6K + RESIDENCY",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "2IidG",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/ink",
+                      "name": "tr5",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 05"
+                        },
+                        "8kFcq": {
+                          "content": "◐"
+                        },
+                        "vSAE8": {
+                          "content": "Climate & Earth"
+                        },
+                        "qjCoZ": {
+                          "content": "Sensors, simulations, datasets. Build for a warmer, weirder planet."
+                        },
+                        "eEbVh": {
+                          "content": "$6K + FIELD TRIP"
+                        }
+                      }
+                    },
+                    {
+                      "id": "lw2wC",
+                      "type": "ref",
+                      "ref": "Pa2U2",
+                      "width": "fill_container",
+                      "height": 420,
+                      "fill": "$color/ink",
+                      "name": "tr6",
+                      "descendants": {
+                        "zZeGx": {
+                          "content": "TRACK / 06"
+                        },
+                        "8kFcq": {
+                          "content": "✺",
+                          "fill": "$color/coral"
+                        },
+                        "vSAE8": {
+                          "content": "Wildcard"
+                        },
+                        "qjCoZ": {
+                          "content": "The track for projects that fit nowhere else. Weird is a compliment here."
+                        },
+                        "eEbVh": {
+                          "content": "$5K + BRAGGING RIGHTS"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "FbhuV",
+          "name": "Section/Schedule",
+          "width": "fill_container",
+          "fill": "$color/bone",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "baEjU",
+              "name": "sHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BfbyK",
+                  "name": "sHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "Z09Ca",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "sEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 03 / THE CLOCK"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "tjhjs",
+                      "opacity": 0.92,
+                      "fill": "$color/ink",
+                      "content": "03",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "LW4Zw",
+                  "fill": "$color/ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Three days.\nOne long Saturday.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ta8qA",
+              "name": "schedule-timeline",
+              "width": "fill_container",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ar9hp",
+                  "name": "day1Hdr",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "padding": [
+                    0,
+                    0,
+                    12,
+                    0
+                  ],
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "F4UnE",
+                      "fill": "$color/muted-on-bone",
+                      "content": "DAY 01",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "text",
+                      "id": "M94xT",
+                      "fill": "$color/ink",
+                      "content": "Friday, May 15",
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1
+                    }
+                  ]
+                },
+                {
+                  "id": "xUru7",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d1r1",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "16:00"
+                    },
+                    "yeqWS": {
+                      "content": "Doors + check-in"
+                    },
+                    "of1Fx": {
+                      "content": "ARRIVAL"
+                    }
+                  }
+                },
+                {
+                  "id": "7phkw",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d1r2",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "18:00"
+                    },
+                    "yeqWS": {
+                      "content": "Opening ceremony (no slides, we promise)"
+                    },
+                    "of1Fx": {
+                      "content": "LIVE"
+                    }
+                  }
+                },
+                {
+                  "id": "jugMS",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d1r3",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "19:00"
+                    },
+                    "yeqWS": {
+                      "content": "Team formation carousel"
+                    },
+                    "of1Fx": {
+                      "content": "SOCIAL"
+                    }
+                  }
+                },
+                {
+                  "id": "QyyzJ",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d1r4",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "20:00"
+                    },
+                    "ekMia": {
+                      "fill": "$color/lime"
+                    },
+                    "yeqWS": {
+                      "content": "Hacking begins. Clocks start."
+                    },
+                    "of1Fx": {
+                      "content": "BUILD"
+                    }
+                  }
+                },
+                {
+                  "id": "x4csT",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d1r5",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "23:30"
+                    },
+                    "yeqWS": {
+                      "content": "Midnight ramen run"
+                    },
+                    "of1Fx": {
+                      "content": "FOOD"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "LST4e",
+                  "name": "day2Hdr",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "padding": [
+                    48,
+                    0,
+                    12,
+                    0
+                  ],
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "exWfd",
+                      "fill": "$color/muted-on-bone",
+                      "content": "DAY 02",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "text",
+                      "id": "uadbO",
+                      "fill": "$color/ink",
+                      "content": "Saturday, May 16",
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1
+                    }
+                  ]
+                },
+                {
+                  "id": "rcu0c",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d2r1",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "09:00"
+                    },
+                    "yeqWS": {
+                      "content": "Mentor office hours open"
+                    },
+                    "of1Fx": {
+                      "content": "MENTOR"
+                    }
+                  }
+                },
+                {
+                  "id": "5GhZe",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d2r2",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "12:00"
+                    },
+                    "yeqWS": {
+                      "content": "Workshop: shipping in the last 18 hours"
+                    },
+                    "of1Fx": {
+                      "content": "TALK"
+                    }
+                  }
+                },
+                {
+                  "id": "86zQF",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d2r3",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "16:00"
+                    },
+                    "yeqWS": {
+                      "content": "Hardware lab open house"
+                    },
+                    "of1Fx": {
+                      "content": "LAB"
+                    }
+                  }
+                },
+                {
+                  "id": "JuSDN",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d2r4",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "22:00"
+                    },
+                    "yeqWS": {
+                      "content": "Quiet room opens for real sleep"
+                    },
+                    "of1Fx": {
+                      "content": "REST"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "TJus7",
+                  "name": "day3Hdr",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "padding": [
+                    48,
+                    0,
+                    12,
+                    0
+                  ],
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Zz7oj",
+                      "fill": "$color/muted-on-bone",
+                      "content": "DAY 03",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "text",
+                      "id": "io2xk",
+                      "fill": "$color/ink",
+                      "content": "Sunday, May 17",
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 36,
+                      "fontWeight": "700",
+                      "letterSpacing": -1
+                    }
+                  ]
+                },
+                {
+                  "id": "W0uGf",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d3r1",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "08:00"
+                    },
+                    "yeqWS": {
+                      "content": "Coffee, panic, and final commits"
+                    },
+                    "of1Fx": {
+                      "content": "BUILD"
+                    }
+                  }
+                },
+                {
+                  "id": "UQK7s",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d3r2",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "12:00"
+                    },
+                    "ekMia": {
+                      "fill": "$color/coral"
+                    },
+                    "yeqWS": {
+                      "content": "Submissions close — pencils down"
+                    },
+                    "of1Fx": {
+                      "content": "CUTOFF"
+                    }
+                  }
+                },
+                {
+                  "id": "KHYgh",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d3r3",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "17:00"
+                    },
+                    "ekMia": {
+                      "fill": "$color/lime"
+                    },
+                    "yeqWS": {
+                      "content": "Finalist demos — main stage"
+                    },
+                    "of1Fx": {
+                      "content": "STAGE"
+                    }
+                  }
+                },
+                {
+                  "id": "3Hccd",
+                  "type": "ref",
+                  "ref": "fPrkv",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-light"
+                  },
+                  "name": "d3r4",
+                  "descendants": {
+                    "FGA4W": {
+                      "content": "19:00"
+                    },
+                    "yeqWS": {
+                      "content": "Closing ceremony + prize reveal"
+                    },
+                    "of1Fx": {
+                      "content": "STAGE"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ibe5p",
+          "name": "Ticker/Dark-2",
+          "clip": true,
+          "width": "fill_container",
+          "height": 84,
+          "fill": "$color/ink",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "top": 1,
+              "bottom": 1
+            },
+            "fill": "$color/lime"
+          },
+          "gap": 40,
+          "padding": [
+            0,
+            0,
+            0,
+            40
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "6GjXx",
+              "fill": "$color/lime",
+              "content": "$25K GRAND PRIZE",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "G9Zuv",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "WNC9T",
+              "fill": "$color/lime",
+              "content": "★ TRACK WINNERS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "h5ZAs",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "4PWD9",
+              "fill": "$color/lime",
+              "content": "★ HARDWARE PUNK BONUS",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "0m3RY",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "7SrH9",
+              "fill": "$color/lime",
+              "content": "★ PEOPLE'S CHOICE",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "ellipse",
+              "id": "8XGjV",
+              "fill": "$color/lime",
+              "width": 14,
+              "height": 14
+            },
+            {
+              "type": "text",
+              "id": "sQK3W",
+              "fill": "$color/lime",
+              "content": "★ FIRST-TIMER PRIZE",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 40,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "K1KBI",
+          "name": "Section/Prizes",
+          "width": "fill_container",
+          "fill": "$color/ink",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "yyYnu",
+              "name": "pHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JgfJ0",
+                  "name": "pHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "bWOS6",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "pEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 04 / UPSIDE",
+                          "fill": "$color/muted-on-ink"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "xtY2e",
+                      "fill": "$color/bone",
+                      "content": "04",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "dHpQe",
+                  "fill": "$color/bone",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Fifty thousand\nin prize money.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lrMLV",
+              "name": "pGrid",
+              "width": "fill_container",
+              "fill": "$color/rule-dark",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fYDtn",
+                  "name": "goldWrap",
+                  "clip": true,
+                  "width": "fill_container",
+                  "height": 560,
+                  "fill": "$color/lime",
+                  "padding": 48,
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "vEoa8",
+                      "layoutPosition": "absolute",
+                      "x": 620,
+                      "y": -100,
+                      "name": "goldDeco",
+                      "opacity": 0.2,
+                      "fill": "$color/coral",
+                      "width": 320,
+                      "height": 320
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZVOxi",
+                      "name": "goldContent",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "layout": "vertical",
+                      "justifyContent": "space_between",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EYmq5",
+                          "fill": "$color/ink",
+                          "content": "GRAND PRIZE",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 2
+                        },
+                        {
+                          "type": "frame",
+                          "id": "4sNid",
+                          "name": "gcBottom",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dHJxP",
+                              "fill": "$color/ink",
+                              "content": "$25K",
+                              "lineHeight": 1,
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 168,
+                              "fontWeight": "700",
+                              "letterSpacing": -7
+                            },
+                            {
+                              "type": "text",
+                              "id": "RhmCz",
+                              "fill": "$color/ink",
+                              "textGrowth": "fixed-width",
+                              "width": 460,
+                              "content": "+ incubator interview at Boreal Labs, mentor dinner, and a gigantic physical trophy.",
+                              "lineHeight": 1.5,
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "2qcCu",
+                  "name": "col2",
+                  "width": "fill_container",
+                  "height": 560,
+                  "fill": "$color/rule-dark",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "FdGGe",
+                      "type": "ref",
+                      "ref": "Jk6ci",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "name": "p1",
+                      "descendants": {
+                        "AeNn4": {
+                          "content": "TRACK WINNERS × 6"
+                        },
+                        "EvEbg": {
+                          "content": "$3K"
+                        },
+                        "HpXkq": {
+                          "content": "One per track."
+                        }
+                      }
+                    },
+                    {
+                      "id": "x6B91",
+                      "type": "ref",
+                      "ref": "Jk6ci",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "name": "p3",
+                      "descendants": {
+                        "RKIqW": {
+                          "fill": "$color/violet",
+                          "opacity": 0.2
+                        },
+                        "AeNn4": {
+                          "content": "PEOPLE'S CHOICE"
+                        },
+                        "EvEbg": {
+                          "content": "$3K"
+                        },
+                        "HpXkq": {
+                          "content": "Voted by the 600 hackers in the room."
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "7rvBI",
+                  "name": "col3",
+                  "width": "fill_container",
+                  "height": 560,
+                  "fill": "$color/rule-dark",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "id": "Yujbp",
+                      "type": "ref",
+                      "ref": "Jk6ci",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "name": "p2",
+                      "descendants": {
+                        "RKIqW": {
+                          "fill": "$color/lime",
+                          "opacity": 0.16
+                        },
+                        "AeNn4": {
+                          "content": "HARDWARE PUNK BONUS"
+                        },
+                        "EvEbg": {
+                          "content": "$2K"
+                        },
+                        "HpXkq": {
+                          "content": "Best thing with a blinking LED."
+                        }
+                      }
+                    },
+                    {
+                      "id": "TnkLF",
+                      "type": "ref",
+                      "ref": "Jk6ci",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "name": "p4",
+                      "descendants": {
+                        "AeNn4": {
+                          "content": "FIRST-TIME HACKER"
+                        },
+                        "EvEbg": {
+                          "content": "$2K"
+                        },
+                        "HpXkq": {
+                          "content": "For teams where nobody has hackathon'd before."
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "3zMxs",
+          "name": "Section/Sponsors",
+          "width": "fill_container",
+          "fill": "$color/bone",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "becV1",
+              "name": "spHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "v7Iw1",
+                  "name": "spHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "q6SBl",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "spEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 05 / BACKED BY"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "tCAcv",
+                      "opacity": 0.92,
+                      "fill": "$color/ink",
+                      "content": "05",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "A5fTx",
+                  "fill": "$color/ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Good people.\nActual companies.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FnP9J",
+              "name": "spGrid",
+              "width": "fill_container",
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/rule-light"
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Alkp8",
+                  "name": "sR1",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "eKHAJ",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp1",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "HANGAR"
+                        }
+                      }
+                    },
+                    {
+                      "id": "03mdj",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp2",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "DIODE LABS"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ZO5pi",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp3",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "MERIDIAN"
+                        }
+                      }
+                    },
+                    {
+                      "id": "L7db2",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp4",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "PAPERTRAIL"
+                        }
+                      }
+                    },
+                    {
+                      "id": "f1ObC",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "fill": "$color/ink",
+                      "name": "sp5",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆",
+                          "fill": "$color/muted-on-ink"
+                        },
+                        "EO8A5": {
+                          "content": "STUDIO K",
+                          "fill": "$color/bone"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nQdzp",
+                  "name": "sR2",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "KlkYt",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp6",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "NORTHWIND"
+                        }
+                      }
+                    },
+                    {
+                      "id": "WbU0L",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp7",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆◆"
+                        },
+                        "EO8A5": {
+                          "content": "CACHE CO."
+                        }
+                      }
+                    },
+                    {
+                      "id": "baaXJ",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "fill": "$color/lime",
+                      "name": "sp8",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆",
+                          "fill": "$color/ink"
+                        },
+                        "EO8A5": {
+                          "content": "PLENTY",
+                          "fill": "$color/ink"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CKcqX",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp9",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆"
+                        },
+                        "EO8A5": {
+                          "content": "KILN"
+                        }
+                      }
+                    },
+                    {
+                      "id": "1mj71",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp10",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆"
+                        },
+                        "EO8A5": {
+                          "content": "WEFT"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "4YwZ2",
+                  "name": "sR3",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "fwEj5",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp11",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆"
+                        },
+                        "EO8A5": {
+                          "content": "SUBROUTINE"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ZhY5u",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp12",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆"
+                        },
+                        "EO8A5": {
+                          "content": "FIELD NOTES"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CWAu6",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp13",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "◆"
+                        },
+                        "EO8A5": {
+                          "content": "HALFLIGHT"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Wfkh1",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "fill": "$color/ink",
+                      "name": "sp14",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": "HOST",
+                          "fill": "$color/lime"
+                        },
+                        "EO8A5": {
+                          "content": "BOREAL U.",
+                          "fill": "$color/lime"
+                        }
+                      }
+                    },
+                    {
+                      "id": "HPsKV",
+                      "type": "ref",
+                      "ref": "HOAqW",
+                      "width": "fill_container",
+                      "name": "sp15",
+                      "descendants": {
+                        "lxoFj": {
+                          "content": ""
+                        },
+                        "EO8A5": {
+                          "content": "+ 12 MORE"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "YqI0w",
+          "name": "Section/FAQ",
+          "width": "fill_container",
+          "fill": "$color/ink",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            120,
+            60
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "USeG1",
+              "name": "fHead",
+              "width": "fill_container",
+              "gap": 48,
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "5Yejo",
+                  "name": "fHeadL",
+                  "width": 220,
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "LcLvu",
+                      "type": "ref",
+                      "ref": "9aJ2G",
+                      "name": "fEye",
+                      "descendants": {
+                        "0BTs6": {
+                          "content": "CHAPTER 06 / LOOSE ENDS",
+                          "fill": "$color/muted-on-ink"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "pZskv",
+                      "fill": "$color/bone",
+                      "content": "06",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 110,
+                      "fontWeight": "700",
+                      "letterSpacing": -4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "HYvhg",
+                  "fill": "$color/bone",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Questions we\nget a lot.",
+                  "lineHeight": 0.96,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "irRNG",
+              "name": "faqList",
+              "width": 920,
+              "stroke": {
+                "thickness": {
+                  "top": 1
+                },
+                "fill": "$color/rule-dark"
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "R2Qca",
+                  "name": "fq1",
+                  "width": "fill_container",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "$color/rule-dark"
+                  },
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    28,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "N8G4c",
+                      "name": "fq1Top",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I1mmh",
+                          "fill": "$color/bone",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Do I need a team?",
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 22,
+                          "fontWeight": "500",
+                          "letterSpacing": -0.3
+                        },
+                        {
+                          "type": "text",
+                          "id": "dutsh",
+                          "fill": "$color/lime",
+                          "content": "×",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 22,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "HFdqB",
+                      "fill": "$color/muted-on-ink",
+                      "textGrowth": "fixed-width",
+                      "width": 620,
+                      "content": "Nope. Show up solo — we run a team-formation carousel on Friday at 19:00 and most people leave with a crew.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "GGFg5",
+                  "type": "ref",
+                  "ref": "joSb9",
+                  "width": "fill_container",
+                  "name": "fq2",
+                  "descendants": {
+                    "N50AS": {
+                      "content": "I've never hacked before. Is this for me?"
+                    }
+                  }
+                },
+                {
+                  "id": "pZNCu",
+                  "type": "ref",
+                  "ref": "joSb9",
+                  "width": "fill_container",
+                  "name": "fq3",
+                  "descendants": {
+                    "N50AS": {
+                      "content": "What can I build?"
+                    }
+                  }
+                },
+                {
+                  "id": "sWZ3l",
+                  "type": "ref",
+                  "ref": "joSb9",
+                  "width": "fill_container",
+                  "name": "fq4",
+                  "descendants": {
+                    "N50AS": {
+                      "content": "Travel + housing?"
+                    }
+                  }
+                },
+                {
+                  "id": "XI7Gh",
+                  "type": "ref",
+                  "ref": "joSb9",
+                  "width": "fill_container",
+                  "name": "fq5",
+                  "descendants": {
+                    "N50AS": {
+                      "content": "Is it really 48 hours straight?"
+                    }
+                  }
+                },
+                {
+                  "id": "VkhMb",
+                  "type": "ref",
+                  "ref": "joSb9",
+                  "width": "fill_container",
+                  "name": "fq6",
+                  "descendants": {
+                    "N50AS": {
+                      "content": "Who judges?"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Zn91S",
+          "name": "Section/Footer",
+          "clip": true,
+          "width": "fill_container",
+          "fill": "$color/ink",
+          "layout": "vertical",
+          "gap": 48,
+          "padding": [
+            80,
+            60,
+            40,
+            60
+          ],
+          "children": [
+            {
+              "id": "qhSEH",
+              "type": "ref",
+              "ref": "9aJ2G",
+              "name": "fEye2",
+              "descendants": {
+                "Kjfoi": {
+                  "fill": "$color/lime"
+                },
+                "0BTs6": {
+                  "content": "◉ APPLY BY APRIL 29, 2026",
+                  "fill": "$color/lime"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "eY6h6",
+              "name": "fBig",
+              "width": "fill_container",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "v8zEW",
+                  "name": "fBigRow1",
+                  "gap": 40,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RqW2O",
+                      "fill": "$color/bone",
+                      "content": "BUILD",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 150,
+                      "fontWeight": "700",
+                      "letterSpacing": -8
+                    },
+                    {
+                      "type": "text",
+                      "id": "grvBL",
+                      "fill": "$color/lime",
+                      "content": "SOMETHING",
+                      "lineHeight": 0.9,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 150,
+                      "fontWeight": "700",
+                      "letterSpacing": -8,
+                      "fontStyle": "italic"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "RMWFS",
+                  "fill": "$color/bone",
+                  "content": "WEIRD.",
+                  "lineHeight": 0.9,
+                  "fontFamily": "Space Grotesk",
+                  "fontSize": 150,
+                  "fontWeight": "700",
+                  "letterSpacing": -8
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "avKgN",
+              "name": "ctaRow",
+              "gap": 20,
+              "padding": [
+                32,
+                0,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "id": "tttVs",
+                  "type": "ref",
+                  "ref": "lr4Mr"
+                },
+                {
+                  "id": "qAA52",
+                  "type": "ref",
+                  "ref": "E1Ox5",
+                  "name": "ghostCta",
+                  "descendants": {
+                    "4hQSy": {
+                      "content": "SPONSOR THE EVENT"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iHIzy",
+              "name": "footer-grid",
+              "width": "fill_container",
+              "stroke": {
+                "thickness": {
+                  "top": 1
+                },
+                "fill": "$color/rule-dark"
+              },
+              "gap": 32,
+              "padding": [
+                48,
+                0,
+                0,
+                0
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "kZG6y",
+                  "name": "fc1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    32,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cMFXh",
+                      "fill": "$color/muted-on-ink",
+                      "content": "EVENT",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SJP2d",
+                      "name": "fc1List",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "6olLp",
+                          "fill": "$color/bone",
+                          "content": "About",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "q5sqI",
+                          "fill": "$color/bone",
+                          "content": "Tracks",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "6eI6j",
+                          "fill": "$color/bone",
+                          "content": "Schedule",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "jvWTp",
+                          "fill": "$color/bone",
+                          "content": "Prizes",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "e5naq",
+                  "name": "fc2",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    32,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Lx8p3",
+                      "fill": "$color/muted-on-ink",
+                      "content": "GET INVOLVED",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LphsX",
+                      "name": "fc2List",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "3A4iF",
+                          "fill": "$color/bone",
+                          "content": "Apply as hacker",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "VnSap",
+                          "fill": "$color/bone",
+                          "content": "Mentor",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "fIGPv",
+                          "fill": "$color/bone",
+                          "content": "Sponsor",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "3pJRa",
+                          "fill": "$color/bone",
+                          "content": "Volunteer",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PzErM",
+                  "name": "fc3",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    32,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KpiMm",
+                      "fill": "$color/muted-on-ink",
+                      "content": "CONTACT",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LC5Zq",
+                      "name": "fc3List",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "EnvA8",
+                          "fill": "$color/bone",
+                          "content": "hello@bohack.io",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "QqlT3",
+                          "fill": "$color/bone",
+                          "content": "Discord",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "SOFEH",
+                          "fill": "$color/bone",
+                          "content": "Instagram",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "o0j5y",
+                          "fill": "$color/bone",
+                          "content": "GitHub",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PuSb1",
+                  "name": "fc4",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    32,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OWTOI",
+                      "fill": "$color/muted-on-ink",
+                      "content": "COLOPHON",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ALt53",
+                      "name": "fc4List",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "bWmFh",
+                          "fill": "$color/muted-on-ink",
+                          "content": "Upstate NY",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "NgsS3",
+                          "fill": "$color/muted-on-ink",
+                          "content": "May 15—17, 2026",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "fG0Ow",
+                          "fill": "$color/muted-on-ink",
+                          "content": "Edition 04",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "had7v",
+                          "fill": "$color/muted-on-ink",
+                          "content": "MLH-affiliated",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "aboaI",
+              "name": "footer-bottom",
+              "width": "fill_container",
+              "padding": [
+                48,
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "space_between",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "5ZR21",
+                  "fill": "$color/muted-on-ink",
+                  "content": "© BOHACK COLLECTIVE 2026",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.6
+                },
+                {
+                  "type": "text",
+                  "id": "auCoB",
+                  "fill": "$color/muted-on-ink",
+                  "content": "MADE IN THE HANGAR, WITH LOVE.",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.6
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "color/bone": {
+      "type": "color",
+      "value": "#F2ECE1"
+    },
+    "color/bone-2": {
+      "type": "color",
+      "value": "#E6DECE"
+    },
+    "color/coral": {
+      "type": "color",
+      "value": "#F08865"
+    },
+    "color/ink": {
+      "type": "color",
+      "value": "#1B1612"
+    },
+    "color/ink-2": {
+      "type": "color",
+      "value": "#2A231B"
+    },
+    "color/ink-3": {
+      "type": "color",
+      "value": "#3C3327"
+    },
+    "color/lime": {
+      "type": "color",
+      "value": "#D3F14D"
+    },
+    "color/lime-deep": {
+      "type": "color",
+      "value": "#A7C635"
+    },
+    "color/muted-on-bone": {
+      "type": "color",
+      "value": "#1B1612B3"
+    },
+    "color/muted-on-ink": {
+      "type": "color",
+      "value": "#F2ECE1B3"
+    },
+    "color/paper": {
+      "type": "color",
+      "value": "#FAF6EC"
+    },
+    "color/rule-dark": {
+      "type": "color",
+      "value": "#F2ECE126"
+    },
+    "color/rule-light": {
+      "type": "color",
+      "value": "#1B16121F"
+    },
+    "color/violet": {
+      "type": "color",
+      "value": "#8458E6"
+    },
+    "container/max": {
+      "type": "number",
+      "value": 1320
+    },
+    "font/display": {
+      "type": "string",
+      "value": "Space Grotesk"
+    },
+    "font/mono": {
+      "type": "string",
+      "value": "JetBrains Mono"
+    },
+    "radius/card": {
+      "type": "number",
+      "value": 12
+    },
+    "radius/chip": {
+      "type": "number",
+      "value": 6
+    },
+    "radius/pill": {
+      "type": "number",
+      "value": 999
+    },
+    "section/padding-x": {
+      "type": "number",
+      "value": 32
+    },
+    "section/padding-y": {
+      "type": "number",
+      "value": 120
+    },
+    "size/body": {
+      "type": "number",
+      "value": 15
+    },
+    "size/body-l": {
+      "type": "number",
+      "value": 17
+    },
+    "size/caption": {
+      "type": "number",
+      "value": 13
+    },
+    "size/display-l": {
+      "type": "number",
+      "value": 180
+    },
+    "size/display-m": {
+      "type": "number",
+      "value": 92
+    },
+    "size/display-xl": {
+      "type": "number",
+      "value": 240
+    },
+    "size/eyebrow": {
+      "type": "number",
+      "value": 11
+    },
+    "size/h1": {
+      "type": "number",
+      "value": 72
+    },
+    "size/h2": {
+      "type": "number",
+      "value": 48
+    },
+    "size/h3": {
+      "type": "number",
+      "value": 28
+    },
+    "size/h4": {
+      "type": "number",
+      "value": 22
+    },
+    "space/l": {
+      "type": "number",
+      "value": 40
+    },
+    "space/m": {
+      "type": "number",
+      "value": 24
+    },
+    "space/s": {
+      "type": "number",
+      "value": 16
+    },
+    "space/xl": {
+      "type": "number",
+      "value": 64
+    },
+    "space/xs": {
+      "type": "number",
+      "value": 8
+    },
+    "space/xxl": {
+      "type": "number",
+      "value": 120
+    },
+    "space/xxs": {
+      "type": "number",
+      "value": 4
+    }
+  }
+}
