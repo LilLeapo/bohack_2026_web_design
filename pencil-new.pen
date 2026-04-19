@@ -1568,7 +1568,7 @@
           "name": "Hero",
           "clip": true,
           "width": "fill_container",
-          "height": 900,
+          "height": 1040,
           "fill": "$color/ink",
           "layout": "none",
           "children": [
@@ -1599,7 +1599,7 @@
                 ]
               },
               "width": 1440,
-              "height": 900
+              "height": 1040
             },
             {
               "type": "rectangle",
@@ -1615,18 +1615,7 @@
                 "mode": "fill"
               },
               "width": 1440,
-              "height": 900
-            },
-            {
-              "type": "ellipse",
-              "id": "lwZDB",
-              "x": 180,
-              "y": 220,
-              "name": "dot1",
-              "opacity": 0.7,
-              "fill": "$color/lime",
-              "width": 6,
-              "height": 6
+              "height": 1040
             },
             {
               "type": "ellipse",
@@ -1665,8 +1654,8 @@
               "id": "NDnDJ",
               "type": "ref",
               "ref": "JORU8",
-              "x": 96,
-              "y": 180,
+              "x": 1170,
+              "y": 460,
               "name": "fl1",
               "stroke": {
                 "thickness": 1,
@@ -1683,7 +1672,7 @@
               "id": "5SDBo",
               "type": "ref",
               "ref": "JORU8",
-              "x": 1160,
+              "x": 1180,
               "y": 230,
               "name": "fl2",
               "descendants": {
@@ -1696,8 +1685,8 @@
               "id": "VVs1e",
               "type": "ref",
               "ref": "JORU8",
-              "x": 160,
-              "y": 640,
+              "x": 80,
+              "y": 620,
               "name": "fl3",
               "stroke": {
                 "thickness": 1,
@@ -1705,7 +1694,7 @@
               },
               "descendants": {
                 "1xc8D": {
-                  "content": "★ $50K PRIZES",
+                  "content": "★ ¥50K+ PRIZES",
                   "fill": "$color/coral"
                 }
               }
@@ -1714,12 +1703,12 @@
               "id": "jkyAJ",
               "type": "ref",
               "ref": "JORU8",
-              "x": 1140,
-              "y": 700,
+              "x": 1180,
+              "y": 620,
               "name": "fl4",
               "descendants": {
                 "1xc8D": {
-                  "content": "✦ MAY 15—17"
+                  "content": "✦ MAY 28—31"
                 }
               }
             },
@@ -1728,7 +1717,7 @@
               "id": "e0zGW",
               "layoutPosition": "absolute",
               "x": 48,
-              "y": 200,
+              "y": 300,
               "name": "hero-content",
               "width": 1344,
               "layout": "vertical",
@@ -1753,9 +1742,20 @@
                     },
                     {
                       "type": "text",
+                      "id": "WSSE0",
+                      "name": "brandTag",
+                      "fill": "$color/lime",
+                      "content": "· BOHACK / EDITION 04",
+                      "fontFamily": "JetBrains Mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.8
+                    },
+                    {
+                      "type": "text",
                       "id": "RGrGP",
                       "fill": "$color/muted-on-ink",
-                      "content": "— APPLICATIONS OPEN",
+                      "content": "— APPLICATIONS OPEN · 即日起报名开放",
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -1795,6 +1795,92 @@
                 },
                 {
                   "type": "frame",
+                  "id": "YcZtQ",
+                  "name": "cn-event-title",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LN7y1",
+                      "name": "cnMeta",
+                      "gap": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ckmtH",
+                          "name": "cnMetaChip",
+                          "fill": "$color/lime",
+                          "cornerRadius": 4,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "QNqFM",
+                              "fill": "$color/ink",
+                              "content": "CN · 官方赛道",
+                              "fontFamily": "JetBrains Mono",
+                              "fontSize": 10,
+                              "fontWeight": "normal",
+                              "letterSpacing": 1.6
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ALOvP",
+                          "fill": "$color/muted-on-ink",
+                          "content": "EVENT NAME · 赛事名称",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 10,
+                          "fontWeight": "normal",
+                          "letterSpacing": 1.6
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "nhPcQ",
+                      "name": "cnTitle",
+                      "fill": "$color/bone",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "智能创新黑客松大赛",
+                      "lineHeight": 1.02,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 90,
+                      "fontWeight": "500",
+                      "letterSpacing": -2
+                    },
+                    {
+                      "type": "text",
+                      "id": "uUQXj",
+                      "name": "cnEn",
+                      "fill": "$color/muted-on-ink",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "The Smart Innovation Hackathon — an official satellite of World Intelligence Expo 2026.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 17,
+                      "fontWeight": "normal",
+                      "letterSpacing": -0.2
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "avio5",
                   "name": "hero-meta",
                   "width": "fill_container",
@@ -1814,7 +1900,7 @@
                       "fill": "$color/muted-on-ink",
                       "textGrowth": "fixed-width",
                       "width": 420,
-                      "content": "THE BOREAL COLLEGIATE HACKATHON. 48 HOURS, ONE CONTINENT, INFINITE CAFFEINE. BUILD SOMETHING WEIRD, WIN SOMETHING REAL.",
+                      "content": "48 HOURS IN TIANJIN · 600 STUDENT HACKERS · OFFICIAL TRACK OF WIE 2026. BRING HALF-FORMED IDEAS, LEAVE WITH A SHIPPED BUILD, A TEAM, AND A STORY.",
                       "lineHeight": 1.5,
                       "fontFamily": "JetBrains Mono",
                       "fontSize": 13,
@@ -1952,8 +2038,8 @@
             {
               "type": "text",
               "id": "3yaU4",
-              "x": 640,
-              "y": 860,
+              "x": 600,
+              "y": 990,
               "name": "scroll",
               "fill": "$color/muted-on-ink",
               "content": "— SCROLL TO ENTER",
@@ -1961,6 +2047,91 @@
               "fontSize": 10,
               "fontWeight": "normal",
               "letterSpacing": 1.8
+            },
+            {
+              "type": "frame",
+              "id": "CTaCK",
+              "layoutPosition": "absolute",
+              "x": 1210,
+              "y": 120,
+              "name": "tianjin-chip",
+              "cornerRadius": 999,
+              "stroke": {
+                "thickness": 1,
+                "fill": "$color/lime"
+              },
+              "gap": 8,
+              "padding": [
+                10,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "7qqBe",
+                  "fill": "$color/lime",
+                  "width": 7,
+                  "height": 7
+                },
+                {
+                  "type": "text",
+                  "id": "153iq",
+                  "fill": "$color/lime",
+                  "content": "TIANJIN · 5.28—31",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.8
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "sHkGD",
+              "x": 48,
+              "y": 200,
+              "name": "wie-logo",
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "./assets/wie-2026-lockup.png",
+                "mode": "fit"
+              },
+              "width": "fill_container(424)",
+              "height": 64
+            },
+            {
+              "type": "frame",
+              "id": "1RigD",
+              "x": 48,
+              "y": 161,
+              "name": "bLabel",
+              "width": "fill_container(424)",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Yz59s",
+                  "fill": "$color/muted-on-ink",
+                  "content": "PRESENTED AS PART OF · 主办单位",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.6
+                },
+                {
+                  "type": "text",
+                  "id": "PLQZG",
+                  "fill": "$color/muted-on-ink",
+                  "content": "CN / TIANJIN",
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.6
+                }
+              ]
             }
           ]
         },

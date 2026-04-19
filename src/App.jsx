@@ -1,0 +1,69 @@
+import Nav from './sections/Nav.jsx';
+import Hero from './sections/Hero.jsx';
+import Ticker from './sections/Ticker.jsx';
+import About from './sections/About.jsx';
+import Tracks from './sections/Tracks.jsx';
+import Schedule from './sections/Schedule.jsx';
+import Prizes from './sections/Prizes.jsx';
+import Sponsors from './sections/Sponsors.jsx';
+import FAQ from './sections/FAQ.jsx';
+import Footer from './sections/Footer.jsx';
+
+import { useCursor } from './hooks/useCursor.js';
+import { useReveal } from './hooks/useReveal.js';
+import { useParallax } from './hooks/useParallax.js';
+import { useMagnet } from './hooks/useMagnet.js';
+
+export default function App() {
+  useCursor();
+  useReveal();
+  useParallax();
+  useMagnet();
+
+  return (
+    <>
+      <Nav />
+      <Hero />
+      <Ticker
+        dark
+        items={[
+          'BOHACK 2026',
+          '5 月 28—31',
+          '天津 · 滨海',
+          '600 位黑客',
+          '48 小时',
+          '¥50K+ 奖金',
+          'WIE 2026 官方赛道',
+        ]}
+      />
+      <About />
+      <Ticker
+        items={[
+          '◆ 6 条赛道',
+          '◆ 16 所高校',
+          '◆ 40+ 位导师',
+          '◆ 免费周边',
+          '◆ 机库场地',
+          '◆ 冷萃无限',
+          '◆ 安静休息区',
+        ]}
+      />
+      <Tracks />
+      <Schedule />
+      <Ticker
+        dark
+        items={[
+          '¥25K 总冠军',
+          '★ 赛道冠军',
+          '★ 硬件朋克特别奖',
+          '★ 人气奖',
+          '★ 首秀黑客奖',
+        ]}
+      />
+      <Prizes />
+      <Sponsors />
+      <FAQ />
+      <Footer />
+    </>
+  );
+}
