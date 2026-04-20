@@ -24,21 +24,21 @@ const TRACKS = [
     num: '04',
     glyph: '✦',
     title: '创作工具 · Creative Tools',
-    desc: '为创作者设计的乐器——音乐、代码、文本、像素。重新发明一条工作流。',
+    desc: '为创作者打造的"乐器"——音乐、代码、文字、像素。重新想象一种创作流程。',
     prize: '¥6K + 驻留机会',
   },
   {
     num: '05',
     glyph: '◐',
     title: '气候与地球 · Climate & Earth',
-    desc: '传感器、仿真、数据集。为一个更热、更奇怪的星球建构。',
+    desc: '传感器、仿真、数据集。为一颗更热、也更奇怪的星球动手。',
     prize: '¥6K + 田野考察',
   },
   {
     num: '06',
     glyph: '✺',
     title: '百搭 · Wildcard',
-    desc: '什么都不属于的项目的赛道。在这里,“奇怪”是一种褒义词。',
+    desc: '专门收留那些不属于任何赛道的项目。在这里,“奇怪”是最高褒义。',
     prize: '¥5K + 吹牛权利',
   },
 ];
@@ -49,12 +49,12 @@ export default function Tracks() {
       <div className="container">
         <div className="chapter-row reveal">
           <div>
-            <div className="eyebrow">Chapter 02 / 瞄准何处</div>
+            <div className="eyebrow">Chapter 02 / 选一个方向</div>
             <div className="chapter-num" data-parallax="0.08">02</div>
           </div>
           <h2 className="title" data-parallax="-0.04">
             六条赛道。<br />
-            挑一条,把它打破。
+            挑一条,把它玩坏。
           </h2>
         </div>
         <div className="tracks reveal" data-stagger="true">

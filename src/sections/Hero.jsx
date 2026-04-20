@@ -65,7 +65,7 @@ export default function Hero() {
       <div className="hero-content">
         <div className="pl" data-parallax="0.15">
           <div className="hero-live">
-            <span className="live">◉ LIVE · 即日起报名开放</span>
+            <span className="live">◉ LIVE · 报名通道已开启</span>
             <span className="edition">BOHACK · 第 04 届</span>
           </div>
 
@@ -93,8 +93,8 @@ export default function Hero() {
 
           <div className="hero-meta">
             <p className="hero-tag">
-              48 小时,在天津。600 位学生黑客。WIE 2026 官方赛道。
-              带上半成形的想法,带走上线的作品、一支队伍和一段故事。
+              48 小时,天津集结,600 位学生黑客。WIE 2026 官方赛道。
+              带一个还没想清楚的点子来,带一件能跑的作品、一支队伍、一段故事走。
             </p>
             <div className="hero-stats">
               <div><b>48</b>小时</div>

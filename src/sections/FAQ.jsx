@@ -7,7 +7,7 @@ const ITEMS = [
   },
   {
     q: '我从没参加过黑客松,适合我吗?',
-    a: '非常适合。我们有专门的新手赛道、新手导师池,以及一笔 ¥2K 的“首秀黑客”专项奖。',
+    a: '非常适合。我们为新手准备了专属赛道、专属导师团,以及一笔 ¥2K 的“首秀黑客”专项奖。',
   },
   {
     q: '可以做什么项目?',
@@ -15,7 +15,7 @@ const ITEMS = [
   },
   {
     q: '路费和住宿怎么安排?',
-    a: '合作高校的同学我们覆盖往返大巴,到场后安排在机库隔壁的青年公寓,双人间。',
+    a: '合作高校的同学,我们统一安排往返大巴;到场后入住机库隔壁的青年公寓,双人间。',
   },
   {
     q: '真的要连续 48 小时不睡?',
@@ -23,7 +23,7 @@ const ITEMS = [
   },
   {
     q: '谁来评审?',
-    a: '一组来自校友、工程师、高校老师的轮换阵容。完整评委名单将在活动前两周公布。',
+    a: '评审团由校友、一线工程师和高校老师组成,完整名单将在活动前两周公布。',
   },
 ];
 
@@ -35,7 +35,7 @@ export default function FAQ() {
       <div className="container">
         <div className="chapter-row reveal">
           <div>
-            <div className="eyebrow">Chapter 06 / 待解的问题</div>
+            <div className="eyebrow">Chapter 06 / 你大概想问的</div>
             <div className="chapter-num" data-parallax="0.08">06</div>
           </div>
           <h2 className="title" data-parallax="-0.04">

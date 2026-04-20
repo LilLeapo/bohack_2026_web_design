@@ -21,7 +21,7 @@ export default function Prizes() {
             <div>
               <div className="amt">¥25K</div>
               <div className="label" style={{ marginTop: 16 }}>
-                + WIE 孵化器面试直通、导师晚宴、一个体积惊人的实体奖杯。
+                + WIE 孵化器面试直通、导师晚宴、一座大到离谱的实体奖杯。
               </div>
             </div>
             <div className="deco" />
@@ -57,7 +57,7 @@ export default function Prizes() {
             <div>
               <div className="amt">¥2K</div>
               <div className="label" style={{ marginTop: 8 }}>
-                队伍中无人参加过黑客松,专属的鼓励奖。
+                队里全员都是第一次打黑客松——这个奖,就是为你们准备的。
               </div>
             </div>
             <div className="deco" />

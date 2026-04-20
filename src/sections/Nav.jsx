@@ -1,10 +1,14 @@
 export default function Nav() {
   return (
     <nav className="nav">
-      <div className="brand">
-        <span className="brand-mark" />
-        <span>BOHACK / 2026</span>
-      </div>
+      <a href="#top" className="brand" aria-label="BoHack 2026 home">
+        <img
+          src="/BoHack-LOGO-%E5%8F%8D%E7%99%BD.svg"
+          alt="BoHack"
+          className="brand-logo"
+        />
+        <span className="brand-year">/ 2026</span>
+      </a>
       <div className="nav-links">
         <a href="#about">简介</a>
         <a href="#tracks">赛道</a>

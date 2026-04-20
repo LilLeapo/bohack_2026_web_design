@@ -18,18 +18,18 @@ export default function About() {
         <div className="about-grid">
           <div className="reveal">
             <p className="about-lede">
-              BOHACK 是面向全国高校建设者的黑客松——把<span className="hl">一个周末</span>当作一道
-              开卷题来解。带上你的笔记本、朋友,还有半成形的直觉。剩下的——餐食、导师、
-              <span className="hl">环绕式混乱</span>——都交给我们。
+              BOHACK 是一场写给全国高校造物者的黑客松——把<span className="hl">一个周末</span>当一道
+              开卷题来做。带上你的笔记本、朋友,还有那个<span className="hl">还没想清楚</span>的念头。
+              剩下的——三餐、导师、<span className="hl">沉浸式混乱</span>——都交给我们。
             </p>
           </div>
           <div className="about-side reveal" data-stagger="true">
             <p>
-              十六所高校,六百名学生,一座改建自滨海新区的机库。48 小时高压的创作面板,
-              在天津被重新点亮。
+              十六所高校,六百名学生,滨海新区一座由旧机库改造的空间。48 小时高压创作,
+              在天津重新上电。
             </p>
             <p>
-              你会做出一件真正能跑起来的东西——跑在芯片上、跑在服务器上、也跑上舞台——
+              你会做出一件真正跑得起来的东西——跑在芯片上、跑在服务器上,也跑上舞台——
               最后带着一个 Demo、一支队伍和一段故事离场。
             </p>
             <div className="about-stats">
