@@ -23,9 +23,9 @@ export default function Sponsors() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 05 / 合作方</div>
-            <div className="chapter-num">05</div>
+            <div className="chapter-num" data-parallax="0.08">05</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             靠谱的人。<br />
             正经的公司。
           </h2>

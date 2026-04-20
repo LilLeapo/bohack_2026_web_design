@@ -7,9 +7,9 @@ export default function About() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 01 / 缘起</div>
-            <div className="chapter-num">01</div>
+            <div className="chapter-num" data-parallax="0.08">01</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             四十八小时。<br />
             一个离谱到可行的点子。
           </h2>

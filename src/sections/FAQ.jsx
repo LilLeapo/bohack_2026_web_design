@@ -36,9 +36,9 @@ export default function FAQ() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 06 / 待解的问题</div>
-            <div className="chapter-num">06</div>
+            <div className="chapter-num" data-parallax="0.08">06</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             被问得最多的<br />
             六个问题。
           </h2>

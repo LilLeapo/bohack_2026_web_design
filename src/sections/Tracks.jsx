@@ -50,9 +50,9 @@ export default function Tracks() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 02 / 瞄准何处</div>
-            <div className="chapter-num">02</div>
+            <div className="chapter-num" data-parallax="0.08">02</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             六条赛道。<br />
             挑一条,把它打破。
           </h2>

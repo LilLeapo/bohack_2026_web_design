@@ -6,7 +6,10 @@ export default function Footer() {
           ◉ 报名截止 / APPLY BY · 2026.05.10
         </div>
         <div className="footer-big reveal">
-          BUILD <span className="accent">SOMETHING</span>
+          BUILD{' '}
+          <span className="accent" data-parallax="0.12" data-parallax-rot="-2">
+            SOMETHING
+          </span>
           <br />
           WEIRD.
         </div>

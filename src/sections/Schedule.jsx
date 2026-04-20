@@ -51,9 +51,9 @@ export default function Schedule() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 03 / 时钟</div>
-            <div className="chapter-num">03</div>
+            <div className="chapter-num" data-parallax="0.08">03</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             四天时间。<br />
             像一个漫长的周末。
           </h2>

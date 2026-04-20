@@ -5,9 +5,9 @@ export default function Prizes() {
         <div className="chapter-row reveal">
           <div>
             <div className="eyebrow">Chapter 04 / 回报</div>
-            <div className="chapter-num">04</div>
+            <div className="chapter-num" data-parallax="0.08">04</div>
           </div>
-          <h2 className="title">
+          <h2 className="title" data-parallax="-0.04">
             五万元<br />
             现金奖金池。
           </h2>
