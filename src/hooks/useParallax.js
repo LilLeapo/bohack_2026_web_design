@@ -10,11 +10,23 @@ export function useParallax() {
     ).matches;
     if (prefersReducedMotion) return;
 
+    // Disable parallax on narrow viewports — differing translate speeds
+    // between stacked hero elements can cause visual overlap on phones.
+    const narrowMq = window.matchMedia('(max-width: 768px)');
+
     let rafId = 0;
     let pending = false;
 
+    const clearTransforms = () => {
+      for (const el of items) el.style.transform = '';
+    };
+
     const apply = () => {
       pending = false;
+      if (narrowMq.matches) {
+        clearTransforms();
+        return;
+      }
       const vh = window.innerHeight;
       for (const el of items) {
         const r = el.getBoundingClientRect();
@@ -38,6 +50,13 @@ export function useParallax() {
       }
     };
 
+    const onNarrowChange = () => {
+      if (narrowMq.matches) clearTransforms();
+      else apply();
+    };
+    if (narrowMq.addEventListener) narrowMq.addEventListener('change', onNarrowChange);
+    else narrowMq.addListener(onNarrowChange);
+
     const onScroll = () => {
       if (pending) return;
       pending = true;
@@ -52,6 +71,8 @@ export function useParallax() {
       cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
+      if (narrowMq.removeEventListener) narrowMq.removeEventListener('change', onNarrowChange);
+      else narrowMq.removeListener(onNarrowChange);
     };
   }, []);
 }
