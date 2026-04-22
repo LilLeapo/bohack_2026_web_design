@@ -4,6 +4,13 @@ const HOVER_SELECTOR = 'a, button, .magnet, .track, .prize, .sponsor, .faq-q';
 
 export function useCursor() {
   useEffect(() => {
+    const isCoarse =
+      typeof window !== 'undefined' &&
+      (window.matchMedia?.('(pointer: coarse)').matches ||
+        window.matchMedia?.('(hover: none)').matches ||
+        'ontouchstart' in window);
+    if (isCoarse) return undefined;
+
     const dot = document.createElement('div');
     const ring = document.createElement('div');
     const spot = document.createElement('div');

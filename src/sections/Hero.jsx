@@ -41,14 +41,60 @@ function useHeroScramble(ref, { delay = 120, duration = 1400 } = {}) {
 export default function Hero() {
   const canvasRef = useRef(null);
   const titleRef = useRef(null);
+  const heroRef = useRef(null);
 
   useParticles(canvasRef);
   const scrambleDone = useHeroScramble(titleRef);
 
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    let rafId = 0;
+    let tx = 50;
+    let ty = 35;
+    let cx = 50;
+    let cy = 35;
+
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width) * 100;
+      ty = ((e.clientY - r.top) / r.height) * 100;
+    };
+    const onLeave = () => {
+      tx = 50;
+      ty = 35;
+    };
+    const tick = () => {
+      cx += (tx - cx) * 0.12;
+      cy += (ty - cy) * 0.12;
+      el.style.setProperty('--hmx', cx.toFixed(2) + '%');
+      el.style.setProperty('--hmy', cy.toFixed(2) + '%');
+      rafId = requestAnimationFrame(tick);
+    };
+
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    rafId = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
   return (
-    <section className="hero">
+    <section className="hero" ref={heroRef}>
+      <div className="hero-aurora" aria-hidden="true">
+        <span className="blob blob-a" />
+        <span className="blob blob-b" />
+        <span className="blob blob-c" />
+      </div>
       <canvas ref={canvasRef} className="hero-canvas" />
       <div className="hero-grid pl" data-parallax="-0.25" />
+      <div className="hero-halo" aria-hidden="true" />
+      <div className="hero-spotlight" aria-hidden="true" />
+      <div className="hero-grain" aria-hidden="true" />
 
       <div className="hero-top-left pl" data-parallax="0.1">
         <div className="hero-b-label">
