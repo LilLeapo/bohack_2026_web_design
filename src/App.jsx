@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import Nav from './sections/Nav.jsx';
 import Hero from './sections/Hero.jsx';
 import Ticker from './sections/Ticker.jsx';
@@ -8,13 +10,21 @@ import Prizes from './sections/Prizes.jsx';
 import Sponsors from './sections/Sponsors.jsx';
 import FAQ from './sections/FAQ.jsx';
 import Footer from './sections/Footer.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import User from './pages/User.jsx';
+import Questionnaire from './pages/Questionnaire.jsx';
 
 import { useCursor } from './hooks/useCursor.js';
 import { useReveal } from './hooks/useReveal.js';
 import { useParallax } from './hooks/useParallax.js';
 import { useMagnet } from './hooks/useMagnet.js';
 
-export default function App() {
+function readRoute() {
+  return window.location.hash.replace(/^#\/?/, '').split('?')[0];
+}
+
+function Site() {
   useCursor();
   useReveal();
   useParallax();
@@ -66,4 +76,20 @@ export default function App() {
       <Footer />
     </>
   );
+}
+
+export default function App() {
+  const [route, setRoute] = useState(() => readRoute());
+
+  useEffect(() => {
+    const sync = () => setRoute(readRoute());
+    window.addEventListener('hashchange', sync);
+    return () => window.removeEventListener('hashchange', sync);
+  }, []);
+
+  if (route === 'login') return <Login />;
+  if (route === 'register' || route === 'apply') return <Register />;
+  if (route === 'user') return <User />;
+  if (route === 'questionnaire') return <Questionnaire />;
+  return <Site />;
 }

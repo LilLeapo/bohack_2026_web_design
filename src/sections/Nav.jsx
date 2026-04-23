@@ -53,9 +53,14 @@ export default function Nav() {
           ))}
         </div>
 
-        <a href="#apply" className="nav-cta magnet nav-cta-desktop">
-          报名 →
-        </a>
+        <div className="nav-actions">
+          <a href="#login" className="nav-login">
+            登录
+          </a>
+          <a href="#apply" className="nav-cta magnet nav-cta-desktop">
+            报名 →
+          </a>
+        </div>
 
         <button
           type="button"
@@ -87,13 +92,22 @@ export default function Nav() {
               </li>
             ))}
           </ul>
-          <a
-            href="#apply"
-            className="btn btn-primary nav-drawer-cta"
-            onClick={() => setOpen(false)}
-          >
-            立即报名 <span className="arrow">↗</span>
-          </a>
+          <div className="nav-drawer-ctas">
+            <a
+              href="#apply"
+              className="btn btn-primary nav-drawer-cta"
+              onClick={() => setOpen(false)}
+            >
+              立即报名 <span className="arrow">↗</span>
+            </a>
+            <a
+              href="#login"
+              className="nav-drawer-login"
+              onClick={() => setOpen(false)}
+            >
+              已有账号?登录 →
+            </a>
+          </div>
           <div className="nav-drawer-meta">
             <span>TIANJIN · 2026.05.28—31</span>
             <span>WIE 2026 OFFICIAL TRACK</span>
