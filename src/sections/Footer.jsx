@@ -66,6 +66,9 @@ export default function Footer() {
         <div className="footer-bottom">
           <span>© BOHACK COLLECTIVE 2026</span>
           <span>MADE IN TIANJIN · 津门出品,狂热所成。</span>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
+            津ICP备2025030902号-2
+          </a>
         </div>
       </div>
     </footer>
