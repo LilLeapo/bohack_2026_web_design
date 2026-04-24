@@ -2,112 +2,290 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 
+const QUESTIONNAIRE_TITLE =
+  '2026世界智能产业博览会·智能创新黑客松报名问卷';
+
+const INTRO_LINES = [
+  '欢迎报名参加本次智能创新黑客松大赛。',
+  '本问卷将用于参赛资格筛选，请认真填写。',
+  '所有信息仅用于本次活动使用，我们将严格保密。',
+];
+
+const SKILL_OPTIONS = [
+  { v: 'engineering', lbl: '工程', glyph: '{ }' },
+  { v: 'design', lbl: '设计', glyph: 'A◆' },
+  { v: 'hardware', lbl: '硬件', glyph: '⬢' },
+  { v: 'product', lbl: '产品', glyph: '△' },
+  { v: 'research', lbl: '研究', glyph: '∑' },
+  { v: 'creative', lbl: '创作 / 影像', glyph: '✦' },
+];
+
 const QUESTIONS = [
   {
+    kind: 'input',
+    section: '基础信息',
+    key: 'nickname',
+    q: '昵称',
+    hint: '用于报名沟通、微信群备注和现场识别。',
+    required: true,
+    placeholder: '例如：小波',
+    max: 40,
+  },
+  {
+    kind: 'input',
+    section: '基础信息',
+    key: 'realName',
+    q: '姓名',
+    hint: '请填写真实姓名，用于参赛资格确认。',
+    required: true,
+    placeholder: '例如：李家豪',
+    max: 40,
+  },
+  {
     kind: 'single',
-    section: '身份',
-    key: 'exp',
-    q: '你的黑客经验怎么样?',
-    hint: '没有对错答案 —— 每个级别我们都有相应赛道。',
+    section: '基础信息',
+    key: 'gender',
+    q: '性别',
+    hint: '仅用于活动统计和服务准备。',
+    required: true,
     options: [
-      { v: 'first', lbl: '第一次参加', sub: '从没黑过' },
-      { v: 'some', lbl: '有几次经验', sub: '1—3 次黑客松' },
-      { v: 'many', lbl: '常在圈里跑', sub: '4—10 次黑客松' },
-      { v: 'pro', lbl: '基本就是职业选手', sub: '10 次以上' },
+      { v: 'male', lbl: '男' },
+      { v: 'female', lbl: '女' },
+      { v: 'other', lbl: '其他' },
+      { v: 'prefer_not_to_say', lbl: '不便透露' },
     ],
   },
   {
-    kind: 'svg',
-    section: '角色',
-    key: 'role',
-    q: '你给团队带来什么?',
-    hint: '选最接近的一个。周末你依然可以同时戴多顶帽子。',
+    kind: 'single',
+    section: '基础信息',
+    key: 'ageGroup',
+    q: '年龄段',
+    hint: '请选择与你当前情况最接近的一项。',
+    required: true,
     options: [
-      { v: 'eng', lbl: '工程', glyph: '{ }' },
-      { v: 'des', lbl: '设计', glyph: 'A◆' },
-      { v: 'hw', lbl: '硬件', glyph: '⬢' },
-      { v: 'pm', lbl: '产品', glyph: '△' },
-      { v: 'res', lbl: '研究', glyph: '∑' },
-      { v: 'viz', lbl: '创作 / 影像', glyph: '✦' },
+      { v: 'under_18', lbl: '18 岁以下' },
+      { v: '18_22', lbl: '18-22 岁' },
+      { v: '23_26', lbl: '23-26 岁' },
+      { v: '27_35', lbl: '27-35 岁' },
+      { v: 'over_35', lbl: '36 岁及以上' },
     ],
   },
   {
-    kind: 'multi',
-    section: '兴趣',
-    key: 'tracks',
-    q: '你对哪些赛道感兴趣?',
-    hint: '可多选。我们会据此为你匹配导师和赛前资料。',
-    options: [
-      { v: 'ai', lbl: '环境智能', sub: 'Agents · 助理' },
-      { v: 'ci', lbl: '城市基建', sub: '交通 · 住房 · 投票' },
-      { v: 'hw', lbl: '硬件朋克', sub: '烙铁 · 胶带' },
-      { v: 'ct', lbl: '创作工具', sub: '音乐 · 文字 · 像素' },
-      { v: 'ce', lbl: '气候与地球', sub: '传感器 · 数据集' },
-      { v: 'wc', lbl: 'Wildcard', sub: '奇怪是一种褒义' },
-    ],
-  },
-  {
-    kind: 'slider',
-    section: '兴趣',
-    key: 'risk',
-    q: '0 到 100,你的项目应该有多"怪"?',
-    hint: '0 是"下周一上线";100 是"可能电到人的艺术装置"。',
-    min: 0,
+    kind: 'input',
+    section: '基础信息',
+    key: 'organization',
+    q: '学校/机构 + 专业',
+    hint: '例如：天津大学 / 计算机科学与技术。',
+    required: true,
+    placeholder: '学校或机构 / 专业或方向',
     max: 100,
-    step: 5,
-    default: 65,
   },
   {
-    kind: 'chips',
-    section: '工具',
-    key: 'tools',
-    q: '你真正喜欢用什么?',
-    hint: '可多选,也可以跳过。仅用于导师匹配,不做评判。',
-    options: [
-      'Python',
-      'TypeScript',
-      'Rust',
-      'Swift',
-      'C/C++',
-      'Go',
-      'Arduino',
-      'Raspberry Pi',
-      'Figma',
-      'Blender',
-      'TouchDesigner',
-      'Ableton',
-      'Pandas',
-      'PyTorch',
-      'Three.js',
-      'Unity',
-      '电缆与烙铁',
-      '纸和笔',
-    ],
+    kind: 'input',
+    section: '基础信息',
+    key: 'contact',
+    q: '电话/微信',
+    hint: '请填写至少一种可联系到你的方式。',
+    required: true,
+    placeholder: '手机号或微信号',
+    max: 32,
   },
   {
-    kind: 'single',
-    section: '组队',
-    key: 'team',
-    q: '组队情况如何?',
-    hint: '单飞的话,周五我们会在组队舞台给你配对。',
-    options: [
-      { v: 'solo', lbl: '单飞 · 帮我匹配', sub: '我们为你匹配互补的人选' },
-      { v: 'part', lbl: '已有部分队友', sub: '1—3 人,缺人' },
-      { v: 'full', lbl: '满编 4 人', sub: '一切就绪' },
-    ],
+    kind: 'input',
+    section: '基础信息',
+    key: 'email',
+    q: '邮箱',
+    hint: '请确保您的邮箱能收到消息，未来重要通知将通过邮箱和微信群发送。',
+    required: true,
+    type: 'email',
+    placeholder: 'you@example.com',
+    max: 100,
   },
   {
     kind: 'text',
-    section: '想法',
-    key: 'why',
-    q: '这个周末你想造什么?',
-    hint: '草图、半个想法、愤怒的吐槽都欢迎。至少 40 个字符,我们每一条都会读。',
-    min: 40,
+    section: '基础信息',
+    key: 'resume',
+    q: '个人简历',
+    hint: '可填写简历链接、作品集链接，或简单介绍你的经历。',
+    required: false,
+    placeholder: '简历链接、作品集、个人主页，或一段简短介绍。',
     max: 500,
+  },
+  {
+    kind: 'skillCards',
+    section: '技能信息',
+    key: 'skills',
+    extraKey: 'skillsOther',
+    q: '你擅长的技术或产品技能',
+    hint: '可多选。选出你能带进团队的主要能力，也可以补充具体技术栈。',
+    required: true,
+    options: SKILL_OPTIONS,
+    placeholder: '补充具体技术栈，例如 React、LLM Agent、Arduino、路演等。',
+    max: 240,
+  },
+  {
+    kind: 'input',
+    section: '技能信息',
+    key: 'keywords',
+    q: '用几个关键词形容自己',
+    hint: '可选。用逗号、空格或短句都可以。',
+    required: false,
+    placeholder: '例如：好奇、执行快、会讲故事',
+    max: 120,
+  },
+  {
+    kind: 'text',
+    section: '技能信息',
+    key: 'projects',
+    q: '请列出你过去的活动/项目/奖项',
+    hint: '不限类型。黑客松、课程项目、创业项目、论文、比赛、社团经历都可以。',
+    required: false,
+    placeholder: '项目名称 + 你的角色 + 结果，简单列出即可。',
+    max: 800,
+  },
+  {
+    kind: 'text',
+    section: '思考问题',
+    key: 'why',
+    q: '你为什么想要参加这次世界智能产业博览会·智能创新黑客松大赛？',
+    hint: '请写出你的真实动机：你期待遇见什么、验证什么、创造什么。',
+    required: true,
+    placeholder: '告诉我们你想来的原因。',
+    max: 800,
+  },
+  {
+    kind: 'text',
+    section: '思考问题',
+    key: 'nonstandard',
+    q: '你觉得自己身上最“不像标准答案”的地方是什么？',
+    hint: '我们想看到你的独特性，而不是模板答案。',
+    required: true,
+    placeholder: '一个特质、一段经历，或一个你长期在意的问题。',
+    max: 800,
+  },
+  {
+    kind: 'text',
+    section: '思考问题',
+    key: 'answerOrQuestion',
+    q: '你认为这个时代更缺“答案”，还是更缺“好问题”？为什么？',
+    hint: '可选。没有标准立场，关键是你的思考路径。',
+    required: false,
+    placeholder: '写下你的判断和理由。',
+    max: 800,
+  },
+  {
+    kind: 'text',
+    section: '思考问题',
+    key: 'postScarcityWork',
+    q: '在一个不再以“生存”为前提的社会中，人类仍然需要“做事”吗？如果需要，这些事的价值来自哪里？',
+    hint: '可选。欢迎理性、诗性、技术性或非常个人的回答。',
+    required: false,
+    placeholder: '写下你的想法。',
+    max: 1000,
+  },
+  {
+    kind: 'single',
+    section: '思考问题',
+    key: 'availability',
+    q: '你是否能完整参加黑客松主要赛程？',
+    hint: '主要赛程为线下黑客松、项目辅导与智博会线下展演相关安排。',
+    required: true,
+    options: [
+      { v: 'full', lbl: '可以完整参加' },
+      { v: 'mostly', lbl: '大部分时间可以参加' },
+      { v: 'partial', lbl: '只能参加部分环节' },
+      { v: 'unknown', lbl: '暂不确定' },
+    ],
   },
 ];
 
-const SECTIONS = ['身份', '角色', '兴趣', '工具', '组队', '想法'];
+const SECTIONS = ['基础信息', '技能信息', '思考问题'];
+
+const QUESTION_GROUPS = [
+  {
+    section: '基础信息',
+    title: '先确认你的基础信息',
+    subtitle: '这些信息用于参赛资格确认和现场沟通。',
+    keys: ['nickname', 'realName', 'gender', 'ageGroup'],
+  },
+  {
+    section: '基础信息',
+    title: '联系方式与背景',
+    subtitle: '后续重要通知将通过邮箱和微信群发送。',
+    keys: ['organization', 'contact', 'email', 'resume'],
+  },
+  {
+    section: '技能信息',
+    title: '技能、关键词与过往经历',
+    subtitle: '帮我们理解你能带给团队和赛场的能力。',
+    keys: ['skills', 'keywords', 'projects'],
+  },
+  {
+    section: '思考问题',
+    title: '参赛动机与独特性',
+    subtitle: '这部分会用于参赛资格筛选，请认真填写。',
+    keys: ['why', 'nonstandard'],
+  },
+  {
+    section: '思考问题',
+    title: '更多思考与赛程确认',
+    subtitle: '开放题可选，赛程参与情况必填。',
+    keys: ['answerOrQuestion', 'postScarcityWork', 'availability'],
+  },
+].map((group) => ({
+  ...group,
+  questions: group.keys.map((key) => QUESTIONS.find((q) => q.key === key)),
+}));
+
+const QUESTION_BY_KEY = Object.fromEntries(QUESTIONS.map((q) => [q.key, q]));
+
+function isEmail(value) {
+  return /.+@.+\..+/.test(value);
+}
+
+function valueText(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function optionLabel(question, value) {
+  return question.options.find((o) => o.v === value)?.lbl || '';
+}
+
+function fieldMessage(question, value) {
+  const text = valueText(value);
+  if (question.kind === 'skillCards') return '可多选';
+  if (!question.required && !text) return '可选';
+  if (question.type === 'email' && !isEmail(text)) return '请输入有效邮箱';
+  if (question.required && text.length < (question.min || 1)) return '必填';
+  return '看起来不错。';
+}
+
+function isQuestionValid(question, answers) {
+  const value = answers[question.key];
+  if (question.kind === 'skillCards') {
+    return (
+      (Array.isArray(value) && value.length > 0) ||
+      valueText(answers[question.extraKey]).length > 0
+    );
+  }
+  if (!question.required) {
+    if (question.type === 'email' && valueText(value)) {
+      return isEmail(valueText(value));
+    }
+    return true;
+  }
+  if (question.kind === 'single') return value !== undefined;
+  if (question.type === 'email') return isEmail(valueText(value));
+  return valueText(value).length >= (question.min || 1);
+}
+
+function formatSkillAnswer(answers) {
+  const selected = (answers.skills || [])
+    .map((value) => SKILL_OPTIONS.find((option) => option.v === value)?.lbl)
+    .filter(Boolean);
+  const extra = valueText(answers.skillsOther);
+  return [...selected, extra].filter(Boolean).join(' · ');
+}
 
 function Ring({ pct }) {
   const C = 2 * Math.PI * 28;
@@ -142,11 +320,7 @@ export default function Questionnaire() {
   useMagnet();
 
   const [i, setI] = useState(0);
-  const [ans, setAns] = useState({
-    tracks: ['ai'],
-    tools: ['Python', 'Figma'],
-    risk: 65,
-  });
+  const [ans, setAns] = useState({});
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -154,20 +328,14 @@ export default function Questionnaire() {
     return () => document.body.classList.remove('q-body');
   }, []);
 
-  const q = QUESTIONS[i];
-  const total = QUESTIONS.length;
+  const page = QUESTION_GROUPS[i];
+  const total = QUESTION_GROUPS.length;
   const pct = done ? 1 : i / total;
 
   const canNext = useCallback(() => {
-    if (!q) return true;
-    const v = ans[q.key];
-    if (q.kind === 'multi') return Array.isArray(v) && v.length > 0;
-    if (q.kind === 'chips') return true;
-    if (q.kind === 'slider') return true;
-    if (q.kind === 'text')
-      return typeof v === 'string' && v.length >= (q.min || 1);
-    return v !== undefined;
-  }, [q, ans]);
+    if (!page) return true;
+    return page.questions.every((question) => isQuestionValid(question, ans));
+  }, [page, ans]);
 
   const next = useCallback(() => {
     if (i >= total - 1) setDone(true);
@@ -181,39 +349,32 @@ export default function Questionnaire() {
     } else if (i > 0) setI(i - 1);
   }, [done, i, total]);
 
-  const skip = () => {
-    if (i >= total - 1) setDone(true);
-    else setI(i + 1);
-  };
-
   const up = (k, v) => setAns((a) => ({ ...a, [k]: v }));
-  const toggleMulti = (k, v) =>
-    setAns((a) => ({
-      ...a,
-      [k]: (a[k] || []).includes(v)
-        ? a[k].filter((x) => x !== v)
-        : [...(a[k] || []), v],
-    }));
+  const toggleSkill = (value) =>
+    setAns((a) => {
+      const current = Array.isArray(a.skills) ? a.skills : [];
+      return {
+        ...a,
+        skills: current.includes(value)
+          ? current.filter((item) => item !== value)
+          : [...current, value],
+      };
+    });
 
   useEffect(() => {
     const onKey = (e) => {
       if (done) return;
-      if (e.key === 'Enter' && canNext()) next();
+      const tag = e.target?.tagName;
+      if (e.key === 'Enter' && tag !== 'TEXTAREA' && canNext()) next();
       if (e.key === 'Backspace' && e.metaKey) back();
-      if (i < total && q) {
-        if ((q.kind === 'single' || q.kind === 'svg') && /^[1-9]$/.test(e.key)) {
-          const n = parseInt(e.key, 10) - 1;
-          if (q.options[n]) setAns((a) => ({ ...a, [q.key]: q.options[n].v }));
-        }
-      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [done, canNext, next, back, i, total, q]);
+  }, [done, canNext, next, back]);
 
   const sectionStatus = (name) => {
-    const firstIdx = QUESTIONS.findIndex((x) => x.section === name);
-    const lastIdx = QUESTIONS.map((x) => x.section).lastIndexOf(name);
+    const firstIdx = QUESTION_GROUPS.findIndex((x) => x.section === name);
+    const lastIdx = QUESTION_GROUPS.map((x) => x.section).lastIndexOf(name);
     if (done) return 'done';
     if (i > lastIdx) return 'done';
     if (i >= firstIdx && i <= lastIdx) return 'cur';
@@ -221,6 +382,15 @@ export default function Questionnaire() {
   };
 
   const today = useMemo(() => new Date().toLocaleDateString('zh-CN'), []);
+
+  const summaryItems = [
+    ['昵称', ans.nickname],
+    ['姓名', ans.realName],
+    ['学校/机构', ans.organization],
+    ['联系', ans.contact],
+    ['技能', formatSkillAnswer(ans)],
+    ['赛程', optionLabel(QUESTION_BY_KEY.availability, ans.availability)],
+  ];
 
   return (
     <div className="q-shell">
@@ -236,15 +406,22 @@ export default function Questionnaire() {
           </div>
           <div style={{ marginTop: 36 }}>
             <div className="q-step-label" style={{ opacity: 0.6 }}>
-              Questionnaire
+              Registration Questionnaire
             </div>
             <div className="q-title" style={{ marginTop: 10 }}>
-              告诉我们
+              报名
               <br />
-              <em>你是谁。</em>
+              <em>问卷。</em>
             </div>
             <p className="q-sub">
-              七个小问题,帮我们把你和合适的导师、赛道与伙伴匹配起来。约 3 分钟。
+              {QUESTIONNAIRE_TITLE}
+              <br />
+              {INTRO_LINES.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </p>
           </div>
           <div className="progress-ring">
@@ -275,7 +452,7 @@ export default function Questionnaire() {
           </div>
         </div>
         <div className="q-side-foot">
-          <div>Autosaved · {today}</div>
+          <div>Local draft · {today}</div>
           <div style={{ marginTop: 6 }}>
             ← 返回
             <Link
@@ -296,174 +473,148 @@ export default function Questionnaire() {
         <div className="q-top">
           <Link to="/user">← 控制台</Link>
           <span>
-            Questionnaire · {done ? '已完成' : `Q${i + 1} / ${total}`}
+            Questionnaire · {done ? '已完成' : `Page ${i + 1} / ${total}`}
           </span>
         </div>
 
-        {!done && q && (
+        {!done && page && (
           <div className="q-card">
             <div className="q-step-label">
-              {q.section} · 第 {i + 1} 题
+              {page.section} · 第 {i + 1} 页 ·{' '}
+              {page.questions.filter((question) => question.required).length} 项必填
             </div>
-            <h1 className="q-question">{q.q}</h1>
-            {q.hint && <p className="q-hint">{q.hint}</p>}
+            <h1 className="q-question">{page.title}</h1>
+            <p className="q-hint">{page.subtitle}</p>
 
-            {q.kind === 'single' && (
-              <div className="q-options">
-                {q.options.map((o, n) => (
-                  <label
-                    key={o.v}
-                    className={'q-opt' + (ans[q.key] === o.v ? ' on' : '')}
-                  >
-                    <span className="key">{n + 1}</span>
-                    <span>
-                      <span className="lbl" style={{ display: 'block' }}>
-                        {o.lbl}
-                      </span>
-                      {o.sub && <span className="sub">{o.sub}</span>}
-                    </span>
-                    <span className="mk" />
-                    <input
-                      type="radio"
-                      checked={ans[q.key] === o.v}
-                      onChange={() => up(q.key, o.v)}
-                    />
-                  </label>
-                ))}
-              </div>
-            )}
-
-            {q.kind === 'multi' && (
-              <div className="q-options">
-                {q.options.map((o, n) => {
-                  const arr = ans[q.key] || [];
-                  const on = arr.includes(o.v);
-                  return (
-                    <label
-                      key={o.v}
-                      className={'q-opt multi' + (on ? ' on' : '')}
-                    >
-                      <span className="key">{n + 1}</span>
-                      <span>
-                        <span className="lbl" style={{ display: 'block' }}>
-                          {o.lbl}
-                        </span>
-                        {o.sub && <span className="sub">{o.sub}</span>}
-                      </span>
-                      <span className="mk" />
-                      <input
-                        type="checkbox"
-                        checked={on}
-                        onChange={() => toggleMulti(q.key, o.v)}
-                      />
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-
-            {q.kind === 'svg' && (
-              <div className="q-svg-grid">
-                {q.options.map((o, n) => (
-                  <button
-                    type="button"
-                    key={o.v}
-                    className={'q-svg' + (ans[q.key] === o.v ? ' on' : '')}
-                    onClick={() => up(q.key, o.v)}
-                  >
-                    <div className="glyph">{o.glyph}</div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span className="n">{o.lbl}</span>
-                      <span className="n" style={{ opacity: 0.5 }}>
-                        {n + 1}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {q.kind === 'slider' &&
-              (() => {
-                const v = ans[q.key] ?? q.default ?? 50;
-                const sliderPct = ((v - q.min) / (q.max - q.min)) * 100;
-                return (
-                  <div className="q-slider">
-                    <div className="q-slider-val">
-                      {v}
-                      <span
-                        style={{
-                          fontSize: 24,
-                          opacity: 0.4,
-                          marginLeft: 6,
-                        }}
-                      >
-                        / {q.max}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={q.min}
-                      max={q.max}
-                      step={q.step}
-                      value={v}
-                      style={{ '--p': sliderPct + '%' }}
-                      onChange={(e) => up(q.key, parseInt(e.target.value, 10))}
-                    />
-                    <div className="q-slider-row">
-                      <span>下周一就能上线</span>
-                      <span>可能会电到人</span>
-                    </div>
+            <div className="q-field-stack">
+              {page.questions.map((question) => (
+                <section className="q-field-block" key={question.key}>
+                  <div className="q-field-head">
+                    <h2>
+                      {question.q}
+                      <span>{question.required ? '必填' : '可选'}</span>
+                    </h2>
+                    {question.hint && <p>{question.hint}</p>}
                   </div>
-                );
-              })()}
 
-            {q.kind === 'chips' && (
-              <div className="q-chips">
-                {q.options.map((o) => {
-                  const on = (ans[q.key] || []).includes(o);
-                  return (
-                    <button
-                      type="button"
-                      key={o}
-                      className={'q-chip' + (on ? ' on' : '')}
-                      onClick={() => toggleMulti(q.key, o)}
-                    >
-                      {o}
-                      <span className="x">{on ? '✓' : '+'}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+                  {question.kind === 'single' && (
+                    <div className="q-options">
+                      {question.options.map((o, n) => (
+                        <label
+                          key={o.v}
+                          className={
+                            'q-opt' +
+                            (ans[question.key] === o.v ? ' on' : '')
+                          }
+                        >
+                          <span className="key">{n + 1}</span>
+                          <span>
+                            <span className="lbl" style={{ display: 'block' }}>
+                              {o.lbl}
+                            </span>
+                            {o.sub && <span className="sub">{o.sub}</span>}
+                          </span>
+                          <span className="mk" />
+                          <input
+                            type="radio"
+                            checked={ans[question.key] === o.v}
+                            onChange={() => up(question.key, o.v)}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  )}
 
-            {q.kind === 'text' && (
-              <div className="q-text">
-                <textarea
-                  rows={6}
-                  value={ans[q.key] || ''}
-                  onChange={(e) => up(q.key, e.target.value)}
-                  placeholder="一句话、一段话,或者一串动词 —— 都可以。"
-                  maxLength={q.max}
-                />
-                <div className="q-meta">
-                  <span>
-                    {(ans[q.key] || '').length < (q.min || 0)
-                      ? `还差 ${(q.min || 0) - (ans[q.key] || '').length} 字`
-                      : '看起来不错。'}
-                  </span>
-                  <span>
-                    {(ans[q.key] || '').length} / {q.max}
-                  </span>
-                </div>
-              </div>
-            )}
+                  {question.kind === 'input' && (
+                    <div className="q-text q-input">
+                      <input
+                        type={question.type || 'text'}
+                        value={ans[question.key] || ''}
+                        onChange={(e) => up(question.key, e.target.value)}
+                        placeholder={question.placeholder}
+                        maxLength={question.max}
+                      />
+                      <div className="q-meta">
+                        <span>{fieldMessage(question, ans[question.key])}</span>
+                        {question.max && (
+                          <span>
+                            {(ans[question.key] || '').length} / {question.max}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {question.kind === 'skillCards' && (
+                    <>
+                      <div className="q-svg-grid q-skill-grid">
+                        {question.options.map((option, n) => {
+                          const selected = (ans[question.key] || []).includes(
+                            option.v
+                          );
+                          return (
+                            <button
+                              type="button"
+                              key={option.v}
+                              className={'q-svg' + (selected ? ' on' : '')}
+                              onClick={() => toggleSkill(option.v)}
+                            >
+                              <div className="glyph">{option.glyph}</div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <span className="n">{option.lbl}</span>
+                                <span className="n" style={{ opacity: 0.5 }}>
+                                  {n + 1}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div className="q-text q-input q-skill-extra">
+                        <input
+                          value={ans[question.extraKey] || ''}
+                          onChange={(e) => up(question.extraKey, e.target.value)}
+                          placeholder={question.placeholder}
+                          maxLength={question.max}
+                        />
+                        <div className="q-meta">
+                          <span>{fieldMessage(question, ans[question.key])}</span>
+                          <span>
+                            {(ans[question.extraKey] || '').length} / {question.max}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {question.kind === 'text' && (
+                    <div className="q-text">
+                      <textarea
+                        rows={6}
+                        value={ans[question.key] || ''}
+                        onChange={(e) => up(question.key, e.target.value)}
+                        placeholder={question.placeholder}
+                        maxLength={question.max}
+                      />
+                      <div className="q-meta">
+                        <span>{fieldMessage(question, ans[question.key])}</span>
+                        {question.max && (
+                          <span>
+                            {(ans[question.key] || '').length} / {question.max}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              ))}
+            </div>
 
             <div className="q-actions">
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -476,18 +627,6 @@ export default function Questionnaire() {
                 >
                   ← 返回
                 </button>
-                {q.kind !== 'single' &&
-                  q.kind !== 'svg' &&
-                  q.kind !== 'multi' &&
-                  q.kind !== 'text' && (
-                    <button
-                      type="button"
-                      className="auth-ghost magnet"
-                      onClick={skip}
-                    >
-                      跳过
-                    </button>
-                  )}
               </div>
               <div
                 style={{ display: 'flex', alignItems: 'center', gap: 20 }}
@@ -502,7 +641,7 @@ export default function Questionnaire() {
                   disabled={!canNext()}
                   style={{ opacity: canNext() ? 1 : 0.5 }}
                 >
-                  {i === total - 1 ? '提交' : '下一题'}{' '}
+                  {i === total - 1 ? '提交' : '下一页'}{' '}
                   <span className="arrow">↗</span>
                 </button>
               </div>
@@ -518,58 +657,18 @@ export default function Questionnaire() {
             <h1 style={{ marginTop: 14 }}>
               谢谢。
               <br />
-              <em>机库见。</em>
+              <em>我们会认真阅读。</em>
             </h1>
             <p>
-              我们会在 5 月 22 日线下黑客松启动前,用你的回答为你匹配导师和预习资料。你可以随时从控制台修改。
+              后续重要通知将通过邮箱和微信群发送。请保持联系方式可用，并留意活动审核与赛程安排。
             </p>
             <div className="q-summary">
-              <div className="s">
-                <div className="k">经验</div>
-                <div className="v">
-                  {QUESTIONS[0].options.find((o) => o.v === ans.exp)?.lbl ||
-                    '—'}
+              {summaryItems.map(([label, value]) => (
+                <div className="s" key={label}>
+                  <div className="k">{label}</div>
+                  <div className="v">{valueText(value) || '—'}</div>
                 </div>
-              </div>
-              <div className="s">
-                <div className="k">角色</div>
-                <div className="v">
-                  {QUESTIONS[1].options.find((o) => o.v === ans.role)?.lbl ||
-                    '—'}
-                </div>
-              </div>
-              <div className="s">
-                <div className="k">赛道</div>
-                <div className="v">
-                  {(ans.tracks || [])
-                    .map(
-                      (v) =>
-                        QUESTIONS[2].options.find((o) => o.v === v)?.lbl
-                    )
-                    .filter(Boolean)
-                    .join(' · ') || '—'}
-                </div>
-              </div>
-              <div className="s">
-                <div className="k">怪度</div>
-                <div className="v">{ans.risk ?? 65} / 100</div>
-              </div>
-              <div className="s">
-                <div className="k">工具</div>
-                <div className="v">
-                  {(ans.tools || []).slice(0, 4).join(' · ') || '—'}
-                  {(ans.tools || []).length > 4
-                    ? ` + ${(ans.tools || []).length - 4}`
-                    : ''}
-                </div>
-              </div>
-              <div className="s">
-                <div className="k">组队</div>
-                <div className="v">
-                  {QUESTIONS[5].options.find((o) => o.v === ans.team)?.lbl ||
-                    '—'}
-                </div>
-              </div>
+              ))}
             </div>
             <div
               style={{

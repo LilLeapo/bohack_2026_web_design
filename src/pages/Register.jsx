@@ -4,21 +4,34 @@ import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 import { api, setAuthSession, userFacingError } from '../lib/api.js';
 
-const TRACKS = [
-  'Ambient AI',
-  '城市基建',
-  '硬件朋克',
-  '创作工具',
-  '气候与地球',
-  'Wildcard',
+const QUESTIONNAIRE_TITLE =
+  '2026世界智能产业博览会·智能创新黑客松报名问卷';
+
+const INTRO_LINES = [
+  '欢迎报名参加本次智能创新黑客松大赛。',
+  '本问卷将用于参赛资格筛选，请认真填写。',
+  '所有信息仅用于本次活动使用，我们将严格保密。',
 ];
-const LEVELS = ['首次参加', '1—3 次', '4—10 次', '10 次以上'];
-const ROLES = ['工程', '设计', '硬件', '产品', '研究'];
-const TEAMS = ['单飞(帮我组队)', '已有部分队友', '满编 4 人'];
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
-const GRADS = ['2025', '2026', '2027', '2028', '2029', '更晚'];
-const STEP_TITLES = ['先聊聊你。', '你是怎样的黑客?', '最后一步。'];
-const STEP_META = ['个人信息', '黑客画像', '动机与同意'];
+
+const SKILL_OPTIONS = [
+  { v: 'engineering', lbl: '工程', glyph: '{ }' },
+  { v: 'design', lbl: '设计', glyph: 'A◆' },
+  { v: 'hardware', lbl: '硬件', glyph: '⬢' },
+  { v: 'product', lbl: '产品', glyph: '△' },
+  { v: 'research', lbl: '研究', glyph: '∑' },
+  { v: 'creative', lbl: '创作 / 影像', glyph: '✦' },
+];
+
+const GENDERS = ['男', '女', '其他', '不便透露'];
+const AGE_GROUPS = ['18 岁以下', '18-22 岁', '23-26 岁', '27-35 岁', '36 岁及以上'];
+const ATTENDANCE_OPTIONS = [
+  '可以完整参加',
+  '大部分时间可以参加',
+  '只能参加部分环节',
+  '暂不确定',
+];
+const STEP_TITLES = ['基础信息。', '技能信息。', '思考问题。'];
+const STEP_META = ['基础信息', '技能信息', '思考问题'];
 
 function normalizeEmail(value) {
   return value.trim().toLowerCase();
@@ -26,7 +39,7 @@ function normalizeEmail(value) {
 
 function buildUsername(data) {
   const emailName = normalizeEmail(data.email).split('@')[0];
-  const fallback = `${data.first}${data.last}`.trim();
+  const fallback = data.nickname.trim() || data.realName.trim();
   const base = (emailName || fallback || 'bohack')
     .toLowerCase()
     .replace(/[^a-z0-9_]+/g, '_')
@@ -37,8 +50,14 @@ function buildUsername(data) {
 }
 
 function realNameFrom(data) {
-  return [data.last.trim(), data.first.trim()].filter(Boolean).join('') ||
-    data.email.trim();
+  return data.realName.trim() || data.nickname.trim() || data.email.trim();
+}
+
+function formatSkills(values, extra) {
+  const selected = values
+    .map((value) => SKILL_OPTIONS.find((option) => option.v === value)?.lbl)
+    .filter(Boolean);
+  return [...selected, extra.trim()].filter(Boolean).join(' · ');
 }
 
 function Poster() {
@@ -46,9 +65,9 @@ function Poster() {
   useParticles(canvasRef);
 
   const stats = [
-    { n: '~3m', t: '填写时长' },
-    { n: '62%', t: '录取率' },
-    { n: '6', t: '赛道' },
+    { n: '16', t: '问卷题目' },
+    { n: '3', t: '信息模块' },
+    { n: '100%', t: '仅活动使用' },
   ];
 
   return (
@@ -68,10 +87,10 @@ function Poster() {
       <div className="auth-poster-body">
         <div className="auth-poster-eyebrow">◉ 报名通道开放 · 5 月 22 日线下开赛</div>
         <h1 className="auth-poster-title">
-          来<span className="accent"> 搞点事情。</span>
+          报名<span className="accent"> 问卷。</span>
         </h1>
         <p className="auth-poster-lede">
-          三分钟的纸面功夫,换来 42 小时的折腾时间。每一份申请我们都会亲自阅读——没有关键字过滤。
+          {INTRO_LINES.join(' ')}
         </p>
         <div className="auth-poster-stats">
           {stats.map((s) => (
@@ -85,7 +104,7 @@ function Poster() {
 
       <div className="auth-poster-footer">
         <span>天津 · 滨海 / 2026.05.22—31</span>
-        <span>Bohack 2026</span>
+        <span>WIE 2026</span>
       </div>
     </aside>
   );
@@ -96,22 +115,25 @@ export default function Register() {
 
   const [step, setStep] = useState(0);
   const [data, setData] = useState({
-    first: '',
-    last: '',
+    nickname: '',
+    realName: '',
+    gender: '',
+    ageGroup: '',
+    organization: '',
+    contact: '',
     email: '',
-    phone: '',
-    school: '',
-    grad: '2027',
     password: '',
     confirm: '',
-    level: LEVELS[0],
-    role: ROLES[0],
-    tracks: [TRACKS[0]],
-    team: TEAMS[0],
-    dietary: '',
-    tshirt: 'M',
-    pitch: '',
-    github: '',
+    resume: '',
+    skills: [],
+    skillsOther: '',
+    keywords: '',
+    projects: '',
+    why: '',
+    nonstandard: '',
+    answerOrQuestion: '',
+    postScarcityWork: '',
+    availability: '',
     agree: false,
   });
   const [errs, setErrs] = useState({});
@@ -125,31 +147,38 @@ export default function Register() {
   }, []);
 
   const up = (k, v) => setData((d) => ({ ...d, [k]: v }));
-  const toggleTrack = (t) =>
+  const toggleSkill = (value) =>
     setData((d) => ({
       ...d,
-      tracks: d.tracks.includes(t)
-        ? d.tracks.filter((x) => x !== t)
-        : [...d.tracks, t],
+      skills: d.skills.includes(value)
+        ? d.skills.filter((item) => item !== value)
+        : [...d.skills, value],
     }));
 
   const validate = () => {
     const e = {};
     if (step === 0) {
       const email = normalizeEmail(data.email);
-      const phone = data.phone.trim();
-      if (!data.first.trim()) e.first = '请填写';
-      if (!data.last.trim()) e.last = '请填写';
+      const contact = data.contact.trim();
+      if (!data.nickname.trim()) e.nickname = '请填写昵称';
+      if (!data.realName.trim()) e.realName = '请填写姓名';
+      if (!data.gender) e.gender = '请选择性别';
+      if (!data.ageGroup) e.ageGroup = '请选择年龄段';
+      if (!data.organization.trim()) e.organization = '请填写学校/机构和专业';
+      if (!contact) e.contact = '请填写电话或微信';
+      if (contact.length > 32) e.contact = '联系方式过长';
       if (!email || !/.+@.+\..+/.test(email)) e.email = '请输入有效邮箱';
-      if (!phone) e.phone = '请填写手机号';
-      if (phone.length > 32) e.phone = '手机号过长';
-      if (!data.school.trim()) e.school = '请填写';
       if (data.password.length < 8) e.password = '至少 8 位';
       if (data.password !== data.confirm) e.confirm = '两次密码不一致';
     }
+    if (step === 1) {
+      if (!data.skills.length && !data.skillsOther.trim())
+        e.skills = '请选择或补充你擅长的技术或产品技能';
+    }
     if (step === 2) {
-      if (!data.pitch || data.pitch.trim().length < 40)
-        e.pitch = '至少 40 个字符,我们会认真读';
+      if (!data.why.trim()) e.why = '请填写参赛原因';
+      if (!data.nonstandard.trim()) e.nonstandard = '请填写你的非标准答案';
+      if (!data.availability) e.availability = '请选择赛程参与情况';
       if (!data.agree) e.agree = '需要勾选同意才能提交';
     }
     setErrs(e);
@@ -160,10 +189,12 @@ export default function Register() {
     ev?.preventDefault();
     if (validate()) setStep((s) => Math.min(2, s + 1));
   };
+
   const back = () => {
     setErrs({});
     setStep((s) => Math.max(0, s - 1));
   };
+
   const submit = async (ev) => {
     ev?.preventDefault();
     if (!validate()) return;
@@ -177,30 +208,56 @@ export default function Register() {
       });
       setAuthSession(auth);
 
+      const skillsText = formatSkills(data.skills, data.skillsOther);
+      const questionnaire = {
+        title: QUESTIONNAIRE_TITLE,
+        nickname: data.nickname.trim(),
+        realName: data.realName.trim(),
+        gender: data.gender,
+        ageGroup: data.ageGroup,
+        organization: data.organization.trim(),
+        contact: data.contact.trim(),
+        email: normalizeEmail(data.email),
+        resume: data.resume.trim(),
+        skills: skillsText,
+        skillTypes: data.skills,
+        skillsOther: data.skillsOther.trim(),
+        keywords: data.keywords.trim(),
+        projects: data.projects.trim(),
+        why: data.why.trim(),
+        nonstandard: data.nonstandard.trim(),
+        answerOrQuestion: data.answerOrQuestion.trim(),
+        postScarcityWork: data.postScarcityWork.trim(),
+        availability: data.availability,
+      };
+
       const registration = await api.createRegistration({
         realName: realNameFrom(data),
-        phone: data.phone.trim(),
-        school: data.school.trim(),
-        bio: data.pitch.trim(),
-        teamName: data.team,
-        rolePreference: data.role,
+        phone: data.contact.trim(),
+        school: data.organization.trim(),
+        bio: data.why.trim(),
+        teamName: data.availability,
+        rolePreference: skillsText.slice(0, 80),
         source: 'bohack-frontend',
-        note: data.pitch.trim(),
+        note: data.why.trim(),
         extra: {
-          firstName: data.first.trim(),
-          lastName: data.last.trim(),
-          graduationYear: data.grad,
-          experienceLevel: data.level,
-          tracks: data.tracks,
-          teamStatus: data.team,
-          dietary: data.dietary.trim(),
-          tshirt: data.tshirt,
-          portfolio: data.github.trim(),
+          questionnaire,
+          nickname: questionnaire.nickname,
+          gender: questionnaire.gender,
+          ageGroup: questionnaire.ageGroup,
+          resume: questionnaire.resume,
+          skills: questionnaire.skills,
+          keywords: questionnaire.keywords,
+          projects: questionnaire.projects,
+          nonstandard: questionnaire.nonstandard,
+          answerOrQuestion: questionnaire.answerOrQuestion,
+          postScarcityWork: questionnaire.postScarcityWork,
+          availability: questionnaire.availability,
         },
       });
 
       api.updateProfile({
-        phone: data.phone.trim(),
+        phone: data.contact.trim(),
       }).catch(() => {});
 
       setRegistrationResult(registration);
@@ -218,24 +275,24 @@ export default function Register() {
   if (done) {
     const appId = registrationResult?.id
       ? `BH26-${String(registrationResult.id).padStart(4, '0')}`
-      : `BH26-${(data.first || 'XX').slice(0, 2).toUpperCase()}`;
+      : `BH26-${(data.nickname || 'XX').slice(0, 2).toUpperCase()}`;
     return (
       <div className="auth-shell">
         <Poster />
         <main className="auth-panel">
           <div className="auth-topbar">
             <Link to="/" className="auth-back">← 返回主页</Link>
-            <span className="auth-topbar-meta">/ 申请已收到</span>
+            <span className="auth-topbar-meta">/ 问卷已收到</span>
           </div>
 
           <div className="auth-form">
             <div className="auth-eyebrow">Application Received</div>
             <h1 className="auth-h1">
-              机库见,<br />
-              {data.first || '黑客'}。
+              谢谢,<br />
+              {data.nickname || data.realName || '参赛者'}。
             </h1>
             <p className="auth-sub">
-              我们已向 <b>{data.email}</b> 发送了确认邮件。审核按周进行,十天之内你会收到我们的消息。
+              我们已向 <b>{data.email}</b> 发送确认信息。未来重要通知将通过邮箱和微信群发送，请保持联系方式可用。
             </p>
 
             <div className="auth-success-id">
@@ -292,95 +349,143 @@ export default function Register() {
             Step {step + 1} / 3 · {STEP_META[step]}
           </div>
 
-          <div className="auth-eyebrow">申请加入 Bohack</div>
+          <div className="auth-eyebrow">{QUESTIONNAIRE_TITLE}</div>
           <h1 className="auth-h1">{STEP_TITLES[step]}</h1>
+          {step === 0 && (
+            <p className="auth-sub auth-intro">
+              {INTRO_LINES.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </p>
+          )}
 
           {step === 0 && (
             <>
               <div className="auth-field-row">
-                <div className={'auth-field' + (errs.first ? ' is-error' : '')}>
+                <div className={'auth-field' + (errs.nickname ? ' is-error' : '')}>
                   <label>
-                    名 <span className="hint">必填</span>
+                    昵称 <span className="hint">必填</span>
                   </label>
                   <input
-                    value={data.first}
-                    onChange={(e) => up('first', e.target.value)}
-                    placeholder="家豪"
-                    autoComplete="given-name"
+                    value={data.nickname}
+                    onChange={(e) => up('nickname', e.target.value)}
+                    placeholder="小波"
+                    maxLength={40}
                   />
-                  {errs.first && <div className="auth-err">{errs.first}</div>}
+                  {errs.nickname && <div className="auth-err">{errs.nickname}</div>}
                 </div>
-                <div className={'auth-field' + (errs.last ? ' is-error' : '')}>
+                <div className={'auth-field' + (errs.realName ? ' is-error' : '')}>
                   <label>
-                    姓 <span className="hint">必填</span>
+                    姓名 <span className="hint">必填</span>
                   </label>
                   <input
-                    value={data.last}
-                    onChange={(e) => up('last', e.target.value)}
-                    placeholder="李"
-                    autoComplete="family-name"
+                    value={data.realName}
+                    onChange={(e) => up('realName', e.target.value)}
+                    placeholder="李家豪"
+                    autoComplete="name"
+                    maxLength={40}
                   />
-                  {errs.last && <div className="auth-err">{errs.last}</div>}
+                  {errs.realName && <div className="auth-err">{errs.realName}</div>}
                 </div>
-              </div>
-
-              <div className={'auth-field' + (errs.email ? ' is-error' : '')}>
-                <label>
-                  校园邮箱 <span className="hint">推荐 .edu.cn</span>
-                </label>
-                <input
-                  type="email"
-                  value={data.email}
-                  onChange={(e) => up('email', e.target.value)}
-                  placeholder="you@university.edu.cn"
-                  autoComplete="email"
-                />
-                {errs.email && <div className="auth-err">{errs.email}</div>}
-              </div>
-
-              <div className={'auth-field' + (errs.phone ? ' is-error' : '')}>
-                <label>
-                  手机号 <span className="hint">用于报名联系</span>
-                </label>
-                <input
-                  type="tel"
-                  value={data.phone}
-                  onChange={(e) => up('phone', e.target.value)}
-                  placeholder="138 0000 0000"
-                  autoComplete="tel"
-                />
-                {errs.phone && <div className="auth-err">{errs.phone}</div>}
               </div>
 
               <div className="auth-field-row">
-                <div className={'auth-field' + (errs.school ? ' is-error' : '')}>
+                <div className={'auth-field' + (errs.gender ? ' is-error' : '')}>
                   <label>
-                    就读学校 <span className="hint">必填</span>
+                    性别 <span className="hint">必填</span>
                   </label>
-                  <input
-                    value={data.school}
-                    onChange={(e) => up('school', e.target.value)}
-                    placeholder="天津大学"
-                  />
-                  {errs.school && <div className="auth-err">{errs.school}</div>}
+                  <div className="auth-chip-group">
+                    {GENDERS.map((gender) => (
+                      <label
+                        key={gender}
+                        className={
+                          'auth-chip' +
+                          (data.gender === gender ? ' is-on' : '')
+                        }
+                      >
+                        <span className="mk" />
+                        <span>{gender}</span>
+                        <input
+                          type="radio"
+                          name="gender"
+                          checked={data.gender === gender}
+                          onChange={() => up('gender', gender)}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                  {errs.gender && <div className="auth-err">{errs.gender}</div>}
                 </div>
-                <div className="auth-field">
-                  <label>毕业年份</label>
+                <div className={'auth-field' + (errs.ageGroup ? ' is-error' : '')}>
+                  <label>
+                    年龄段 <span className="hint">必填</span>
+                  </label>
                   <select
-                    value={data.grad}
-                    onChange={(e) => up('grad', e.target.value)}
+                    value={data.ageGroup}
+                    onChange={(e) => up('ageGroup', e.target.value)}
                   >
-                    {GRADS.map((y) => (
-                      <option key={y}>{y}</option>
+                    <option value="">请选择年龄段</option>
+                    {AGE_GROUPS.map((age) => (
+                      <option key={age}>{age}</option>
                     ))}
                   </select>
+                  {errs.ageGroup && <div className="auth-err">{errs.ageGroup}</div>}
+                </div>
+              </div>
+
+              <div className={'auth-field' + (errs.organization ? ' is-error' : '')}>
+                <label>
+                  学校/机构 + 专业 <span className="hint">必填</span>
+                </label>
+                <input
+                  value={data.organization}
+                  onChange={(e) => up('organization', e.target.value)}
+                  placeholder="天津大学 / 计算机科学与技术"
+                  maxLength={100}
+                />
+                {errs.organization && <div className="auth-err">{errs.organization}</div>}
+              </div>
+
+              <div className="auth-field-row">
+                <div className={'auth-field' + (errs.contact ? ' is-error' : '')}>
+                  <label>
+                    电话/微信 <span className="hint">必填</span>
+                  </label>
+                  <input
+                    value={data.contact}
+                    onChange={(e) => up('contact', e.target.value)}
+                    placeholder="手机号或微信号"
+                    autoComplete="tel"
+                    maxLength={32}
+                  />
+                  {errs.contact && <div className="auth-err">{errs.contact}</div>}
+                </div>
+                <div className={'auth-field' + (errs.email ? ' is-error' : '')}>
+                  <label>
+                    邮箱 <span className="hint">必填</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={data.email}
+                    onChange={(e) => up('email', e.target.value)}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    maxLength={100}
+                  />
+                  <div className="auth-field-meta">
+                    <span className="hint">重要通知将通过邮箱和微信群发送</span>
+                    {errs.email && <div className="auth-err">{errs.email}</div>}
+                  </div>
                 </div>
               </div>
 
               <div className="auth-field-row">
                 <div className={'auth-field' + (errs.password ? ' is-error' : '')}>
                   <label>
-                    密码 <span className="hint">至少 8 位</span>
+                    登录密码 <span className="hint">至少 8 位</span>
                   </label>
                   <input
                     type="password"
@@ -409,147 +514,196 @@ export default function Register() {
                   )}
                 </div>
               </div>
+
+              <div className="auth-field">
+                <label>
+                  个人简历 <span className="hint">可选</span>
+                </label>
+                <textarea
+                  rows={4}
+                  value={data.resume}
+                  onChange={(e) => up('resume', e.target.value)}
+                  placeholder="简历链接、作品集、个人主页，或一段简短介绍。"
+                  maxLength={500}
+                />
+                <div className="auth-field-meta">
+                  <span className="hint">{data.resume.length} / 500</span>
+                </div>
+              </div>
             </>
           )}
 
           {step === 1 && (
             <>
-              <div className="auth-field">
-                <label>黑客经验</label>
-                <div className="auth-chip-group">
-                  {LEVELS.map((l) => (
-                    <label
-                      key={l}
-                      className={
-                        'auth-chip' + (data.level === l ? ' is-on' : '')
-                      }
-                    >
-                      <span className="mk" />
-                      <span>{l}</span>
-                      <input
-                        type="radio"
-                        name="level"
-                        checked={data.level === l}
-                        onChange={() => up('level', l)}
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="auth-field">
-                <label>主要角色</label>
-                <div className="auth-chip-group">
-                  {ROLES.map((r) => (
-                    <label
-                      key={r}
-                      className={
-                        'auth-chip' + (data.role === r ? ' is-on' : '')
-                      }
-                    >
-                      <span className="mk" />
-                      <span>{r}</span>
-                      <input
-                        type="radio"
-                        name="role"
-                        checked={data.role === r}
-                        onChange={() => up('role', r)}
-                      />
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="auth-field">
+              <div className={'auth-field' + (errs.skills ? ' is-error' : '')}>
                 <label>
-                  感兴趣的赛道 <span className="hint">可多选</span>
+                  你擅长的技术或产品技能 <span className="hint">必填</span>
                 </label>
-                <div className="auth-chip-group">
-                  {TRACKS.map((t) => (
-                    <label
-                      key={t}
-                      className={
-                        'auth-chip' +
-                        (data.tracks.includes(t) ? ' is-on' : '')
-                      }
-                    >
-                      <span className="mk" />
-                      <span>{t}</span>
-                      <input
-                        type="checkbox"
-                        checked={data.tracks.includes(t)}
-                        onChange={() => toggleTrack(t)}
-                      />
-                    </label>
-                  ))}
+                <div className="auth-skill-grid">
+                  {SKILL_OPTIONS.map((option, index) => {
+                    const selected = data.skills.includes(option.v);
+                    return (
+                      <button
+                        type="button"
+                        key={option.v}
+                        className={'auth-skill-card' + (selected ? ' is-on' : '')}
+                        onClick={() => toggleSkill(option.v)}
+                      >
+                        <span className="glyph">{option.glyph}</span>
+                        <span className="meta">
+                          <span>{option.lbl}</span>
+                          <span>{index + 1}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
-
-              <div className="auth-field-row">
-                <div className="auth-field">
-                  <label>组队情况</label>
-                  <select
-                    value={data.team}
-                    onChange={(e) => up('team', e.target.value)}
-                  >
-                    {TEAMS.map((t) => (
-                      <option key={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="auth-field">
-                  <label>T 恤尺码</label>
-                  <select
-                    value={data.tshirt}
-                    onChange={(e) => up('tshirt', e.target.value)}
-                  >
-                    {SIZES.map((s) => (
-                      <option key={s}>{s}</option>
-                    ))}
-                  </select>
+                <input
+                  value={data.skillsOther}
+                  onChange={(e) => up('skillsOther', e.target.value)}
+                  placeholder="补充具体技术栈，例如 React、LLM Agent、Arduino、路演等。"
+                  maxLength={240}
+                />
+                <div className="auth-field-meta">
+                  <span className="hint">可多选，也可只填写补充说明</span>
+                  <span className="hint">{data.skillsOther.length} / 240</span>
+                  {errs.skills && <div className="auth-err">{errs.skills}</div>}
                 </div>
               </div>
 
               <div className="auth-field">
                 <label>
-                  饮食备注 <span className="hint">可选</span>
+                  用几个关键词形容自己 <span className="hint">可选</span>
                 </label>
                 <input
-                  value={data.dietary}
-                  onChange={(e) => up('dietary', e.target.value)}
-                  placeholder="素食、无麸质、过敏等"
+                  value={data.keywords}
+                  onChange={(e) => up('keywords', e.target.value)}
+                  placeholder="好奇、执行快、会讲故事"
+                  maxLength={120}
                 />
+              </div>
+
+              <div className="auth-field">
+                <label>
+                  请列出你过去的活动/项目/奖项 <span className="hint">不限</span>
+                </label>
+                <textarea
+                  rows={6}
+                  value={data.projects}
+                  onChange={(e) => up('projects', e.target.value)}
+                  placeholder="项目名称 + 你的角色 + 结果，简单列出即可。"
+                  maxLength={800}
+                />
+                <div className="auth-field-meta">
+                  <span className="hint">{data.projects.length} / 800</span>
+                </div>
               </div>
             </>
           )}
 
           {step === 2 && (
             <>
-              <div className={'auth-field' + (errs.pitch ? ' is-error' : '')}>
+              <div className={'auth-field' + (errs.why ? ' is-error' : '')}>
                 <label>
-                  为什么选择 Bohack? <span className="hint">40+ 字符 · 我们会读</span>
+                  你为什么想要参加这次世界智能产业博览会·智能创新黑客松大赛？
+                  <span className="hint">必填</span>
                 </label>
                 <textarea
                   rows={5}
-                  value={data.pitch}
-                  onChange={(e) => up('pitch', e.target.value)}
-                  placeholder="告诉我们你想造什么,或者你对什么好奇。不必追求语法完美,真诚就好。"
+                  value={data.why}
+                  onChange={(e) => up('why', e.target.value)}
+                  placeholder="告诉我们你想来的原因。"
+                  maxLength={800}
                 />
                 <div className="auth-field-meta">
-                  <span className="hint">{data.pitch.length} / 500</span>
-                  {errs.pitch && <div className="auth-err">{errs.pitch}</div>}
+                  <span className="hint">{data.why.length} / 800</span>
+                  {errs.why && <div className="auth-err">{errs.why}</div>}
+                </div>
+              </div>
+
+              <div className={'auth-field' + (errs.nonstandard ? ' is-error' : '')}>
+                <label>
+                  你觉得自己身上最“不像标准答案”的地方是什么？
+                  <span className="hint">必填</span>
+                </label>
+                <textarea
+                  rows={5}
+                  value={data.nonstandard}
+                  onChange={(e) => up('nonstandard', e.target.value)}
+                  placeholder="一个特质、一段经历，或一个你长期在意的问题。"
+                  maxLength={800}
+                />
+                <div className="auth-field-meta">
+                  <span className="hint">{data.nonstandard.length} / 800</span>
+                  {errs.nonstandard && <div className="auth-err">{errs.nonstandard}</div>}
                 </div>
               </div>
 
               <div className="auth-field">
                 <label>
-                  GitHub 或作品集 <span className="hint">可选</span>
+                  你认为这个时代更缺“答案”，还是更缺“好问题”？为什么？
+                  <span className="hint">可选</span>
                 </label>
-                <input
-                  value={data.github}
-                  onChange={(e) => up('github', e.target.value)}
-                  placeholder="github.com/your-id"
+                <textarea
+                  rows={5}
+                  value={data.answerOrQuestion}
+                  onChange={(e) => up('answerOrQuestion', e.target.value)}
+                  placeholder="写下你的判断和理由。"
+                  maxLength={800}
                 />
+                <div className="auth-field-meta">
+                  <span className="hint">{data.answerOrQuestion.length} / 800</span>
+                </div>
+              </div>
+
+              <div className="auth-field">
+                <label>
+                  在一个不再以“生存”为前提的社会中，人类仍然需要“做事”吗？如果需要，这些事的价值来自哪里？
+                  <span className="hint">可选</span>
+                </label>
+                <textarea
+                  rows={5}
+                  value={data.postScarcityWork}
+                  onChange={(e) => up('postScarcityWork', e.target.value)}
+                  placeholder="写下你的想法。"
+                  maxLength={1000}
+                />
+                <div className="auth-field-meta">
+                  <span className="hint">{data.postScarcityWork.length} / 1000</span>
+                </div>
+              </div>
+
+              <div
+                className={
+                  'auth-field auth-field-agree' +
+                  (errs.availability ? ' is-error' : '')
+                }
+              >
+                <label>
+                  你是否能完整参加黑客松主要赛程？
+                  <span className="hint">必填</span>
+                </label>
+                <div className="auth-chip-group">
+                  {ATTENDANCE_OPTIONS.map((option) => (
+                    <label
+                      key={option}
+                      className={
+                        'auth-chip' +
+                        (data.availability === option ? ' is-on' : '')
+                      }
+                    >
+                      <span className="mk" />
+                      <span>{option}</span>
+                      <input
+                        type="radio"
+                        name="availability"
+                        checked={data.availability === option}
+                        onChange={() => up('availability', option)}
+                      />
+                    </label>
+                  ))}
+                </div>
+                {errs.availability && <div className="auth-err">{errs.availability}</div>}
               </div>
 
               <div
@@ -566,7 +720,7 @@ export default function Register() {
                 >
                   <span className="mk" />
                   <span>
-                    我已阅读并同意 <a href="#" className="auth-link">MLH 行为准则</a> 与 Bohack 活动条款。
+                    我确认以上信息真实有效，并同意主办方仅将这些信息用于本次活动报名、筛选、通知与组织工作。
                   </span>
                   <input
                     type="checkbox"
@@ -597,7 +751,7 @@ export default function Register() {
                 className="auth-submit magnet"
                 disabled={submitting}
               >
-                <span>{submitting ? '提交中…' : '提交申请'}</span>
+                <span>{submitting ? '提交中…' : '提交问卷'}</span>
                 <span className="arrow">↗</span>
               </button>
             )}
