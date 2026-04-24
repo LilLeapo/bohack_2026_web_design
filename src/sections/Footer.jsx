@@ -17,7 +17,7 @@ export default function Footer() {
           style={{ marginTop: 48, display: 'flex', gap: 20, flexWrap: 'wrap' }}
           className="reveal"
         >
-          <a href="#" className="btn btn-primary magnet">
+          <a href="#questionnaire" className="btn btn-primary magnet">
             立即报名 BOHACK <span className="arrow">↗</span>
           </a>
           <a href="#" className="btn magnet">
@@ -38,7 +38,7 @@ export default function Footer() {
           <div>
             <h4>参与方式 / Get involved</h4>
             <ul>
-              <li><a href="#">以黑客身份报名</a></li>
+              <li><a href="#questionnaire">以黑客身份报名</a></li>
               <li><a href="#">成为导师</a></li>
               <li><a href="#">成为合作伙伴</a></li>
               <li><a href="#">志愿者招募</a></li>

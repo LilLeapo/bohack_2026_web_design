@@ -34,8 +34,6 @@ const TIMELINE = [
   { t: '04/02', l: '提交申请', s: 'done' },
   { t: '04/11', l: '通过审核 · 欢迎加入', s: 'done' },
   { t: '04/23', l: '今日 · 组队通道开启', s: 'now' },
-  { t: '05/05', l: '差旅补贴发放', s: 'todo' },
-  { t: '05/18', l: '住宿分配通知', s: 'todo' },
   { t: '05/28', l: '开营 · 签到 (16:00)', s: 'todo' },
   { t: '05/28', l: '开幕仪式 (20:00)', s: 'todo' },
   { t: '05/30', l: '作品提交截止 (12:00)', s: 'todo' },
@@ -206,7 +204,11 @@ export default function User() {
     <div className="dash">
       <header className="dash-nav">
         <a href="#" className="dash-brand">
-          <span className="dash-mark" />
+          <img
+            src="/BoHack-LOGO.svg"
+            alt="BoHack"
+            className="dash-brand-logo"
+          />
           <span>Bohack · 黑客中心</span>
         </a>
 
@@ -304,6 +306,10 @@ export default function User() {
                   <span className="status-v">{tshirt}</span>
                 </div>
                 <div className="quick-actions">
+                  <a href="#questionnaire" className="qa magnet">
+                    <span className="qk">✎</span>
+                    <span className="ql">报名问卷</span>
+                  </a>
                   <button type="button" className="qa magnet">
                     <span className="qk">⇵</span>
                     <span className="ql">更新饮食</span>
@@ -360,6 +366,7 @@ export default function User() {
               </div>
 
               <div className="dash-side">
+                {/* Temporarily hidden.
                 <div className="project-panel">
                   <div className="c-label c-label-contrast">项目 pitch · 草稿</div>
                   <div className="pt">
@@ -388,6 +395,7 @@ export default function User() {
                     另加 Boreal Labs 孵化器面谈机会和一尊巨大奖杯。冠军只有一支,也许就是你们。
                   </p>
                 </div>
+                */}
 
                 <div className="dash-card">
                   <div className="section-h">

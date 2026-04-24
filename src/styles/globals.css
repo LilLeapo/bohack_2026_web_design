@@ -1022,6 +1022,11 @@ body.dash-body a { cursor: pointer; }
   font-family: var(--f-mono);
   font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
 }
+.dash-brand-logo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
 .dash-mark {
   width: 18px; height: 18px; border-radius: 4px;
   background: var(--lime);
@@ -1247,7 +1252,7 @@ body.dash-body a { cursor: pointer; }
 }
 
 .quick-actions {
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px; margin-top: 14px;
 }
 .qa {
@@ -1260,6 +1265,8 @@ body.dash-body a { cursor: pointer; }
   text-align: left;
   transition: background .25s, color .25s, border-color .25s;
   will-change: transform;
+  color: inherit;
+  text-decoration: none;
 }
 .qa:hover {
   background: var(--ink); color: var(--bone);
