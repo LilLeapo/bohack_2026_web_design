@@ -20,7 +20,11 @@ function Poster() {
       <div className="auth-poster-grid" />
 
       <div className="auth-brand">
-        <span className="auth-mark" />
+        <img
+          src="/BoHack-LOGO-%E5%8F%8D%E7%99%BD.svg"
+          alt="BoHack"
+          className="auth-brand-logo"
+        />
         <span>Bohack / 2026</span>
       </div>
 
