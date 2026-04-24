@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 import {
   api,
@@ -75,6 +76,7 @@ function initialsFrom(value) {
 
 export default function User() {
   useMagnet();
+  const navigate = useNavigate();
 
   const [tab, setTab] = useState('overview');
   const [me, setMe] = useState(null);
@@ -93,7 +95,7 @@ export default function User() {
     let alive = true;
 
     if (!getAccessToken()) {
-      window.location.hash = 'login';
+      navigate('/login', { replace: true });
       return () => {
         alive = false;
       };
@@ -119,7 +121,7 @@ export default function User() {
         if (!alive) return;
         if (error.status === 401) {
           clearAuthSession();
-          window.location.hash = 'login';
+          navigate('/login', { replace: true });
           return;
         }
         setErr(userFacingError(error));
@@ -133,7 +135,7 @@ export default function User() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [navigate]);
 
   const pad = (n) => String(n).padStart(2, '0');
   const extra = parseExtra(registration);
@@ -156,7 +158,7 @@ export default function User() {
   const signOut = (event) => {
     event.preventDefault();
     clearAuthSession();
-    window.location.hash = 'login';
+    navigate('/login');
   };
 
   if (loading) {
@@ -204,14 +206,14 @@ export default function User() {
   return (
     <div className="dash">
       <header className="dash-nav">
-        <a href="#" className="dash-brand">
+        <Link to="/" className="dash-brand">
           <img
             src="/BoHack-LOGO.svg"
             alt="BoHack"
             className="dash-brand-logo"
           />
           <span>Bohack · 黑客中心</span>
-        </a>
+        </Link>
 
         <div className="tabs">
           {TABS.map((t) => (
@@ -231,7 +233,7 @@ export default function User() {
             {name} · <span className="me-id">{appId}</span>
           </span>
           <div className="avatar">{initials}</div>
-          <a href="#login" className="me-signout" onClick={signOut}>退出</a>
+          <a href="/login" className="me-signout" onClick={signOut}>退出</a>
         </div>
       </header>
 
@@ -307,10 +309,10 @@ export default function User() {
                   <span className="status-v">{tshirt}</span>
                 </div>
                 <div className="quick-actions">
-                  <a href="#questionnaire" className="qa magnet">
+                  <Link to="/questionnaire" className="qa magnet">
                     <span className="qk">✎</span>
                     <span className="ql">报名问卷</span>
-                  </a>
+                  </Link>
                   <button type="button" className="qa magnet">
                     <span className="qk">↓</span>
                     <span className="ql">下载证件</span>
@@ -323,7 +325,9 @@ export default function User() {
               <div className="dash-card">
                 <div className="section-h">
                   <h2>我的队伍 · {team}</h2>
-                  <a href="#team">管理队伍 →</a>
+                  <button type="button" onClick={() => setTab('team')}>
+                    管理队伍 →
+                  </button>
                 </div>
                 <div className="team-roster">
                   <div className="member">
@@ -338,7 +342,9 @@ export default function User() {
 
                 <div className="section-h section-h-sp">
                   <h2>重要节点</h2>
-                  <a href="#schedule">完整日程 →</a>
+                  <button type="button" onClick={() => setTab('schedule')}>
+                    完整日程 →
+                  </button>
                 </div>
                 <div className="timeline-list">
                   {TIMELINE.map((r, i) => (
@@ -397,7 +403,7 @@ export default function User() {
                 <div className="dash-card">
                   <div className="section-h">
                     <h2 className="section-h-sm">赛前清单</h2>
-                    <a href="#questionnaire">完善问卷 →</a>
+                    <Link to="/questionnaire">完善问卷 →</Link>
                   </div>
                   <div className="tickets">
                     {PREP_ITEMS.map((item, idx) => (

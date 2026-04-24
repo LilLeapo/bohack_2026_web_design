@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   AUTH_CHANGED_EVENT,
   api,
@@ -85,8 +86,8 @@ export default function Nav() {
   return (
     <>
       <nav className={`nav ${open ? 'is-open' : ''}`}>
-        <a
-          href="#top"
+        <Link
+          to="/"
           className="brand"
           aria-label="BoHack 2026 home"
           onClick={closeDrawer}
@@ -97,7 +98,7 @@ export default function Nav() {
             className="brand-logo"
           />
           <span className="brand-year">/ 2026</span>
-        </a>
+        </Link>
 
         <div className="nav-links">
           {LINKS.map((l) => (
@@ -109,8 +110,8 @@ export default function Nav() {
 
         <div className="nav-actions">
           {isAuthed ? (
-            <a
-              href="#user"
+            <Link
+              to="/user"
               className="nav-user magnet"
               aria-label="进入用户中心"
               title="进入用户中心"
@@ -119,15 +120,15 @@ export default function Nav() {
               <span className="nav-user-avatar" aria-hidden="true">
                 {avatarText}
               </span>
-            </a>
+            </Link>
           ) : (
             <>
-              <a href="#login" className="nav-login">
+              <Link to="/login" className="nav-login">
                 登录
-              </a>
-              <a href="#apply" className="nav-cta magnet nav-cta-desktop">
+              </Link>
+              <Link to="/register" className="nav-cta magnet nav-cta-desktop">
                 报名 →
-              </a>
+              </Link>
             </>
           )}
         </div>
@@ -163,21 +164,21 @@ export default function Nav() {
             ))}
           </ul>
           <div className="nav-drawer-ctas">
-            <a
-              href={isAuthed ? '#user' : '#apply'}
+            <Link
+              to={isAuthed ? '/user' : '/register'}
               className="btn btn-primary nav-drawer-cta"
               onClick={closeDrawer}
             >
               {isAuthed ? '进入控制台' : '立即报名'} <span className="arrow">↗</span>
-            </a>
+            </Link>
             {!isAuthed && (
-              <a
-                href="#login"
+              <Link
+                to="/login"
                 className="nav-drawer-login"
                 onClick={closeDrawer}
               >
                 已有账号?登录 →
-              </a>
+              </Link>
             )}
           </div>
           <div className="nav-drawer-meta">

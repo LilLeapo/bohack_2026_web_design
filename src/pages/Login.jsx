@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 import { api, setAuthSession, userFacingError } from '../lib/api.js';
@@ -43,7 +44,7 @@ function Poster() {
 
       <div className="auth-poster-footer">
         <span>天津 · 滨海 / 2026.05.22—31</span>
-        <span>Edition 04</span>
+        <span>Bohack 2026</span>
       </div>
     </aside>
   );
@@ -51,6 +52,7 @@ function Poster() {
 
 export default function Login() {
   useMagnet();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -82,7 +84,7 @@ export default function Login() {
         password,
       });
       setAuthSession(auth, { persist: remember });
-      window.location.hash = 'user';
+      navigate('/user');
     } catch (error) {
       setErr(userFacingError(error));
     } finally {
@@ -96,7 +98,7 @@ export default function Login() {
 
       <main className="auth-panel">
         <div className="auth-topbar">
-          <a href="#" className="auth-back">← 返回主页</a>
+          <Link to="/" className="auth-back">← 返回主页</Link>
           <span className="auth-topbar-meta">/ 登录</span>
         </div>
 
@@ -105,16 +107,8 @@ export default function Login() {
           <h1 className="auth-h1">登录。</h1>
           <p className="auth-sub">
             继续未完成的报名。还没有账号?{' '}
-            <a href="#register" className="auth-link">立即申请 →</a>
+            <Link to="/register" className="auth-link">立即申请 →</Link>
           </p>
-
-          <div className="sso-row">
-            <button type="button" className="sso magnet">◆ GitHub</button>
-            <button type="button" className="sso magnet">● 微信</button>
-            <button type="button" className="sso magnet">▲ 学校 SSO</button>
-          </div>
-
-          <div className="auth-divider"><span>或使用邮箱</span></div>
 
           <div className={'auth-field' + (err ? ' is-error' : '')}>
             <label>
@@ -177,7 +171,7 @@ export default function Login() {
               <span>{loading ? '登录中…' : '登录'}</span>
               <span className="arrow">↗</span>
             </button>
-            <a href="#register" className="auth-ghost magnet">创建账号</a>
+            <Link to="/register" className="auth-ghost magnet">创建账号</Link>
           </div>
 
           <div className="auth-foot">

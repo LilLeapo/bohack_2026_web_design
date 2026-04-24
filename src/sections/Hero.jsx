@@ -112,7 +112,7 @@ export default function Hero() {
         <div className="pl" data-parallax="0.15">
           <div className="hero-live">
             <span className="live">◉ LIVE · 报名通道已开启</span>
-            <span className="edition">BOHACK · 第 04 届</span>
+            <span className="edition">BOHACK 2026</span>
           </div>
 
           <h1>

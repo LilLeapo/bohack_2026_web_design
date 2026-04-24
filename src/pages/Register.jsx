@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 import { api, setAuthSession, userFacingError } from '../lib/api.js';
@@ -80,7 +81,7 @@ function Poster() {
 
       <div className="auth-poster-footer">
         <span>天津 · 滨海 / 2026.05.22—31</span>
-        <span>Edition 04</span>
+        <span>Bohack 2026</span>
       </div>
     </aside>
   );
@@ -219,7 +220,7 @@ export default function Register() {
         <Poster />
         <main className="auth-panel">
           <div className="auth-topbar">
-            <a href="#" className="auth-back">← 返回主页</a>
+            <Link to="/" className="auth-back">← 返回主页</Link>
             <span className="auth-topbar-meta">/ 申请已收到</span>
           </div>
 
@@ -239,11 +240,11 @@ export default function Register() {
             </div>
 
             <div className="auth-btn-row">
-              <a href="#user" className="auth-submit magnet">
+              <Link to="/user" className="auth-submit magnet">
                 <span>前往控制台</span>
                 <span className="arrow">↗</span>
-              </a>
-              <a href="#" className="auth-ghost magnet">回到首页</a>
+              </Link>
+              <Link to="/" className="auth-ghost magnet">回到首页</Link>
             </div>
 
             <div className="auth-foot">
@@ -262,7 +263,7 @@ export default function Register() {
 
       <main className="auth-panel">
         <div className="auth-topbar">
-          <a href="#" className="auth-back">← 返回主页</a>
+          <Link to="/" className="auth-back">← 返回主页</Link>
           <span className="auth-topbar-meta">Step {step + 1} / 3</span>
         </div>
 
@@ -601,7 +602,7 @@ export default function Register() {
           {errs.form && <div className="auth-err auth-form-err">{errs.form}</div>}
 
           <div className="auth-foot">
-            已有账号?<a href="#login">登录</a> 查看申请状态。
+            已有账号?<Link to="/login">登录</Link> 查看申请状态。
           </div>
         </form>
       </main>

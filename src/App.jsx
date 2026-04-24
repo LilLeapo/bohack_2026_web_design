@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Nav from './sections/Nav.jsx';
 import Hero from './sections/Hero.jsx';
@@ -18,10 +18,6 @@ import Questionnaire from './pages/Questionnaire.jsx';
 import { useReveal } from './hooks/useReveal.js';
 import { useParallax } from './hooks/useParallax.js';
 import { useMagnet } from './hooks/useMagnet.js';
-
-function readRoute() {
-  return window.location.hash.replace(/^#\/?/, '').split('?')[0];
-}
 
 function Site() {
   useReveal();
@@ -80,17 +76,17 @@ function Site() {
 }
 
 export default function App() {
-  const [route, setRoute] = useState(() => readRoute());
-
-  useEffect(() => {
-    const sync = () => setRoute(readRoute());
-    window.addEventListener('hashchange', sync);
-    return () => window.removeEventListener('hashchange', sync);
-  }, []);
-
-  if (route === 'login') return <Login />;
-  if (route === 'register' || route === 'apply') return <Register />;
-  if (route === 'user') return <User />;
-  if (route === 'questionnaire') return <Questionnaire />;
-  return <Site />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Site />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/apply" element={<Register />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/questionnaire" element={<Questionnaire />} />
+        <Route path="*" element={<Site />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

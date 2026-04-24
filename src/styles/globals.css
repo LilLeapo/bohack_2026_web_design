@@ -1105,7 +1105,8 @@ body.dash-body a { cursor: pointer; }
   gap: 16px;
 }
 .section-h-sp { margin-top: 36px; }
-.section-h a {
+.section-h a,
+.section-h button {
   font-family: var(--f-mono); font-size: 11px;
   letter-spacing: 0.16em; text-transform: uppercase;
   opacity: 0.6;
@@ -1113,7 +1114,8 @@ body.dash-body a { cursor: pointer; }
   transition: opacity .2s, color .2s;
   white-space: nowrap;
 }
-.section-h a:hover { opacity: 1; color: var(--ink); }
+.section-h a:hover,
+.section-h button:hover { opacity: 1; color: var(--ink); }
 
 /* Hero row */
 .dash-hero {
@@ -1686,36 +1688,6 @@ body.auth-body { background: var(--ink); overflow: auto; }
 }
 .auth-link:hover { color: var(--ink); border-color: var(--lime); }
 
-.sso-row {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 32px;
-}
-.sso {
-  padding: 14px 10px;
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  background: transparent;
-  font-family: var(--f-mono); font-size: 11px;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--ink);
-  cursor: pointer;
-  transition: background .25s, color .25s, border-color .25s, transform .3s var(--ease-out);
-}
-.sso:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
-
-.auth-divider {
-  display: flex; align-items: center; gap: 14px;
-  margin: 28px 0 20px;
-  font-family: var(--f-mono); font-size: 10px;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  opacity: 0.55;
-}
-.auth-divider::before,
-.auth-divider::after {
-  content: ""; flex: 1; height: 1px; background: var(--rule);
-}
-
 .auth-field { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
 .auth-field label {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -2018,7 +1990,6 @@ body.auth-body { background: var(--ink); overflow: auto; }
 @media (max-width: 480px) {
   .auth-poster-title { font-size: clamp(44px, 11vw, 64px); }
   .auth-h1 { font-size: clamp(44px, 11vw, 64px); }
-  .sso-row { grid-template-columns: 1fr; }
   .auth-chip-group { gap: 6px; }
 }
 

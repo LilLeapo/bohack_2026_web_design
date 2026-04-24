@@ -469,7 +469,7 @@ function Footer() {
             <ul>
               <li>Upstate NY</li>
               <li>May 15—17, 2026</li>
-              <li>Edition 04</li>
+              <li>Bohack 2026</li>
               <li>MLH-affiliated</li>
             </ul>
           </div>

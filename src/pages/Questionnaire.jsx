@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 
 const QUESTIONS = [
@@ -277,8 +278,8 @@ export default function Questionnaire() {
           <div>Autosaved · {today}</div>
           <div style={{ marginTop: 6 }}>
             ← 返回
-            <a
-              href="#user"
+            <Link
+              to="/user"
               style={{
                 borderBottom: '1px dashed currentColor',
                 color: 'var(--lime)',
@@ -286,14 +287,14 @@ export default function Questionnaire() {
               }}
             >
               控制台
-            </a>
+            </Link>
           </div>
         </div>
       </aside>
 
       <main className="q-main">
         <div className="q-top">
-          <a href="#user">← 控制台</a>
+          <Link to="/user">← 控制台</Link>
           <span>
             Questionnaire · {done ? '已完成' : `Q${i + 1} / ${total}`}
           </span>
@@ -579,8 +580,8 @@ export default function Questionnaire() {
                 flexWrap: 'wrap',
               }}
             >
-              <a
-                href="#user"
+              <Link
+                to="/user"
                 className="auth-submit magnet"
                 style={{
                   background: 'var(--lime)',
@@ -589,7 +590,7 @@ export default function Questionnaire() {
                 }}
               >
                 前往控制台 <span className="arrow">↗</span>
-              </a>
+              </Link>
               <button
                 type="button"
                 className="auth-ghost magnet"

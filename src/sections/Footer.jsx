@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="footer" id="apply">
@@ -17,9 +19,9 @@ export default function Footer() {
           style={{ marginTop: 48, display: 'flex', gap: 20, flexWrap: 'wrap' }}
           className="reveal"
         >
-          <a href="#questionnaire" className="btn btn-primary magnet">
+          <Link to="/questionnaire" className="btn btn-primary magnet">
             立即报名 BOHACK <span className="arrow">↗</span>
-          </a>
+          </Link>
           <a href="#" className="btn magnet">
             成为合作伙伴 <span className="arrow">↗</span>
           </a>
@@ -38,7 +40,7 @@ export default function Footer() {
           <div>
             <h4>参与方式 / Get involved</h4>
             <ul>
-              <li><a href="#questionnaire">以黑客身份报名</a></li>
+              <li><Link to="/questionnaire">以黑客身份报名</Link></li>
               <li><a href="#">成为导师</a></li>
               <li><a href="#">成为合作伙伴</a></li>
               <li><a href="#">志愿者招募</a></li>
@@ -61,7 +63,7 @@ export default function Footer() {
               <li>5.22—24 线下黑客松</li>
               <li>5.24—28 项目孵化辅导</li>
               <li>5.28—31 智博会线下展演</li>
-              <li>第 04 届</li>
+              <li>Bohack 2026</li>
               <li>WIE 2026 官方赛道</li>
             </ul>
           </div>
