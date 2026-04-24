@@ -83,6 +83,35 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: non
 }
 .nav-login:hover { opacity: 1; color: var(--lime); }
 .nav-login:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav-user {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+}
+.nav-user-avatar {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  transition: background .2s, color .2s, border-color .2s, transform .2s;
+}
+.nav-user:hover .nav-user-avatar {
+  background: var(--bone);
+  color: var(--ink);
+  border-color: var(--bone);
+  transform: translateY(-1px);
+}
 
 /* Section scaffold */
 .section { position: relative; padding: 120px 32px; }

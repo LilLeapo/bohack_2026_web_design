@@ -1,5 +1,6 @@
 const DEFAULT_API_BASE_URL = 'https://api.bohack.top';
 const TOKEN_STORAGE_KEY = 'bohack.accessToken';
+export const AUTH_CHANGED_EVENT = 'bohack:auth-changed';
 
 export const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL
@@ -32,20 +33,31 @@ function writeStorage(storage, value) {
   }
 }
 
+function notifyAuthChanged() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+  }
+}
+
 export function getAccessToken() {
   return readStorage(window.localStorage) || readStorage(window.sessionStorage);
 }
 
-export function clearAuthSession() {
+export function clearAuthSession({ notify = true } = {}) {
   writeStorage(window.localStorage, null);
   writeStorage(window.sessionStorage, null);
+  if (notify) notifyAuthChanged();
 }
 
 export function setAuthSession(auth, { persist = true } = {}) {
   const token = auth?.access_token || auth?.accessToken;
-  clearAuthSession();
-  if (!token) return;
+  clearAuthSession({ notify: false });
+  if (!token) {
+    notifyAuthChanged();
+    return;
+  }
   writeStorage(persist ? window.localStorage : window.sessionStorage, token);
+  notifyAuthChanged();
 }
 
 function buildUrl(path, query) {

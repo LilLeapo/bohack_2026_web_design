@@ -1,4 +1,10 @@
 import { useEffect, useState } from 'react';
+import {
+  AUTH_CHANGED_EVENT,
+  api,
+  clearAuthSession,
+  getAccessToken,
+} from '../lib/api.js';
 
 const LINKS = [
   { href: '#about', label: '简介' },
@@ -9,8 +15,16 @@ const LINKS = [
   { href: '#faq', label: '答疑' },
 ];
 
+function userInitial(user) {
+  const source = user?.username || user?.email || 'ME';
+  const clean = source.trim().replace(/@.*$/, '').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
+  return Array.from(clean || 'ME').slice(0, 2).join('').toUpperCase();
+}
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(() => Boolean(getAccessToken()));
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const { body } = document;
@@ -28,6 +42,46 @@ export default function Nav() {
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
+  useEffect(() => {
+    const syncAuth = () => {
+      const hasToken = Boolean(getAccessToken());
+      setIsAuthed(hasToken);
+      if (!hasToken) setUser(null);
+    };
+
+    window.addEventListener(AUTH_CHANGED_EVENT, syncAuth);
+    window.addEventListener('storage', syncAuth);
+    return () => {
+      window.removeEventListener(AUTH_CHANGED_EVENT, syncAuth);
+      window.removeEventListener('storage', syncAuth);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthed) return undefined;
+
+    let alive = true;
+    api.me()
+      .then((currentUser) => {
+        if (alive) setUser(currentUser);
+      })
+      .catch((error) => {
+        if (!alive) return;
+        if (error.status === 401) {
+          clearAuthSession();
+          setIsAuthed(false);
+          setUser(null);
+        }
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [isAuthed]);
+
+  const closeDrawer = () => setOpen(false);
+  const avatarText = userInitial(user);
+
   return (
     <>
       <nav className={`nav ${open ? 'is-open' : ''}`}>
@@ -35,7 +89,7 @@ export default function Nav() {
           href="#top"
           className="brand"
           aria-label="BoHack 2026 home"
-          onClick={() => setOpen(false)}
+          onClick={closeDrawer}
         >
           <img
             src="/BoHack-LOGO-%E5%8F%8D%E7%99%BD.svg"
@@ -54,12 +108,28 @@ export default function Nav() {
         </div>
 
         <div className="nav-actions">
-          <a href="#login" className="nav-login">
-            登录
-          </a>
-          <a href="#apply" className="nav-cta magnet nav-cta-desktop">
-            报名 →
-          </a>
+          {isAuthed ? (
+            <a
+              href="#user"
+              className="nav-user magnet"
+              aria-label="进入用户中心"
+              title="进入用户中心"
+              onClick={closeDrawer}
+            >
+              <span className="nav-user-avatar" aria-hidden="true">
+                {avatarText}
+              </span>
+            </a>
+          ) : (
+            <>
+              <a href="#login" className="nav-login">
+                登录
+              </a>
+              <a href="#apply" className="nav-cta magnet nav-cta-desktop">
+                报名 →
+              </a>
+            </>
+          )}
         </div>
 
         <button
@@ -85,7 +155,7 @@ export default function Nav() {
           <ul className="nav-drawer-links">
             {LINKS.map((l, i) => (
               <li key={l.href} style={{ transitionDelay: `${80 + i * 40}ms` }}>
-                <a href={l.href} onClick={() => setOpen(false)}>
+                <a href={l.href} onClick={closeDrawer}>
                   <span className="n">{String(i + 1).padStart(2, '0')}</span>
                   <span className="t">{l.label}</span>
                 </a>
@@ -94,19 +164,21 @@ export default function Nav() {
           </ul>
           <div className="nav-drawer-ctas">
             <a
-              href="#apply"
+              href={isAuthed ? '#user' : '#apply'}
               className="btn btn-primary nav-drawer-cta"
-              onClick={() => setOpen(false)}
+              onClick={closeDrawer}
             >
-              立即报名 <span className="arrow">↗</span>
+              {isAuthed ? '进入控制台' : '立即报名'} <span className="arrow">↗</span>
             </a>
-            <a
-              href="#login"
-              className="nav-drawer-login"
-              onClick={() => setOpen(false)}
-            >
-              已有账号?登录 →
-            </a>
+            {!isAuthed && (
+              <a
+                href="#login"
+                className="nav-drawer-login"
+                onClick={closeDrawer}
+              >
+                已有账号?登录 →
+              </a>
+            )}
           </div>
           <div className="nav-drawer-meta">
             <span>TIANJIN · 2026.05.28—31</span>
