@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
+import { api, setAuthSession, userFacingError } from '../lib/api.js';
 
 function Poster() {
   const canvasRef = useRef(null);
@@ -67,17 +68,26 @@ export default function Login() {
     };
   }, []);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setErr('请填写邮箱和密码。');
       return;
     }
     setLoading(true);
-    window.setTimeout(() => {
-      setLoading(false);
+    setErr('');
+    try {
+      const auth = await api.login({
+        login: email.trim(),
+        password,
+      });
+      setAuthSession(auth, { persist: remember });
       window.location.hash = 'user';
-    }, 700);
+    } catch (error) {
+      setErr(userFacingError(error));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

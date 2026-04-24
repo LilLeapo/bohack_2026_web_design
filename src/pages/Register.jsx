@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
+import { api, setAuthSession, userFacingError } from '../lib/api.js';
 
 const TRACKS = [
   'Ambient AI',
@@ -17,6 +18,27 @@ const SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
 const GRADS = ['2025', '2026', '2027', '2028', '2029', '更晚'];
 const STEP_TITLES = ['先聊聊你。', '你是怎样的黑客?', '最后一步。'];
 const STEP_META = ['个人信息', '黑客画像', '动机与同意'];
+
+function normalizeEmail(value) {
+  return value.trim().toLowerCase();
+}
+
+function buildUsername(data) {
+  const emailName = normalizeEmail(data.email).split('@')[0];
+  const fallback = `${data.first}${data.last}`.trim();
+  const base = (emailName || fallback || 'bohack')
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 38) || 'bohack';
+
+  return `${base}_${Math.random().toString(36).slice(2, 8)}`.slice(0, 50);
+}
+
+function realNameFrom(data) {
+  return [data.last.trim(), data.first.trim()].filter(Boolean).join('') ||
+    data.email.trim();
+}
 
 function Poster() {
   const canvasRef = useRef(null);
@@ -72,6 +94,7 @@ export default function Register() {
     first: '',
     last: '',
     email: '',
+    phone: '',
     school: '',
     grad: '2027',
     password: '',
@@ -89,6 +112,7 @@ export default function Register() {
   const [errs, setErrs] = useState({});
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [registrationResult, setRegistrationResult] = useState(null);
 
   useEffect(() => {
     document.body.classList.add('auth-body');
@@ -107,9 +131,13 @@ export default function Register() {
   const validate = () => {
     const e = {};
     if (step === 0) {
+      const email = normalizeEmail(data.email);
+      const phone = data.phone.trim();
       if (!data.first.trim()) e.first = '请填写';
       if (!data.last.trim()) e.last = '请填写';
-      if (!data.email || !/.+@.+\..+/.test(data.email)) e.email = '请输入有效邮箱';
+      if (!email || !/.+@.+\..+/.test(email)) e.email = '请输入有效邮箱';
+      if (!phone) e.phone = '请填写手机号';
+      if (phone.length > 32) e.phone = '手机号过长';
       if (!data.school.trim()) e.school = '请填写';
       if (data.password.length < 8) e.password = '至少 8 位';
       if (data.password !== data.confirm) e.confirm = '两次密码不一致';
@@ -131,20 +159,61 @@ export default function Register() {
     setErrs({});
     setStep((s) => Math.max(0, s - 1));
   };
-  const submit = (ev) => {
+  const submit = async (ev) => {
     ev?.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
-    window.setTimeout(() => {
-      setSubmitting(false);
+    setErrs({});
+    try {
+      const auth = await api.register({
+        username: buildUsername(data),
+        email: normalizeEmail(data.email),
+        password: data.password,
+      });
+      setAuthSession(auth);
+
+      const registration = await api.createRegistration({
+        realName: realNameFrom(data),
+        phone: data.phone.trim(),
+        school: data.school.trim(),
+        bio: data.pitch.trim(),
+        teamName: data.team,
+        rolePreference: data.role,
+        source: 'bohack-frontend',
+        note: data.pitch.trim(),
+        extra: {
+          firstName: data.first.trim(),
+          lastName: data.last.trim(),
+          graduationYear: data.grad,
+          experienceLevel: data.level,
+          tracks: data.tracks,
+          teamStatus: data.team,
+          dietary: data.dietary.trim(),
+          tshirt: data.tshirt,
+          portfolio: data.github.trim(),
+        },
+      });
+
+      api.updateProfile({
+        phone: data.phone.trim(),
+      }).catch(() => {});
+
+      setRegistrationResult(registration);
       setDone(true);
-    }, 700);
+    } catch (error) {
+      setErrs((current) => ({
+        ...current,
+        form: userFacingError(error),
+      }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (done) {
-    const appId = `BH26-${Math.floor(Math.random() * 10000)
-      .toString()
-      .padStart(4, '0')}-${(data.first || 'XX').slice(0, 2).toUpperCase()}`;
+    const appId = registrationResult?.id
+      ? `BH26-${String(registrationResult.id).padStart(4, '0')}`
+      : `BH26-${(data.first || 'XX').slice(0, 2).toUpperCase()}`;
     return (
       <div className="auth-shell">
         <Poster />
@@ -226,7 +295,7 @@ export default function Register() {
               <div className="auth-field-row">
                 <div className={'auth-field' + (errs.first ? ' is-error' : '')}>
                   <label>
-                    姓 <span className="hint">必填</span>
+                    名 <span className="hint">必填</span>
                   </label>
                   <input
                     value={data.first}
@@ -238,7 +307,7 @@ export default function Register() {
                 </div>
                 <div className={'auth-field' + (errs.last ? ' is-error' : '')}>
                   <label>
-                    名 <span className="hint">必填</span>
+                    姓 <span className="hint">必填</span>
                   </label>
                   <input
                     value={data.last}
@@ -262,6 +331,20 @@ export default function Register() {
                   autoComplete="email"
                 />
                 {errs.email && <div className="auth-err">{errs.email}</div>}
+              </div>
+
+              <div className={'auth-field' + (errs.phone ? ' is-error' : '')}>
+                <label>
+                  手机号 <span className="hint">用于报名联系</span>
+                </label>
+                <input
+                  type="tel"
+                  value={data.phone}
+                  onChange={(e) => up('phone', e.target.value)}
+                  placeholder="138 0000 0000"
+                  autoComplete="tel"
+                />
+                {errs.phone && <div className="auth-err">{errs.phone}</div>}
               </div>
 
               <div className="auth-field-row">
@@ -514,6 +597,8 @@ export default function Register() {
               </button>
             )}
           </div>
+
+          {errs.form && <div className="auth-err auth-form-err">{errs.form}</div>}
 
           <div className="auth-foot">
             已有账号?<a href="#login">登录</a> 查看申请状态。

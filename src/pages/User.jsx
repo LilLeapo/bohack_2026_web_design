@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMagnet } from '../hooks/useMagnet.js';
+import {
+  api,
+  clearAuthSession,
+  getAccessToken,
+  userFacingError,
+} from '../lib/api.js';
 
 function useCountdown(target) {
   const [now, setNow] = useState(() => Date.now());
@@ -24,13 +30,6 @@ const TABS = [
   { id: 'support', label: '支持' },
 ];
 
-const TEAM = [
-  { i: '李黑', name: '李黑客', role: '队长 · 工程', tag: '我' },
-  { i: '陈野', name: '陈野', role: '硬件 · 机器人', tag: '天津大学' },
-  { i: '周玥', name: '周玥', role: '设计 · 插画', tag: '中央美院' },
-  { i: '汤恒', name: '汤恒', role: '研究 · ML', tag: '清华大学' },
-];
-
 const TIMELINE = [
   { t: '04/02', l: '提交申请', s: 'done' },
   { t: '04/11', l: '通过审核 · 欢迎加入', s: 'done' },
@@ -48,10 +47,41 @@ const TICKETS = [
   { id: '#099', title: '申请额外差旅补贴', meta: '审核中 · 1 周前', status: 'pending' },
 ];
 
+const STATUS_LABELS = {
+  draft: '草稿',
+  submitted: '已提交',
+  under_review: '审核中',
+  approved: '已通过',
+  rejected: '未通过',
+  cancelled: '已取消',
+};
+
+function parseExtra(registration) {
+  if (!registration?.extra) return {};
+  if (typeof registration.extra === 'string') {
+    try {
+      return JSON.parse(registration.extra);
+    } catch {
+      return {};
+    }
+  }
+  return registration.extra;
+}
+
+function initialsFrom(value) {
+  const text = (value || '黑客').trim();
+  const chars = Array.from(text.replace(/\s+/g, ''));
+  return chars.slice(0, 2).join('').toUpperCase();
+}
+
 export default function User() {
   useMagnet();
 
   const [tab, setTab] = useState('overview');
+  const [me, setMe] = useState(null);
+  const [registration, setRegistration] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
   const target = useMemo(() => new Date(2026, 4, 28, 9, 0, 0).getTime(), []);
   const cd = useCountdown(target);
 
@@ -60,11 +90,117 @@ export default function User() {
     return () => document.body.classList.remove('dash-body');
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+
+    if (!getAccessToken()) {
+      window.location.hash = 'login';
+      return () => {
+        alive = false;
+      };
+    }
+
+    async function loadUser() {
+      setLoading(true);
+      setErr('');
+
+      try {
+        const [user, registrationStatus] = await Promise.all([
+          api.me(),
+          api.registrationStatus().catch((error) => {
+            if (error.status === 404) return null;
+            throw error;
+          }),
+        ]);
+
+        if (!alive) return;
+        setMe(user);
+        setRegistration(registrationStatus);
+      } catch (error) {
+        if (!alive) return;
+        if (error.status === 401) {
+          clearAuthSession();
+          window.location.hash = 'login';
+          return;
+        }
+        setErr(userFacingError(error));
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
+
+    loadUser();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const pad = (n) => String(n).padStart(2, '0');
-  const initials = 'LH';
-  const name = '李黑客';
+  const extra = parseExtra(registration);
+  const name = registration?.realName || me?.username || '黑客';
+  const initials = initialsFrom(name);
+  const appId = registration?.id
+    ? `BH26-${String(registration.id).padStart(4, '0')}`
+    : '未提交';
+  const statusLabel = registration
+    ? STATUS_LABELS[registration.status] || registration.status
+    : '未提交';
+  const tracks = Array.isArray(extra.tracks) && extra.tracks.length
+    ? extra.tracks.join(' / ')
+    : '待确认';
+  const team = registration?.teamName || extra.teamStatus || '待组队';
+  const role = registration?.rolePreference || extra.experienceLevel || '待确认';
+  const tshirt = extra.tshirt || '待确认';
 
   const currentTab = TABS.find((x) => x.id === tab);
+  const signOut = (event) => {
+    event.preventDefault();
+    clearAuthSession();
+    window.location.hash = 'login';
+  };
+
+  if (loading) {
+    return (
+      <div className="dash">
+        <main className="dash-main">
+          <div className="dash-card dash-empty">
+            <div className="c-label">/ LOADING</div>
+            <h1 className="dash-empty-title">
+              正在读取
+              <br />
+              <em>报名状态。</em>
+            </h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (err) {
+    return (
+      <div className="dash">
+        <main className="dash-main">
+          <div className="dash-card dash-empty">
+            <div className="c-label">/ ERROR</div>
+            <h1 className="dash-empty-title">
+              无法读取
+              <br />
+              <em>用户信息。</em>
+            </h1>
+            <p className="dash-empty-sub">{err}</p>
+            <button
+              type="button"
+              className="auth-submit magnet dash-empty-back"
+              onClick={() => window.location.reload()}
+            >
+              重试 <span className="arrow">↗</span>
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="dash">
@@ -89,10 +225,10 @@ export default function User() {
 
         <div className="me">
           <span className="me-name">
-            {name} · <span className="me-id">BH26-0412</span>
+            {name} · <span className="me-id">{appId}</span>
           </span>
           <div className="avatar">{initials}</div>
-          <a href="#login" className="me-signout">退出</a>
+          <a href="#login" className="me-signout" onClick={signOut}>退出</a>
         </div>
       </header>
 
@@ -109,10 +245,14 @@ export default function User() {
                       <em>{name}。</em>
                     </h1>
                     <p className="sub">
-                      你已确认参加 BOHACK 2026。请留好时间、带上电脑与充电器。距离开幕还有:
+                      {registration
+                        ? '你的 BOHACK 2026 报名信息已同步。请留好时间、带上电脑与充电器。距离开幕还有:'
+                        : '你还没有提交 BOHACK 2026 报名。完成报名后,这里会显示审核进度。距离开幕还有:'}
                     </p>
                   </div>
-                  <span className="badge-ok">◆ 已确认</span>
+                  <span className={registration?.status === 'approved' ? 'badge-ok' : 'badge-wait'}>
+                    ◆ {statusLabel}
+                  </span>
                 </div>
 
                 <div className="big-countdown">
@@ -139,27 +279,29 @@ export default function User() {
                 <div className="c-label">当前状态</div>
                 <div className="status-row">
                   <span className="status-k">报名审核</span>
-                  <span className="badge-ok">已通过</span>
+                  <span className={registration?.status === 'approved' ? 'badge-ok' : 'badge-wait'}>
+                    {statusLabel}
+                  </span>
                 </div>
                 <div className="status-row">
-                  <span className="status-k">差旅补贴</span>
-                  <span className="badge-ok">已批 · ¥800</span>
+                  <span className="status-k">联系邮箱</span>
+                  <span className="status-v">{me?.email || '-'}</span>
+                </div>
+                <div className="status-row">
+                  <span className="status-k">学校</span>
+                  <span className="status-v">{registration?.school || '待填写'}</span>
                 </div>
                 <div className="status-row">
                   <span className="status-k">队伍</span>
-                  <span className="status-v">Hot Ramen (4/4)</span>
+                  <span className="status-v">{team}</span>
                 </div>
                 <div className="status-row">
                   <span className="status-k">赛道</span>
-                  <span className="status-v">环境智能</span>
+                  <span className="status-v">{tracks}</span>
                 </div>
                 <div className="status-row">
                   <span className="status-k">周边尺码</span>
-                  <span className="status-v">M · 签到日领取</span>
-                </div>
-                <div className="status-row">
-                  <span className="status-k">住宿</span>
-                  <span className="badge-wait">分配中</span>
+                  <span className="status-v">{tshirt}</span>
                 </div>
                 <div className="quick-actions">
                   <button type="button" className="qa magnet">
@@ -177,20 +319,18 @@ export default function User() {
             <section className="dash-grid">
               <div className="dash-card">
                 <div className="section-h">
-                  <h2>我的队伍 · Hot Ramen</h2>
+                  <h2>我的队伍 · {team}</h2>
                   <a href="#team">管理队伍 →</a>
                 </div>
                 <div className="team-roster">
-                  {TEAM.map((m) => (
-                    <div key={m.name} className="member">
-                      <div className="av">{m.i}</div>
-                      <div className="member-meta">
-                        <div className="name">{m.name}</div>
-                        <div className="role">{m.role}</div>
-                      </div>
-                      <span className="tag">{m.tag}</span>
+                  <div className="member">
+                    <div className="av">{initials}</div>
+                    <div className="member-meta">
+                      <div className="name">{name}</div>
+                      <div className="role">{role}</div>
                     </div>
-                  ))}
+                    <span className="tag">我</span>
+                  </div>
                 </div>
 
                 <div className="section-h section-h-sp">
@@ -227,7 +367,7 @@ export default function User() {
                   </div>
                   <span className="track-chip">◢ 环境智能</span>
                   <textarea
-                    defaultValue="我们想做一台懂宿舍氛围的小设备:根据人在、声音、光线,自动微调灯光、音乐和空调 — 不用 app,靠‘在场感’。48 小时目标是跑通原型 + 3 分钟短片。"
+                    defaultValue={registration?.note || '这里会同步你的报名 pitch,也可以先写下项目草稿。'}
                   />
                   <div className="project-footer">
                     <span className="save-hint">已自动保存</span>

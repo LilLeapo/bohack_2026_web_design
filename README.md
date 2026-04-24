@@ -14,6 +14,13 @@ npm run dev
 
 Then open http://localhost:5173.
 
+The frontend API client defaults to `https://api.bohack.top`. Override it when
+needed with:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8080 npm run dev
+```
+
 ## Scripts
 
 - `npm run dev` — start the Vite dev server with HMR
