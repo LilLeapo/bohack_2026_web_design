@@ -1,43 +1,5 @@
-// ─── Bohack interactions: cursor, spotlight, particles, parallax ─── //
+// ─── Bohack interactions: particles, parallax, magnets ─── //
 (function () {
-  // ——— Cursor ———
-  const dot = document.createElement('div');
-  const ring = document.createElement('div');
-  dot.className = 'cursor-dot';
-  ring.className = 'cursor-ring';
-  document.body.append(dot, ring);
-
-  const spot = document.createElement('div');
-  spot.className = 'spotlight';
-  document.body.append(spot);
-
-  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-  let rx = mx, ry = my; // ring lags
-  window.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate3d(${mx - 3}px, ${my - 3}px, 0)`;
-    spot.style.setProperty('--mx', mx + 'px');
-    spot.style.setProperty('--my', my + 'px');
-  }, { passive: true });
-
-  function tickCursor() {
-    rx += (mx - rx) * 0.18;
-    ry += (my - ry) * 0.18;
-    ring.style.transform = `translate3d(${rx - 18}px, ${ry - 18}px, 0)`;
-    requestAnimationFrame(tickCursor);
-  }
-  tickCursor();
-
-  // Hover enlargement on interactive targets
-  document.addEventListener('mouseover', (e) => {
-    const t = e.target.closest('a, button, .magnet, .track, .prize, .sponsor, .faq-q');
-    if (t) ring.classList.add('hover');
-  });
-  document.addEventListener('mouseout', (e) => {
-    const t = e.target.closest('a, button, .magnet, .track, .prize, .sponsor, .faq-q');
-    if (t) ring.classList.remove('hover');
-  });
-
   // ——— Magnetic buttons ———
   function initMagnets() {
     document.querySelectorAll('.magnet').forEach(el => {

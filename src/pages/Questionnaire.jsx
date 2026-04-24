@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useCursor } from '../hooks/useCursor.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 
 const QUESTIONS = [
@@ -139,7 +138,6 @@ function Ring({ pct }) {
 }
 
 export default function Questionnaire() {
-  useCursor();
   useMagnet();
 
   const [i, setI] = useState(0);

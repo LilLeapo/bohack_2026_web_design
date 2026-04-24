@@ -38,7 +38,6 @@ src/
   styles/
     globals.css            # Design tokens + all section styles
   hooks/
-    useCursor.js           # Custom cursor + spotlight + hover enlarge
     useParticles.js        # Hero particle network canvas
     useParallax.js         # Scroll-driven parallax on [data-parallax]
     useReveal.js           # IntersectionObserver reveal-on-scroll

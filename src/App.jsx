@@ -15,7 +15,6 @@ import Register from './pages/Register.jsx';
 import User from './pages/User.jsx';
 import Questionnaire from './pages/Questionnaire.jsx';
 
-import { useCursor } from './hooks/useCursor.js';
 import { useReveal } from './hooks/useReveal.js';
 import { useParallax } from './hooks/useParallax.js';
 import { useMagnet } from './hooks/useMagnet.js';
@@ -25,7 +24,6 @@ function readRoute() {
 }
 
 function Site() {
-  useCursor();
   useReveal();
   useParallax();
   useMagnet();
