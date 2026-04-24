@@ -6,7 +6,7 @@ const DAYS = [
     t: '5 月 22—24 日 · 线下黑客松',
     rows: [
       { time: '5/22', title: '入场签到、开幕仪式、组队与开 Hack', tag: '启动' },
-      { time: '5/23', title: '48 小时集中构建、导师 Office Hours、工作坊', tag: '构建' },
+      { time: '5/23', title: '42 小时集中构建、导师 Office Hours、工作坊', tag: '构建' },
       { time: '5/24', title: '项目提交、Demo 初评、进入孵化辅导名单', tag: '提交' },
     ],
   },

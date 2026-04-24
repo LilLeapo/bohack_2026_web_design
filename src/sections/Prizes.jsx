@@ -47,7 +47,7 @@ export default function Prizes() {
             <div>
               <div className="amt">¥3K</div>
               <div className="label" style={{ marginTop: 8 }}>
-                由现场 600 位黑客投票产生。
+                由现场 100+ 位选手投票产生。
               </div>
             </div>
             <div className="deco" />

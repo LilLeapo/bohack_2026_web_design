@@ -10,7 +10,7 @@ export default function About() {
             <div className="chapter-num" data-parallax="0.08">01</div>
           </div>
           <h2 className="title" data-parallax="-0.04">
-            四十八小时。<br />
+            四十二小时。<br />
             一个离谱到可行的点子。
           </h2>
         </div>
@@ -25,7 +25,7 @@ export default function About() {
           </div>
           <div className="about-side reveal" data-stagger="true">
             <p>
-              十六所高校,六百名学生,先在 5 月 22—24 日完成 48 小时线下创作,
+              全国高校,100+ 位选手,先在 5 月 22—24 日完成 42 小时线下创作,
               再进入 5 月 24—28 日项目孵化辅导阶段。
             </p>
             <p>
@@ -33,8 +33,8 @@ export default function About() {
               5 月 28—31 日国家会展中心世界智能产业博览会的线下展演舞台。
             </p>
             <div className="about-stats">
-              <div className="s"><div className="n">600</div><div className="t">学生黑客</div></div>
-              <div className="s"><div className="n">16</div><div className="t">合作高校</div></div>
+              <div className="s"><div className="n">100+</div><div className="t">参赛选手</div></div>
+              <div className="s"><div className="n">42h</div><div className="t">线下创作</div></div>
               <div className="s"><div className="n">¥50K+</div><div className="t">总奖金池</div></div>
               <div className="s"><div className="n">∞</div><div className="t">冷萃咖啡</div></div>
             </div>

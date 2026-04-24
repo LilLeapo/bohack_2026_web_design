@@ -43,10 +43,10 @@ function Hero() {
 
       <div className="hero-floaters">
         <div className="floater lime pl" data-parallax="0.6" style={{ top: '14%', left: '6%' }}>
-          ◆ 600+ BUILDERS
+          ◆ 100+ BUILDERS
         </div>
         <div className="floater pl" data-parallax="0.4" style={{ top: '22%', right: '8%' }}>
-          ↗ 48 HOURS
+          ↗ 42 HOURS
         </div>
         <div className="floater coral pl" data-parallax="0.5" style={{ bottom: '28%', left: '10%' }}>
           ★ $50K PRIZES
@@ -67,13 +67,12 @@ function Hero() {
           </h1>
           <div className="hero-meta">
             <p className="hero-tag">
-              The Boreal Collegiate Hackathon. 48 hours, one continent, infinite caffeine. Build something weird, win something real.
+              The Boreal Collegiate Hackathon. 42 hours, one continent, infinite caffeine. Build something weird, win something real.
             </p>
             <div className="hero-stats">
-              <div><b>48</b>hours</div>
-              <div><b>600+</b>hackers</div>
+              <div><b>42</b>hours</div>
+              <div><b>100+</b>builders</div>
               <div><b>$50K</b>prizes</div>
-              <div><b>24</b>campuses</div>
             </div>
           </div>
         </div>
@@ -160,14 +159,14 @@ function About() {
           </div>
           <div className="about-side reveal" data-stagger="true">
             <p>
-              Sixteen universities. Six hundred students. One converted aircraft hangar in upstate New York, rigged with 48 hours of high-voltage creative panic.
+              National universities. 100+ builders. One converted aircraft hangar in upstate New York, rigged with 42 hours of high-voltage creative panic.
             </p>
             <p>
               You'll ship something that actually runs — on silicon, on servers, on stage — and leave with a demo, a team, and a story.
             </p>
             <div className="about-stats">
-              <div className="s"><div className="n">600</div><div className="t">Student hackers</div></div>
-              <div className="s"><div className="n">16</div><div className="t">Partner universities</div></div>
+              <div className="s"><div className="n">100+</div><div className="t">Builders</div></div>
+              <div className="s"><div className="n">42h</div><div className="t">Build sprint</div></div>
               <div className="s"><div className="n">$50K</div><div className="t">Prize pool</div></div>
               <div className="s"><div className="n">∞</div><div className="t">Cold brew</div></div>
             </div>
@@ -331,7 +330,7 @@ function Prizes() {
             <div className="rank">People's Choice</div>
             <div>
               <div className="amt">$3K</div>
-              <div className="label" style={{ marginTop: 8 }}>Voted by the 600 hackers in the room.</div>
+              <div className="label" style={{ marginTop: 8 }}>Voted by the 100+ builders in the room.</div>
             </div>
             <div className="deco" />
           </div>
@@ -384,9 +383,9 @@ function FAQ() {
   const items = [
     { q: 'Do I need a team?', a: "Nope. Show up solo — we run a team-formation carousel on Friday at 19:00 and most people leave with a crew." },
     { q: "I've never hacked before. Is this for me?", a: "Yes, emphatically. We run a first-timer track, a beginner mentor pool, and a dedicated $2K prize for first-time hackers." },
-    { q: "What can I build?", a: "Anything shippable in 48 hours that fits a track. Hardware, software, art, prose, weird physical objects — all fair game." },
+    { q: "What can I build?", a: "Anything shippable in 42 hours that fits a track. Hardware, software, art, prose, weird physical objects — all fair game." },
     { q: "Travel + housing?", a: "We cover bus fare from partner campuses and put you up two-to-a-room at the dorm next to the hangar." },
-    { q: "Is it really 48 hours straight?", a: "Clocks run for 48 hours, but you should sleep. The quiet room opens Saturday 22:00 with actual cots and blackout curtains." },
+    { q: "Is it really 42 hours straight?", a: "Clocks run for 42 hours, but you should sleep. The quiet room opens Saturday 22:00 with actual cots and blackout curtains." },
     { q: "Who judges?", a: "A rotating cast of alumni, engineers, and faculty. Full panel drops two weeks before the event." },
   ];
   const [open, setOpen] = useState(0);
@@ -494,7 +493,7 @@ function App() {
     <>
       <Nav />
       <Hero />
-      <Ticker dark items={['Bohack 2026', 'May 15—17', 'Upstate NY', '600 hackers', '48 hours', '$50K prizes', 'Apply by April 29']} />
+      <Ticker dark items={['Bohack 2026', 'May 15—17', 'Upstate NY', '100+ builders', '42 hours', '$50K prizes', 'Apply by April 29']} />
       <About />
       <Ticker items={['◆ 6 tracks', '◆ 16 universities', '◆ 40+ mentors', '◆ Free merch', '◆ Hangar venue', '◆ Cold brew on tap', '◆ Quiet room']} />
       <Tracks />

@@ -1,6 +1,6 @@
 # Bohack 2026
 
-Editorial landing page for **Bohack 2026** — a 48-hour collegiate hackathon.
+Editorial landing page for **Bohack 2026** — a 42-hour collegiate hackathon.
 
 Built with **Vite + React 18**. Design tokens and components are driven by the
 `pencil-new.pen` design system and the reference HTML/CSS prototype.

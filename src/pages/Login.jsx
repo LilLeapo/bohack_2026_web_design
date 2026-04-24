@@ -9,8 +9,8 @@ function Poster() {
   useParticles(canvasRef);
 
   const stats = [
-    { n: '600+', t: '黑客' },
-    { n: '48h', t: '极限冲刺' },
+    { n: '100+', t: '选手' },
+    { n: '42h', t: '极限冲刺' },
     { n: '¥50K+', t: '奖金池' },
   ];
 

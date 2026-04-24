@@ -67,7 +67,7 @@ function Poster() {
           来<span className="accent"> 搞点事情。</span>
         </h1>
         <p className="auth-poster-lede">
-          三分钟的纸面功夫,换来 48 小时的折腾时间。每一份申请我们都会亲自阅读——没有关键字过滤。
+          三分钟的纸面功夫,换来 42 小时的折腾时间。每一份申请我们都会亲自阅读——没有关键字过滤。
         </p>
         <div className="auth-poster-stats">
           {stats.map((s) => (

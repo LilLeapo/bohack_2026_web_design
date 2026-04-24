@@ -143,10 +143,9 @@ export default function Hero() {
               带一个还没想清楚的点子来,带一件能跑的作品、一支队伍、一段故事走。
             </p>
             <div className="hero-stats">
-              <div><b>48</b>小时</div>
-              <div><b>600+</b>黑客</div>
+              <div><b>42</b>小时</div>
+              <div><b>100+</b>选手</div>
               <div><b>¥50K+</b>奖金池</div>
-              <div><b>24</b>校区</div>
             </div>
           </div>
         </div>
