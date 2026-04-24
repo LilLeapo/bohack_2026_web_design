@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 const pad = (n) => String(n).padStart(2, '0');
 
 export default function Countdown() {
-  const target = useMemo(() => new Date(2026, 4, 28, 18, 0, 0).getTime(), []);
+  const target = useMemo(() => new Date(2026, 4, 22, 9, 0, 0).getTime(), []);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {

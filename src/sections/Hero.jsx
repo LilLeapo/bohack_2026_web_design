@@ -105,7 +105,7 @@ export default function Hero() {
       </div>
 
       <div className="hero-tianjin-chip pl" data-parallax="0.2">
-        TIANJIN · 5.28—31
+        TIANJIN · 5.22—31
       </div>
 
       <div className="hero-content">
@@ -139,7 +139,7 @@ export default function Hero() {
 
           <div className="hero-meta">
             <p className="hero-tag">
-              48 小时,天津集结,600 位学生黑客。WIE 2026 官方赛道。
+              5.22—24 线下黑客松,5.24—28 项目孵化辅导,5.28—31 国家会展中心智博会线下展演。
               带一个还没想清楚的点子来,带一件能跑的作品、一支队伍、一段故事走。
             </p>
             <div className="hero-stats">

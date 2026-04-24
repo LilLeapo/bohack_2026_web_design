@@ -181,7 +181,7 @@ export default function Nav() {
             )}
           </div>
           <div className="nav-drawer-meta">
-            <span>TIANJIN · 2026.05.28—31</span>
+            <span>TIANJIN · 2026.05.22—31</span>
             <span>WIE 2026 OFFICIAL TRACK</span>
           </div>
         </div>

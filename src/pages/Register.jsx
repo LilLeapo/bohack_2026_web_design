@@ -61,7 +61,7 @@ function Poster() {
       </div>
 
       <div className="auth-poster-body">
-        <div className="auth-poster-eyebrow">◉ 报名通道开放 · 5 月 15 日截止</div>
+        <div className="auth-poster-eyebrow">◉ 报名通道开放 · 5 月 22 日线下开赛</div>
         <h1 className="auth-poster-title">
           来<span className="accent"> 搞点事情。</span>
         </h1>
@@ -79,7 +79,7 @@ function Poster() {
       </div>
 
       <div className="auth-poster-footer">
-        <span>天津 · 滨海 / 2026.05.28—31</span>
+        <span>天津 · 滨海 / 2026.05.22—31</span>
         <span>Edition 04</span>
       </div>
     </aside>

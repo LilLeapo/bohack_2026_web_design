@@ -34,15 +34,16 @@ const TIMELINE = [
   { t: '04/02', l: '提交申请', s: 'done' },
   { t: '04/11', l: '通过审核 · 欢迎加入', s: 'done' },
   { t: '04/23', l: '今日 · 组队通道开启', s: 'now' },
-  { t: '05/28', l: '开营 · 签到 (16:00)', s: 'todo' },
-  { t: '05/28', l: '开幕仪式 (20:00)', s: 'todo' },
-  { t: '05/30', l: '作品提交截止 (12:00)', s: 'todo' },
+  { t: '05/22', l: '线下黑客松启动', s: 'todo' },
+  { t: '05/24', l: '项目提交 · 进入孵化辅导阶段', s: 'todo' },
+  { t: '05/24—28', l: '基金与风投机构辅导赋能', s: 'todo' },
+  { t: '05/28—31', l: '国家会展中心智博会线下展演', s: 'todo' },
 ];
 
-const TICKETS = [
-  { id: '#142', title: '替换 USB-C 扩展坞', meta: '2 天前 · 陈野', status: 'open' },
-  { id: '#128', title: '饮食:新增无麸质', meta: '已解决 · 5 天前', status: 'closed' },
-  { id: '#099', title: '申请额外差旅补贴', meta: '审核中 · 1 周前', status: 'pending' },
+const PREP_ITEMS = [
+  { id: '01', title: '完成报名问卷', meta: '用于赛道与导师匹配', status: '必做' },
+  { id: '02', title: '确认联系方式', meta: '邮箱、学校、手机号保持最新', status: '待确认' },
+  { id: '03', title: '关注赛前通知', meta: '5 月 22 日前会同步签到和分组安排', status: '即将发布' },
 ];
 
 const STATUS_LABELS = {
@@ -80,7 +81,7 @@ export default function User() {
   const [registration, setRegistration] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
-  const target = useMemo(() => new Date(2026, 4, 28, 9, 0, 0).getTime(), []);
+  const target = useMemo(() => new Date(2026, 4, 22, 9, 0, 0).getTime(), []);
   const cd = useCountdown(target);
 
   useEffect(() => {
@@ -248,8 +249,8 @@ export default function User() {
                     </h1>
                     <p className="sub">
                       {registration
-                        ? '你的 BOHACK 2026 报名信息已同步。请留好时间、带上电脑与充电器。距离开幕还有:'
-                        : '你还没有提交 BOHACK 2026 报名。完成报名后,这里会显示审核进度。距离开幕还有:'}
+                        ? '你的 BOHACK 2026 报名信息已同步。请留好时间、带上电脑与充电器。距离线下黑客松启动还有:'
+                        : '你还没有提交 BOHACK 2026 报名。完成报名后,这里会显示审核进度。距离线下黑客松启动还有:'}
                     </p>
                   </div>
                   <span className={registration?.status === 'approved' ? 'badge-ok' : 'badge-wait'}>
@@ -310,10 +311,6 @@ export default function User() {
                     <span className="qk">✎</span>
                     <span className="ql">报名问卷</span>
                   </a>
-                  <button type="button" className="qa magnet">
-                    <span className="qk">⇵</span>
-                    <span className="ql">更新饮食</span>
-                  </button>
                   <button type="button" className="qa magnet">
                     <span className="qk">↓</span>
                     <span className="ql">下载证件</span>
@@ -399,27 +396,21 @@ export default function User() {
 
                 <div className="dash-card">
                   <div className="section-h">
-                    <h2 className="section-h-sm">支持工单</h2>
-                    <a href="#support">新建 →</a>
+                    <h2 className="section-h-sm">赛前清单</h2>
+                    <a href="#questionnaire">完善问卷 →</a>
                   </div>
                   <div className="tickets">
-                    {TICKETS.map((t) => (
-                      <div className="ticket" key={t.id}>
-                        <span className="id">{t.id}</span>
+                    {PREP_ITEMS.map((item, idx) => (
+                      <div className="ticket" key={item.id}>
+                        <span className="id">{item.id}</span>
                         <div>
-                          <div className="tt">{t.title}</div>
-                          <div className="th">{t.meta}</div>
+                          <div className="tt">{item.title}</div>
+                          <div className="th">{item.meta}</div>
                         </div>
                         <span
-                          className={
-                            'ticket-status' + (t.status === 'open' ? ' open' : '')
-                          }
+                          className={'ticket-status' + (idx === 0 ? ' open' : '')}
                         >
-                          {t.status === 'open'
-                            ? '处理中'
-                            : t.status === 'closed'
-                            ? '已关闭'
-                            : '审核中'}
+                          {item.status}
                         </span>
                       </div>
                     ))}
@@ -438,7 +429,7 @@ export default function User() {
               <br />
               功能即将上线。
             </h1>
-            <p className="dash-empty-sub">5 月 1 日前开放</p>
+            <p className="dash-empty-sub">5 月 22 日前开放</p>
             <button
               type="button"
               className="auth-submit magnet dash-empty-back"

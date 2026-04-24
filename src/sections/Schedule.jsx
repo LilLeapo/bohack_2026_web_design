@@ -2,44 +2,30 @@ import { Fragment } from 'react';
 
 const DAYS = [
   {
-    n: 'Day 01',
-    t: '5 月 28 日 · 周四',
+    n: 'Phase 01',
+    t: '5 月 22—24 日 · 线下黑客松',
     rows: [
-      { time: '16:00', title: '入场 & 签到', tag: '报到' },
-      { time: '18:00', title: '开幕仪式(我们保证不用 PPT)', tag: '直播' },
-      { time: '19:00', title: '组队轮盘 · Team Carousel', tag: '社交' },
-      { time: '20:00', title: '开 Hack,时钟启动', tag: '构建' },
-      { time: '23:30', title: '午夜拉面加油站', tag: '餐饮' },
+      { time: '5/22', title: '入场签到、开幕仪式、组队与开 Hack', tag: '启动' },
+      { time: '5/23', title: '48 小时集中构建、导师 Office Hours、工作坊', tag: '构建' },
+      { time: '5/24', title: '项目提交、Demo 初评、进入孵化辅导名单', tag: '提交' },
     ],
   },
   {
-    n: 'Day 02',
-    t: '5 月 29 日 · 周五',
+    n: 'Phase 02',
+    t: '5 月 24—28 日 · 项目孵化辅导赋能',
     rows: [
-      { time: '09:00', title: '导师 Office Hours 开放', tag: '导师' },
-      { time: '12:00', title: '工作坊:如何在最后 18 小时把项目收尾', tag: '讲座' },
-      { time: '16:00', title: '硬件实验室开放参观', tag: '实验' },
-      { time: '22:00', title: '安静休息区开门,可以真的睡觉', tag: '休息' },
+      { time: '5/24', title: '项目梳理与孵化计划确认', tag: '孵化' },
+      { time: '5/25—27', title: '基金、风投机构与产业导师辅导,线上线下同步', tag: '辅导' },
+      { time: '5/28', title: '展演材料、路演脚本与现场 Demo 彩排', tag: '彩排' },
     ],
   },
   {
-    n: 'Day 03',
-    t: '5 月 30 日 · 周六',
+    n: 'Phase 03',
+    t: '5 月 28—31 日 · 国家会展中心智博会线下展演',
     rows: [
-      { time: '09:00', title: '冲刺日:黑客松进入第 36 小时', tag: '构建' },
-      { time: '14:00', title: '硬件演示彩排', tag: '彩排' },
-      { time: '20:00', title: '户外夜场 · 放空与散步', tag: '放松' },
-    ],
-  },
-  {
-    n: 'Day 04',
-    t: '5 月 31 日 · 周日',
-    rows: [
-      { time: '08:00', title: '咖啡、慌乱,以及最后的 commit', tag: '构建' },
-      { time: '12:00', title: '提交截止——放下键盘', tag: '截止' },
-      { time: '14:00', title: '展会式评审 · Science Fair(120 个项目)', tag: '评审' },
-      { time: '17:00', title: '决赛演示 · 主舞台', tag: '舞台' },
-      { time: '19:00', title: '闭幕式 · 揭晓获奖名单', tag: '舞台' },
+      { time: '5/28', title: '国家会展中心布展、签到与展区预演', tag: '展演' },
+      { time: '5/29—30', title: '世界智能产业博览会现场展示、交流与投融资对接', tag: '展会' },
+      { time: '5/31', title: '终评、成果发布与闭幕', tag: '收官' },
     ],
   },
 ];
@@ -50,12 +36,12 @@ export default function Schedule() {
       <div className="container">
         <div className="chapter-row reveal">
           <div>
-            <div className="eyebrow">Chapter 03 / 时钟</div>
+            <div className="eyebrow">Chapter 03 / 时间线</div>
             <div className="chapter-num" data-parallax="0.08">03</div>
           </div>
           <h2 className="title" data-parallax="-0.04">
-            四天时间,<br />
-            像一个超长的周末。
+            三段时间线,<br />
+            从 Hack 到展演。
           </h2>
         </div>
 

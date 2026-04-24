@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="footer" id="apply">
       <div className="container">
         <div className="eyebrow reveal" style={{ marginBottom: 24 }}>
-          ◉ 报名截止 / APPLY BY · 2026.05.10
+          ◉ 活动周期 / EVENT WINDOW · 2026.05.22—05.31
         </div>
         <div className="footer-big reveal">
           BUILD{' '}
@@ -57,7 +57,10 @@ export default function Footer() {
             <h4>版本说明 / Colophon</h4>
             <ul>
               <li>天津 · 滨海新区</li>
-              <li>2026.05.28 — 05.31</li>
+              <li>2026.05.22 — 05.31</li>
+              <li>5.22—24 线下黑客松</li>
+              <li>5.24—28 项目孵化辅导</li>
+              <li>5.28—31 智博会线下展演</li>
               <li>第 04 届</li>
               <li>WIE 2026 官方赛道</li>
             </ul>

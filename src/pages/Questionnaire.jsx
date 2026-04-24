@@ -228,7 +228,11 @@ export default function Questionnaire() {
       <aside className="q-side">
         <div>
           <div className="q-brand">
-            <span className="mark" />
+            <img
+              src="/BoHack-LOGO-%E5%8F%8D%E7%99%BD.svg"
+              alt="BoHack"
+              className="q-brand-logo"
+            />
             <span>Bohack · 2026</span>
           </div>
           <div style={{ marginTop: 36 }}>
@@ -518,7 +522,7 @@ export default function Questionnaire() {
               <em>机库见。</em>
             </h1>
             <p>
-              我们会在 5 月 15 日之前用你的回答为你匹配导师和预习资料。你可以随时从控制台修改。
+              我们会在 5 月 22 日线下黑客松启动前,用你的回答为你匹配导师和预习资料。你可以随时从控制台修改。
             </p>
             <div className="q-summary">
               <div className="s">

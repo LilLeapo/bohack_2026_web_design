@@ -1252,7 +1252,7 @@ body.dash-body a { cursor: pointer; }
 }
 
 .quick-actions {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px; margin-top: 14px;
 }
 .qa {
@@ -2072,6 +2072,7 @@ body.q-body { background: var(--bone); color: var(--ink); overflow: auto; }
   border-right: 1px solid var(--rule-dark);
 }
 .q-brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.q-brand-logo { height: 24px; width: auto; display: block; }
 .q-brand .mark { width: 18px; height: 18px; background: var(--lime); border-radius: 4px; }
 
 .q-title { font-family: var(--f-cn); font-size: 44px; font-weight: 700; letter-spacing: -0.035em; line-height: 1; }
