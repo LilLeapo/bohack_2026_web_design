@@ -14,6 +14,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import User from './pages/User.jsx';
 import Questionnaire from './pages/Questionnaire.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
 
 import { useReveal } from './hooks/useReveal.js';
 import { useParallax } from './hooks/useParallax.js';
@@ -83,6 +84,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/apply" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user" element={<User />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
         <Route path="*" element={<Site />} />

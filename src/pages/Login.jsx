@@ -132,7 +132,7 @@ export default function Login() {
           <div className={'auth-field' + (err ? ' is-error' : '')}>
             <label>
               密码
-              <a href="#forgot" className="hint hint-link">忘记密码?</a>
+              <Link to="/forgot-password" className="hint hint-link">忘记密码?</Link>
             </label>
             <div className="auth-pw-wrap">
               <input

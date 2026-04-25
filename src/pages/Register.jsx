@@ -124,6 +124,7 @@ export default function Register() {
     email: '',
     password: '',
     confirm: '',
+    verificationCode: '',
     resume: '',
     skills: [],
     skillsOther: '',
@@ -140,6 +141,8 @@ export default function Register() {
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [registrationResult, setRegistrationResult] = useState(null);
+  const [codeSending, setCodeSending] = useState(false);
+  const [codeInfo, setCodeInfo] = useState('');
 
   useEffect(() => {
     document.body.classList.add('auth-body');
@@ -195,17 +198,47 @@ export default function Register() {
     setStep((s) => Math.max(0, s - 1));
   };
 
+  const sendCode = async () => {
+    const email = normalizeEmail(data.email);
+    if (!email || !/.+@.+\..+/.test(email)) {
+      setErrs((current) => ({ ...current, email: '请先填写有效邮箱' }));
+      return;
+    }
+    setCodeSending(true);
+    setCodeInfo('');
+    setErrs((current) => ({ ...current, form: '' }));
+    try {
+      const result = await api.sendVerificationCode({
+        email,
+        codeType: 'register',
+      });
+      setCodeInfo(
+        result?.debug_code
+          ? `验证码已发送（调试模式：${result.debug_code}）。`
+          : '验证码已发送，请到邮箱查收。',
+      );
+    } catch (error) {
+      setErrs((current) => ({ ...current, form: userFacingError(error) }));
+    } finally {
+      setCodeSending(false);
+    }
+  };
+
   const submit = async (ev) => {
     ev?.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
     setErrs({});
     try {
-      const auth = await api.register({
+      const registerPayload = {
         username: buildUsername(data),
         email: normalizeEmail(data.email),
         password: data.password,
-      });
+      };
+      if (data.verificationCode.trim()) {
+        registerPayload.verificationCode = data.verificationCode.trim();
+      }
+      const auth = await api.register(registerPayload);
       setAuthSession(auth);
 
       const skillsText = formatSkills(data.skills, data.skillsOther);
@@ -236,8 +269,7 @@ export default function Register() {
         phone: data.contact.trim(),
         school: data.organization.trim(),
         bio: data.why.trim(),
-        teamName: data.availability,
-        rolePreference: skillsText.slice(0, 80),
+        rolePreference: skillsText.slice(0, 50),
         source: 'bohack-frontend',
         note: data.why.trim(),
         extra: {
@@ -511,6 +543,37 @@ export default function Register() {
                   />
                   {errs.confirm && (
                     <div className="auth-err">{errs.confirm}</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="auth-field">
+                <label>
+                  邮箱验证码 <span className="hint">可选 · 主办方要求时必填</span>
+                </label>
+                <div className="auth-pw-wrap">
+                  <input
+                    value={data.verificationCode}
+                    onChange={(e) => up('verificationCode', e.target.value)}
+                    placeholder="6 位数字"
+                    inputMode="numeric"
+                    maxLength={6}
+                    autoComplete="one-time-code"
+                  />
+                  <button
+                    type="button"
+                    className="auth-pw-toggle"
+                    onClick={sendCode}
+                    disabled={codeSending}
+                  >
+                    {codeSending ? '发送中…' : '获取验证码'}
+                  </button>
+                </div>
+                <div className="auth-field-meta">
+                  {codeInfo ? (
+                    <span className="hint">{codeInfo}</span>
+                  ) : (
+                    <span className="hint">如收到"请输入验证码"提示，再来这里发送。</span>
                   )}
                 </div>
               </div>
