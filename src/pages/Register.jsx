@@ -163,25 +163,14 @@ export default function Register() {
     if (step === 0) {
       const email = normalizeEmail(data.email);
       const contact = data.contact.trim();
-      if (!data.nickname.trim()) e.nickname = '请填写昵称';
-      if (!data.realName.trim()) e.realName = '请填写姓名';
-      if (!data.gender) e.gender = '请选择性别';
-      if (!data.ageGroup) e.ageGroup = '请选择年龄段';
-      if (!data.organization.trim()) e.organization = '请填写学校/机构和专业';
-      if (!contact) e.contact = '请填写电话或微信';
       if (contact.length > 32) e.contact = '联系方式过长';
       if (!email || !/.+@.+\..+/.test(email)) e.email = '请输入有效邮箱';
+      if (data.verificationCode.trim().length !== 6)
+        e.verificationCode = '请输入 6 位邮箱验证码';
       if (data.password.length < 8) e.password = '至少 8 位';
       if (data.password !== data.confirm) e.confirm = '两次密码不一致';
     }
-    if (step === 1) {
-      if (!data.skills.length && !data.skillsOther.trim())
-        e.skills = '请选择或补充你擅长的技术或产品技能';
-    }
     if (step === 2) {
-      if (!data.why.trim()) e.why = '请填写参赛原因';
-      if (!data.nonstandard.trim()) e.nonstandard = '请填写你的非标准答案';
-      if (!data.availability) e.availability = '请选择赛程参与情况';
       if (!data.agree) e.agree = '需要勾选同意才能提交';
     }
     setErrs(e);
@@ -399,7 +388,7 @@ export default function Register() {
               <div className="auth-field-row">
                 <div className={'auth-field' + (errs.nickname ? ' is-error' : '')}>
                   <label>
-                    昵称 <span className="hint">必填</span>
+                    昵称 <span className="hint">可选</span>
                   </label>
                   <input
                     value={data.nickname}
@@ -411,7 +400,7 @@ export default function Register() {
                 </div>
                 <div className={'auth-field' + (errs.realName ? ' is-error' : '')}>
                   <label>
-                    姓名 <span className="hint">必填</span>
+                    姓名 <span className="hint">可选</span>
                   </label>
                   <input
                     value={data.realName}
@@ -427,7 +416,7 @@ export default function Register() {
               <div className="auth-field-row">
                 <div className={'auth-field' + (errs.gender ? ' is-error' : '')}>
                   <label>
-                    性别 <span className="hint">必填</span>
+                    性别 <span className="hint">可选</span>
                   </label>
                   <div className="auth-chip-group">
                     {GENDERS.map((gender) => (
@@ -453,7 +442,7 @@ export default function Register() {
                 </div>
                 <div className={'auth-field' + (errs.ageGroup ? ' is-error' : '')}>
                   <label>
-                    年龄段 <span className="hint">必填</span>
+                    年龄段 <span className="hint">可选</span>
                   </label>
                   <select
                     value={data.ageGroup}
@@ -470,7 +459,7 @@ export default function Register() {
 
               <div className={'auth-field' + (errs.organization ? ' is-error' : '')}>
                 <label>
-                  学校/机构 + 专业 <span className="hint">必填</span>
+                  学校/机构 + 专业 <span className="hint">可选</span>
                 </label>
                 <input
                   value={data.organization}
@@ -484,7 +473,7 @@ export default function Register() {
               <div className="auth-field-row">
                 <div className={'auth-field' + (errs.contact ? ' is-error' : '')}>
                   <label>
-                    电话/微信 <span className="hint">必填</span>
+                    电话/微信 <span className="hint">可选</span>
                   </label>
                   <input
                     value={data.contact}
@@ -547,9 +536,13 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="auth-field">
+              <div
+                className={
+                  'auth-field' + (errs.verificationCode ? ' is-error' : '')
+                }
+              >
                 <label>
-                  邮箱验证码 <span className="hint">可选 · 主办方要求时必填</span>
+                  邮箱验证码 <span className="hint">必填 · 6 位</span>
                 </label>
                 <div className="auth-pw-wrap">
                   <input
@@ -573,7 +566,10 @@ export default function Register() {
                   {codeInfo ? (
                     <span className="hint">{codeInfo}</span>
                   ) : (
-                    <span className="hint">如收到"请输入验证码"提示，再来这里发送。</span>
+                    <span className="hint">点击右侧按钮，验证码发送至上方邮箱。</span>
+                  )}
+                  {errs.verificationCode && (
+                    <div className="auth-err">{errs.verificationCode}</div>
                   )}
                 </div>
               </div>
@@ -600,7 +596,7 @@ export default function Register() {
             <>
               <div className={'auth-field' + (errs.skills ? ' is-error' : '')}>
                 <label>
-                  你擅长的技术或产品技能 <span className="hint">必填</span>
+                  你擅长的技术或产品技能 <span className="hint">可选</span>
                 </label>
                 <div className="auth-skill-grid">
                   {SKILL_OPTIONS.map((option, index) => {
@@ -669,7 +665,7 @@ export default function Register() {
               <div className={'auth-field' + (errs.why ? ' is-error' : '')}>
                 <label>
                   你为什么想要参加这次世界智能产业博览会·智能创新黑客松大赛？
-                  <span className="hint">必填</span>
+                  <span className="hint">可选</span>
                 </label>
                 <textarea
                   rows={5}
@@ -687,7 +683,7 @@ export default function Register() {
               <div className={'auth-field' + (errs.nonstandard ? ' is-error' : '')}>
                 <label>
                   你觉得自己身上最“不像标准答案”的地方是什么？
-                  <span className="hint">必填</span>
+                  <span className="hint">可选</span>
                 </label>
                 <textarea
                   rows={5}
@@ -744,7 +740,7 @@ export default function Register() {
               >
                 <label>
                   你是否能完整参加黑客松主要赛程？
-                  <span className="hint">必填</span>
+                  <span className="hint">可选</span>
                 </label>
                 <div className="auth-chip-group">
                   {ATTENDANCE_OPTIONS.map((option) => (
