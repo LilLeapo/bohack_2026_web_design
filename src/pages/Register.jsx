@@ -237,7 +237,7 @@ export default function Register() {
         school: data.organization.trim(),
         bio: data.why.trim(),
         teamName: data.availability,
-        rolePreference: skillsText.slice(0, 80),
+        rolePreference: skillsText.slice(0, 50),
         source: 'bohack-frontend',
         note: data.why.trim(),
         extra: {

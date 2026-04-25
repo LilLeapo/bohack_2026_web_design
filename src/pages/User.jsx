@@ -82,6 +82,7 @@ export default function User() {
   const [me, setMe] = useState(null);
   const [registration, setRegistration] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [certificateLoading, setCertificateLoading] = useState(false);
   const [err, setErr] = useState('');
   const target = useMemo(() => new Date(2026, 4, 22, 9, 0, 0).getTime(), []);
   const cd = useCountdown(target);
@@ -159,6 +160,29 @@ export default function User() {
     event.preventDefault();
     clearAuthSession();
     navigate('/login');
+  };
+  const downloadCertificate = async () => {
+    if (!registration) {
+      setErr('请先完成报名后再下载证件。');
+      return;
+    }
+
+    setCertificateLoading(true);
+    try {
+      const { blob, filename } = await api.downloadRegistrationCertificate(registration.eventSlug);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      setErr(userFacingError(error));
+    } finally {
+      setCertificateLoading(false);
+    }
   };
 
   if (loading) {
@@ -313,9 +337,16 @@ export default function User() {
                     <span className="qk">✎</span>
                     <span className="ql">报名问卷</span>
                   </Link>
-                  <button type="button" className="qa magnet">
+                  <button
+                    type="button"
+                    className="qa magnet"
+                    onClick={downloadCertificate}
+                    disabled={certificateLoading || !registration}
+                  >
                     <span className="qk">↓</span>
-                    <span className="ql">下载证件</span>
+                    <span className="ql">
+                      {certificateLoading ? '生成中' : '下载证件'}
+                    </span>
                   </button>
                 </div>
               </div>

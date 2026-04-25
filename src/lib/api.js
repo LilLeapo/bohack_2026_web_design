@@ -136,6 +136,48 @@ async function request(path, options = {}) {
   return payload.data;
 }
 
+async function requestBlob(path, options = {}) {
+  const { query, auth = false } = options;
+  const token = getAccessToken();
+  const headers = { Accept: '*/*' };
+  if (auth && token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  let response;
+  try {
+    response = await fetch(buildUrl(path, query), { headers });
+  } catch (error) {
+    throw new ApiError('无法连接后端服务，请稍后重试。', {
+      status: 0,
+      code: -1,
+      data: error,
+    });
+  }
+
+  if (!response.ok) {
+    const text = await response.text();
+    let payload = {};
+    try {
+      payload = text ? JSON.parse(text) : {};
+    } catch {
+      payload = { message: response.statusText };
+    }
+    throw new ApiError(payload.message || response.statusText || '请求失败', {
+      status: response.status,
+      code: payload.code,
+      data: payload.data || text,
+    });
+  }
+
+  const disposition = response.headers.get('Content-Disposition') || '';
+  const filename = disposition.match(/filename="?([^"]+)"?/)?.[1] || 'bohack-certificate.txt';
+  return {
+    blob: await response.blob(),
+    filename,
+  };
+}
+
 export const api = {
   login(payload) {
     return request('/auth/login', {
@@ -173,6 +215,25 @@ export const api = {
       method: 'POST',
       body: payload,
       auth: true,
+    });
+  },
+  updateRegistration(payload) {
+    return request('/registration', {
+      method: 'PATCH',
+      body: payload,
+      auth: true,
+    });
+  },
+  downloadRegistrationCertificate(eventSlug) {
+    return requestBlob('/registration/certificate', {
+      auth: true,
+      query: { eventSlug },
+    });
+  },
+  confirmAttendance(payload) {
+    return request('/attendance/confirm', {
+      method: 'POST',
+      body: payload,
     });
   },
 };

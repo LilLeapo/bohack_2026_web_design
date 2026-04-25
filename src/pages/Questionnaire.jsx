@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
+import {
+  api,
+  getAccessToken,
+  userFacingError,
+} from '../lib/api.js';
 
 const QUESTIONNAIRE_TITLE =
   '2026世界智能产业博览会·智能创新黑客松报名问卷';
@@ -251,6 +256,53 @@ function optionLabel(question, value) {
   return question.options.find((o) => o.v === value)?.lbl || '';
 }
 
+function optionValue(question, value) {
+  if (!value) return undefined;
+  return question.options.find((o) => o.v === value || o.lbl === value)?.v;
+}
+
+function parseExtra(registration) {
+  if (!registration?.extra) return {};
+  if (typeof registration.extra === 'string') {
+    try {
+      return JSON.parse(registration.extra);
+    } catch {
+      return {};
+    }
+  }
+  return registration.extra;
+}
+
+function answersFromRegistration(registration) {
+  if (!registration) return {};
+
+  const extra = parseExtra(registration);
+  const questionnaire = extra.questionnaire || {};
+
+  return {
+    nickname: valueText(questionnaire.nickname || extra.nickname),
+    realName: valueText(questionnaire.realName || registration.realName),
+    gender: optionValue(QUESTION_BY_KEY.gender, questionnaire.gender || extra.gender),
+    ageGroup: optionValue(QUESTION_BY_KEY.ageGroup, questionnaire.ageGroup || extra.ageGroup),
+    organization: valueText(questionnaire.organization || registration.school),
+    contact: valueText(questionnaire.contact || registration.phone),
+    email: valueText(questionnaire.email || registration.emailSnapshot),
+    resume: valueText(questionnaire.resume || extra.resume),
+    skills: Array.isArray(questionnaire.skillTypes) ? questionnaire.skillTypes : [],
+    skillsOther: valueText(questionnaire.skillsOther),
+    keywords: valueText(questionnaire.keywords || extra.keywords),
+    projects: valueText(questionnaire.projects || extra.projects),
+    why: valueText(questionnaire.why || registration.bio),
+    nonstandard: valueText(questionnaire.nonstandard || extra.nonstandard),
+    answerOrQuestion: valueText(questionnaire.answerOrQuestion || extra.answerOrQuestion),
+    postScarcityWork: valueText(questionnaire.postScarcityWork || extra.postScarcityWork),
+    availability: optionValue(
+      QUESTION_BY_KEY.availability,
+      questionnaire.availability || extra.availability || registration.teamName
+    ),
+  };
+}
+
 function fieldMessage(question, value) {
   const text = valueText(value);
   if (question.kind === 'skillCards') return '可多选';
@@ -318,15 +370,56 @@ function Ring({ pct }) {
 
 export default function Questionnaire() {
   useMagnet();
+  const navigate = useNavigate();
 
   const [i, setI] = useState(0);
   const [ans, setAns] = useState({});
   const [done, setDone] = useState(false);
+  const [registration, setRegistration] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
     document.body.classList.add('q-body');
     return () => document.body.classList.remove('q-body');
   }, []);
+
+  useEffect(() => {
+    let alive = true;
+
+    if (!getAccessToken()) {
+      navigate('/login', { replace: true });
+      return () => {
+        alive = false;
+      };
+    }
+
+    async function loadRegistration() {
+      setLoading(true);
+      setErr('');
+      try {
+        const current = await api.registrationStatus().catch((error) => {
+          if (error.status === 404) return null;
+          throw error;
+        });
+        if (!alive) return;
+        setRegistration(current);
+        setAns(answersFromRegistration(current));
+      } catch (error) {
+        if (!alive) return;
+        setErr(userFacingError(error));
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
+
+    loadRegistration();
+
+    return () => {
+      alive = false;
+    };
+  }, [navigate]);
 
   const page = QUESTION_GROUPS[i];
   const total = QUESTION_GROUPS.length;
@@ -337,10 +430,78 @@ export default function Questionnaire() {
     return page.questions.every((question) => isQuestionValid(question, ans));
   }, [page, ans]);
 
+  const saveQuestionnaire = useCallback(async () => {
+    if (!canNext()) return;
+
+    const skillsText = formatSkillAnswer(ans);
+    const availability = optionLabel(QUESTION_BY_KEY.availability, ans.availability);
+    const questionnaire = {
+      title: QUESTIONNAIRE_TITLE,
+      nickname: valueText(ans.nickname),
+      realName: valueText(ans.realName),
+      gender: optionLabel(QUESTION_BY_KEY.gender, ans.gender),
+      ageGroup: optionLabel(QUESTION_BY_KEY.ageGroup, ans.ageGroup),
+      organization: valueText(ans.organization),
+      contact: valueText(ans.contact),
+      email: valueText(ans.email).toLowerCase(),
+      resume: valueText(ans.resume),
+      skills: skillsText,
+      skillTypes: Array.isArray(ans.skills) ? ans.skills : [],
+      skillsOther: valueText(ans.skillsOther),
+      keywords: valueText(ans.keywords),
+      projects: valueText(ans.projects),
+      why: valueText(ans.why),
+      nonstandard: valueText(ans.nonstandard),
+      answerOrQuestion: valueText(ans.answerOrQuestion),
+      postScarcityWork: valueText(ans.postScarcityWork),
+      availability,
+    };
+    const extra = {
+      ...parseExtra(registration),
+      questionnaire,
+      nickname: questionnaire.nickname,
+      gender: questionnaire.gender,
+      ageGroup: questionnaire.ageGroup,
+      resume: questionnaire.resume,
+      skills: questionnaire.skills,
+      keywords: questionnaire.keywords,
+      projects: questionnaire.projects,
+      nonstandard: questionnaire.nonstandard,
+      answerOrQuestion: questionnaire.answerOrQuestion,
+      postScarcityWork: questionnaire.postScarcityWork,
+      availability: questionnaire.availability,
+    };
+    const payload = {
+      realName: questionnaire.realName,
+      phone: questionnaire.contact,
+      school: questionnaire.organization,
+      bio: questionnaire.why,
+      teamName: questionnaire.availability,
+      rolePreference: skillsText.slice(0, 50),
+      source: 'bohack-questionnaire',
+      note: questionnaire.why,
+      extra,
+    };
+
+    setSubmitting(true);
+    setErr('');
+    try {
+      const saved = registration
+        ? await api.updateRegistration(payload)
+        : await api.createRegistration(payload);
+      setRegistration(saved);
+      setDone(true);
+    } catch (error) {
+      setErr(userFacingError(error));
+    } finally {
+      setSubmitting(false);
+    }
+  }, [ans, canNext, registration]);
+
   const next = useCallback(() => {
-    if (i >= total - 1) setDone(true);
+    if (i >= total - 1) saveQuestionnaire();
     else setI(i + 1);
-  }, [i, total]);
+  }, [i, total, saveQuestionnaire]);
 
   const back = useCallback(() => {
     if (done) {
@@ -363,14 +524,14 @@ export default function Questionnaire() {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (done) return;
+      if (done || submitting) return;
       const tag = e.target?.tagName;
       if (e.key === 'Enter' && tag !== 'TEXTAREA' && canNext()) next();
       if (e.key === 'Backspace' && e.metaKey) back();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [done, canNext, next, back]);
+  }, [done, submitting, canNext, next, back]);
 
   const sectionStatus = (name) => {
     const firstIdx = QUESTION_GROUPS.findIndex((x) => x.section === name);
@@ -391,6 +552,20 @@ export default function Questionnaire() {
     ['技能', formatSkillAnswer(ans)],
     ['赛程', optionLabel(QUESTION_BY_KEY.availability, ans.availability)],
   ];
+
+  if (loading) {
+    return (
+      <div className="q-shell">
+        <main className="q-main">
+          <div className="q-card">
+            <div className="q-step-label">Registration Questionnaire</div>
+            <h1 className="q-question">正在读取报名信息。</h1>
+            <p className="q-hint">请稍候。</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="q-shell">
@@ -616,14 +791,16 @@ export default function Questionnaire() {
               ))}
             </div>
 
+            {err && <div className="auth-err">{err}</div>}
+
             <div className="q-actions">
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 <button
                   type="button"
                   className="auth-ghost magnet"
                   onClick={back}
-                  disabled={i === 0}
-                  style={{ opacity: i === 0 ? 0.4 : 1 }}
+                  disabled={i === 0 || submitting}
+                  style={{ opacity: i === 0 || submitting ? 0.4 : 1 }}
                 >
                   ← 返回
                 </button>
@@ -638,10 +815,10 @@ export default function Questionnaire() {
                   type="button"
                   className="auth-submit magnet"
                   onClick={next}
-                  disabled={!canNext()}
-                  style={{ opacity: canNext() ? 1 : 0.5 }}
+                  disabled={!canNext() || submitting}
+                  style={{ opacity: canNext() && !submitting ? 1 : 0.5 }}
                 >
-                  {i === total - 1 ? '提交' : '下一页'}{' '}
+                  {submitting ? '提交中' : i === total - 1 ? '提交' : '下一页'}{' '}
                   <span className="arrow">↗</span>
                 </button>
               </div>
