@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 import {
   api,
+  clearAuthSession,
   getAccessToken,
   userFacingError,
 } from '../lib/api.js';
@@ -32,7 +33,7 @@ const QUESTIONS = [
     key: 'nickname',
     q: '昵称',
     hint: '用于报名沟通、微信群备注和现场识别。',
-    required: true,
+    required: false,
     placeholder: '例如：小波',
     max: 40,
   },
@@ -42,7 +43,7 @@ const QUESTIONS = [
     key: 'realName',
     q: '姓名',
     hint: '请填写真实姓名，用于参赛资格确认。',
-    required: true,
+    required: false,
     placeholder: '例如：李家豪',
     max: 40,
   },
@@ -52,7 +53,7 @@ const QUESTIONS = [
     key: 'gender',
     q: '性别',
     hint: '仅用于活动统计和服务准备。',
-    required: true,
+    required: false,
     options: [
       { v: 'male', lbl: '男' },
       { v: 'female', lbl: '女' },
@@ -66,7 +67,7 @@ const QUESTIONS = [
     key: 'ageGroup',
     q: '年龄段',
     hint: '请选择与你当前情况最接近的一项。',
-    required: true,
+    required: false,
     options: [
       { v: 'under_18', lbl: '18 岁以下' },
       { v: '18_22', lbl: '18-22 岁' },
@@ -81,7 +82,7 @@ const QUESTIONS = [
     key: 'organization',
     q: '学校/机构 + 专业',
     hint: '例如：天津大学 / 计算机科学与技术。',
-    required: true,
+    required: false,
     placeholder: '学校或机构 / 专业或方向',
     max: 100,
   },
@@ -91,7 +92,7 @@ const QUESTIONS = [
     key: 'contact',
     q: '电话/微信',
     hint: '请填写至少一种可联系到你的方式。',
-    required: true,
+    required: false,
     placeholder: '手机号或微信号',
     max: 32,
   },
@@ -101,7 +102,7 @@ const QUESTIONS = [
     key: 'email',
     q: '邮箱',
     hint: '请确保您的邮箱能收到消息，未来重要通知将通过邮箱和微信群发送。',
-    required: true,
+    required: false,
     type: 'email',
     placeholder: 'you@example.com',
     max: 100,
@@ -123,7 +124,7 @@ const QUESTIONS = [
     extraKey: 'skillsOther',
     q: '你擅长的技术或产品技能',
     hint: '可多选。选出你能带进团队的主要能力，也可以补充具体技术栈。',
-    required: true,
+    required: false,
     options: SKILL_OPTIONS,
     placeholder: '补充具体技术栈，例如 React、LLM Agent、Arduino、路演等。',
     max: 240,
@@ -154,7 +155,7 @@ const QUESTIONS = [
     key: 'why',
     q: '你为什么想要参加这次世界智能产业博览会·智能创新黑客松大赛？',
     hint: '请写出你的真实动机：你期待遇见什么、验证什么、创造什么。',
-    required: true,
+    required: false,
     placeholder: '告诉我们你想来的原因。',
     max: 800,
   },
@@ -164,7 +165,7 @@ const QUESTIONS = [
     key: 'nonstandard',
     q: '你觉得自己身上最“不像标准答案”的地方是什么？',
     hint: '我们想看到你的独特性，而不是模板答案。',
-    required: true,
+    required: false,
     placeholder: '一个特质、一段经历，或一个你长期在意的问题。',
     max: 800,
   },
@@ -194,7 +195,7 @@ const QUESTIONS = [
     key: 'availability',
     q: '你是否能完整参加黑客松主要赛程？',
     hint: '主要赛程为线下黑客松、项目辅导与智博会线下展演相关安排。',
-    required: true,
+    required: false,
     options: [
       { v: 'full', lbl: '可以完整参加' },
       { v: 'mostly', lbl: '大部分时间可以参加' },
@@ -408,6 +409,11 @@ export default function Questionnaire() {
         setAns(answersFromRegistration(current));
       } catch (error) {
         if (!alive) return;
+        if (error.status === 401) {
+          clearAuthSession();
+          navigate('/login', { replace: true });
+          return;
+        }
         setErr(userFacingError(error));
       } finally {
         if (alive) setLoading(false);
@@ -492,11 +498,16 @@ export default function Questionnaire() {
       setRegistration(saved);
       setDone(true);
     } catch (error) {
+      if (error.status === 401) {
+        clearAuthSession();
+        navigate('/login', { replace: true });
+        return;
+      }
       setErr(userFacingError(error));
     } finally {
       setSubmitting(false);
     }
-  }, [ans, canNext, registration]);
+  }, [ans, canNext, navigate, registration]);
 
   const next = useCallback(() => {
     if (i >= total - 1) saveQuestionnaire();

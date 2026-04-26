@@ -80,6 +80,7 @@ async function request(path, options = {}) {
     headers = {},
     query,
     auth = false,
+    raw = false,
   } = options;
 
   const token = getAccessToken();
@@ -112,6 +113,27 @@ async function request(path, options = {}) {
     });
   }
 
+  if (raw) {
+    if (!response.ok) {
+      let message = response.statusText || '请求失败';
+      try {
+        const text = await response.text();
+        if (text) {
+          const payload = JSON.parse(text);
+          throw new ApiError(payload.message || message, {
+            status: response.status,
+            code: payload.code,
+            data: payload.data,
+          });
+        }
+      } catch (error) {
+        if (error instanceof ApiError) throw error;
+      }
+      throw new ApiError(message, { status: response.status, code: -2 });
+    }
+    return response;
+  }
+
   const text = await response.text();
   let payload = {};
   try {
@@ -134,6 +156,21 @@ async function request(path, options = {}) {
   }
 
   return payload.data;
+}
+
+function inferFilenameFromDisposition(disposition, fallback) {
+  if (!disposition) return fallback;
+  const utf8 = /filename\*=UTF-8''([^;]+)/i.exec(disposition);
+  if (utf8) {
+    try {
+      return decodeURIComponent(utf8[1].trim());
+    } catch {
+      // Fall back to the ASCII filename branch below.
+    }
+  }
+  const ascii = /filename="?([^";]+)"?/i.exec(disposition);
+  if (ascii) return ascii[1].trim();
+  return fallback;
 }
 
 async function requestBlob(path, options = {}) {
@@ -171,7 +208,10 @@ async function requestBlob(path, options = {}) {
   }
 
   const disposition = response.headers.get('Content-Disposition') || '';
-  const filename = disposition.match(/filename="?([^"]+)"?/)?.[1] || 'bohack-certificate.txt';
+  const filename = inferFilenameFromDisposition(
+    disposition,
+    'bohack-certificate.txt',
+  );
   return {
     blob: await response.blob(),
     filename,
@@ -195,6 +235,25 @@ export const api = {
     return request('/auth/send-verification-code', {
       method: 'POST',
       body: payload,
+    });
+  },
+  forgotPasswordSendCode(payload) {
+    return request('/auth/forgot-password/send-code', {
+      method: 'POST',
+      body: payload,
+    });
+  },
+  forgotPasswordReset(payload) {
+    return request('/auth/forgot-password/reset', {
+      method: 'POST',
+      body: payload,
+    });
+  },
+  changePassword(payload) {
+    return request('/auth/change-password', {
+      method: 'POST',
+      body: payload,
+      auth: true,
     });
   },
   me() {
@@ -230,6 +289,44 @@ export const api = {
       auth: true,
     });
   },
+  cancelRegistration(eventSlug) {
+    return request('/registration', {
+      method: 'DELETE',
+      auth: true,
+      query: { eventSlug },
+    });
+  },
+  listAttachments(eventSlug) {
+    return request('/registration/attachments', {
+      auth: true,
+      query: { eventSlug },
+    });
+  },
+  uploadAttachment(formData) {
+    return request('/registration/attachments', {
+      method: 'POST',
+      body: formData,
+      auth: true,
+    });
+  },
+  deleteAttachment(attachmentID) {
+    return request(`/registration/attachments/${attachmentID}`, {
+      method: 'DELETE',
+      auth: true,
+    });
+  },
+  async downloadAttachment(attachmentID, fallbackName = 'attachment') {
+    const response = await request(
+      `/registration/attachments/${attachmentID}/download`,
+      { auth: true, raw: true },
+    );
+    const blob = await response.blob();
+    const filename = inferFilenameFromDisposition(
+      response.headers.get('Content-Disposition'),
+      fallbackName,
+    );
+    return { blob, filename };
+  },
   downloadRegistrationCertificate(eventSlug) {
     return requestBlob('/registration/certificate', {
       auth: true,
@@ -243,6 +340,17 @@ export const api = {
     });
   },
 };
+
+export function triggerBlobDownload(blob, filename) {
+  const objectUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = objectUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 60 * 1000);
+}
 
 export function userFacingError(error) {
   if (!(error instanceof ApiError)) return '操作失败，请稍后重试。';
@@ -259,19 +367,36 @@ export function userFacingError(error) {
     case 40902:
     case 40903:
       return '这个邮箱已经注册过，请直接登录。';
-    case 40006:
-    case 42212:
-      return '验证码不正确或已过期。';
-    case 42901:
-      return '验证码发送太频繁，请稍后再试。';
     case 40310:
       return '当前活动暂未开放报名。';
     case 40402:
     case 40403:
       return '当前活动不存在，请联系主办方确认。';
+    case 40404:
+      return '尚未找到你的报名记录。';
     case 40910:
     case 40911:
       return '你已经提交过报名，请登录查看状态。';
+    case 40912:
+      return '当前状态下报名已不可修改。';
+    case 40913:
+      return '当前状态下报名无法取消。';
+    case 40006:
+    case 40007:
+      return '验证码无效或已过期，请重新获取。';
+    case 42901:
+      return '请稍后再请求验证码。';
+    case 42212:
+      return '请输入 6 位验证码。';
+    case 40114:
+      return '当前密码不正确。';
+    case 42203:
+    case 42208:
+      return '密码需要 6-128 位。';
+    case 42209:
+      return '新密码需要与当前密码不同。';
+    case 42219:
+      return '角色偏好太长（最多 50 字符）。';
     default:
       return error.message || '操作失败，请稍后重试。';
   }
