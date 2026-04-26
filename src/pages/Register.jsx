@@ -4,6 +4,8 @@ import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 import { api, setAuthSession, userFacingError } from '../lib/api.js';
 
+const RESEND_CODE_SECONDS = 60;
+
 function normalizeEmail(value) {
   return value.trim().toLowerCase();
 }
@@ -83,11 +85,20 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [sendingCode, setSendingCode] = useState(false);
   const [codeMessage, setCodeMessage] = useState('');
+  const [codeCooldown, setCodeCooldown] = useState(0);
 
   useEffect(() => {
     document.body.classList.add('auth-body');
     return () => document.body.classList.remove('auth-body');
   }, []);
+
+  useEffect(() => {
+    if (codeCooldown <= 0) return undefined;
+    const timer = window.setInterval(() => {
+      setCodeCooldown((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [codeCooldown]);
 
   const up = (key, value) => setData((current) => ({ ...current, [key]: value }));
 
@@ -110,6 +121,8 @@ export default function Register() {
   };
 
   const sendCode = async () => {
+    if (sendingCode || codeCooldown > 0) return;
+
     const email = normalizeEmail(data.email);
     if (!email || !/.+@.+\..+/.test(email)) {
       setErrs({ email: '请输入有效邮箱后再发送验证码' });
@@ -120,16 +133,12 @@ export default function Register() {
     setCodeMessage('');
     setErrs({});
     try {
-      const result = await api.sendVerificationCode({
+      await api.sendVerificationCode({
         email,
         codeType: 'register',
       });
-      setCodeMessage(
-        result?.debug_code
-          ? `验证码已发送。开发模式验证码: ${result.debug_code}`
-          : '验证码已发送，请检查邮箱。'
-      );
-      if (result?.debug_code) up('verificationCode', result.debug_code);
+      setCodeMessage('验证码已发送，请检查邮箱。');
+      setCodeCooldown(RESEND_CODE_SECONDS);
     } catch (error) {
       setErrs({ form: userFacingError(error) });
     } finally {
@@ -242,9 +251,13 @@ export default function Register() {
                 type="button"
                 className="auth-pw-toggle"
                 onClick={sendCode}
-                disabled={sendingCode}
+                disabled={sendingCode || codeCooldown > 0}
               >
-                {sendingCode ? '发送中' : '发送验证码'}
+                {sendingCode
+                  ? '发送中'
+                  : codeCooldown > 0
+                  ? `${codeCooldown}s 后重发`
+                  : '发送验证码'}
               </button>
             </div>
             {codeMessage && <div className="auth-field-meta"><span className="hint">{codeMessage}</span></div>}
