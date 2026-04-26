@@ -191,6 +191,12 @@ export const api = {
       body: payload,
     });
   },
+  sendVerificationCode(payload) {
+    return request('/auth/send-verification-code', {
+      method: 'POST',
+      body: payload,
+    });
+  },
   me() {
     return request('/auth/me', { auth: true });
   },
@@ -253,6 +259,11 @@ export function userFacingError(error) {
     case 40902:
     case 40903:
       return '这个邮箱已经注册过，请直接登录。';
+    case 40006:
+    case 42212:
+      return '验证码不正确或已过期。';
+    case 42901:
+      return '验证码发送太频繁，请稍后再试。';
     case 40310:
       return '当前活动暂未开放报名。';
     case 40402:

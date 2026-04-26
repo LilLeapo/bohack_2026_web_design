@@ -127,7 +127,7 @@ export default function Nav() {
                 登录
               </Link>
               <Link to="/register" className="nav-cta magnet nav-cta-desktop">
-                报名 →
+                创建账号 →
               </Link>
             </>
           )}
@@ -169,7 +169,7 @@ export default function Nav() {
               className="btn btn-primary nav-drawer-cta"
               onClick={closeDrawer}
             >
-              {isAuthed ? '进入控制台' : '立即报名'} <span className="arrow">↗</span>
+              {isAuthed ? '进入控制台' : '创建账号'} <span className="arrow">↗</span>
             </Link>
             {!isAuthed && (
               <Link

@@ -83,7 +83,7 @@ export default function App() {
         <Route path="/" element={<Site />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/apply" element={<Register />} />
+        <Route path="/apply" element={<Questionnaire />} />
         <Route path="/user" element={<User />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
         <Route path="/attendance-confirm" element={<AttendanceConfirm />} />

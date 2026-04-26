@@ -111,7 +111,7 @@ export default function Login() {
           <h1 className="auth-h1">登录。</h1>
           <p className="auth-sub">
             继续未完成的报名。还没有账号?{' '}
-            <Link to="/register" className="auth-link">立即申请 →</Link>
+            <Link to="/register" className="auth-link">创建账号 →</Link>
           </p>
 
           <div className={'auth-field' + (err ? ' is-error' : '')}>
