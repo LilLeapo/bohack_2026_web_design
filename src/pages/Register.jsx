@@ -4,6 +4,71 @@ import { useParticles } from '../hooks/useParticles.js';
 import { useMagnet } from '../hooks/useMagnet.js';
 import { api, setAuthSession, userFacingError } from '../lib/api.js';
 
+const TERMS_CONTENT = `BOHACK 用户协议
+
+最后更新：2026 年 4 月
+
+一、服务说明
+本网站由 BOHACK 主办方运营，账号用于报名、查看审核状态及接收活动通知。
+
+二、账号责任
+请妥善保管账号和密码，不得将账号转让或共享给他人使用。
+
+三、信息使用
+你提供的信息仅用于本次 BOHACK 2026 活动的参赛资格确认、组队匹配及活动沟通，不会用于其他商业目的。
+
+四、服务变更
+主办方保留在不提前通知的情况下修改或终止服务的权利。
+
+如有疑问，请联系：hello@bohack.io`;
+
+const PRIVACY_CONTENT = `BOHACK 隐私说明
+
+最后更新：2026 年 4 月
+
+一、收集的信息
+注册时我们收集：邮箱地址、用户名及加密密码。报名问卷中我们收集：姓名、联系方式、学校/机构、技能背景、参赛动机等。
+
+二、信息使用目的
+· 验证参赛资格
+· 发送活动通知（审核结果、日程、赛前提醒）
+· 组队匹配与导师对接
+
+三、信息存储与安全
+数据存储于国内服务器，采用加密传输（HTTPS）和访问控制保护。
+
+四、信息共享
+我们不会将你的个人信息出售或共享给任何第三方，仅在法律要求时配合监管机构。
+
+五、数据保留
+活动结束后，个人信息将在合理期限内保留以备查阅，之后按规定删除或匿名化处理。
+
+如有疑问，请联系：hello@bohack.io`;
+
+function PolicyModal({ title, content, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="policy-overlay" onClick={onClose}>
+      <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="policy-modal-header">
+          <span className="policy-modal-title">{title}</span>
+          <button type="button" className="policy-modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="policy-modal-body">
+          {content.split('\n').map((line, i) => (
+            line.trim() === '' ? <br key={i} /> : <p key={i}>{line}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const RESEND_CODE_SECONDS = 60;
 
 function normalizeEmail(value) {
@@ -62,7 +127,7 @@ function Poster() {
       </div>
 
       <div className="auth-poster-footer">
-        <span>天津 · 滨海 / 2026.05.22-31</span>
+        <span>天津 / 2026.05.22-31</span>
         <span>WIE 2026</span>
       </div>
     </aside>
@@ -85,6 +150,7 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [sendingCode, setSendingCode] = useState(false);
   const [codeMessage, setCodeMessage] = useState('');
+  const [modal, setModal] = useState(null);
   const [codeCooldown, setCodeCooldown] = useState(0);
 
   useEffect(() => {
@@ -313,21 +379,27 @@ export default function Register() {
               (errs.agree ? ' is-error' : '')
             }
           >
-            <label
-              className={
-                'auth-chip auth-chip-full' +
-                (data.agree ? ' is-on' : '')
-              }
-            >
-              <span className="mk" />
-              <span>
-                我已阅读并同意 BOHACK 的用户协议与隐私说明，理解账号信息将用于登录、报名状态查询和活动通知。
-              </span>
+            <label className="auth-agree-label">
               <input
                 type="checkbox"
                 checked={data.agree}
                 onChange={(e) => up('agree', e.target.checked)}
               />
+              <span>
+                我已阅读并同意 BOHACK{' '}
+                <button
+                  type="button"
+                  className="auth-policy-link"
+                  onClick={(e) => { e.preventDefault(); setModal('terms'); }}
+                >用户协议</button>
+                {' '}与{' '}
+                <button
+                  type="button"
+                  className="auth-policy-link"
+                  onClick={(e) => { e.preventDefault(); setModal('privacy'); }}
+                >隐私说明</button>
+                。
+              </span>
             </label>
             {errs.agree && <div className="auth-err">{errs.agree}</div>}
           </div>
@@ -347,6 +419,13 @@ export default function Register() {
           </div>
         </form>
       </main>
+      {modal && (
+        <PolicyModal
+          title={modal === 'terms' ? 'BOHACK 用户协议' : 'BOHACK 隐私说明'}
+          content={modal === 'terms' ? TERMS_CONTENT : PRIVACY_CONTENT}
+          onClose={() => setModal(null)}
+        />
+      )}
     </div>
   );
 }

@@ -47,7 +47,7 @@ function Poster() {
       </div>
 
       <div className="auth-poster-footer">
-        <span>天津 · 滨海 / 2026.05.22—31</span>
+        <span>天津 / 2026.05.22—31</span>
         <span>Bohack 2026</span>
       </div>
     </aside>
@@ -116,14 +116,14 @@ export default function Login() {
 
           <div className={'auth-field' + (err ? ' is-error' : '')}>
             <label>
-              校园邮箱
-              <span className="hint">推荐使用 .edu.cn</span>
+              邮箱
+              <span className="hint">用于登录</span>
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setErr(''); }}
-              placeholder="you@university.edu.cn"
+              placeholder="you@example.com"
               autoComplete="email"
               autoFocus
             />

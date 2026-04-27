@@ -33,7 +33,7 @@ function Poster() {
       </div>
 
       <div className="auth-poster-footer">
-        <span>天津 · 滨海 / 2026.05.22—31</span>
+        <span>天津 / 2026.05.22—31</span>
         <span>Bohack 2026</span>
       </div>
     </aside>

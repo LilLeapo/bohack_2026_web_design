@@ -55,18 +55,6 @@ export default function Footer() {
               <li><a href="#">GitHub</a></li>
             </ul>
           </div>
-          <div>
-            <h4>版本说明 / Colophon</h4>
-            <ul>
-              <li>天津 · 滨海新区</li>
-              <li>2026.05.22 — 05.31</li>
-              <li>5.22—24 线下黑客松</li>
-              <li>5.24—28 项目孵化辅导</li>
-              <li>5.28—31 智博会线下展演</li>
-              <li>Bohack 2026</li>
-              <li>WIE 2026 官方赛道</li>
-            </ul>
-          </div>
         </div>
         <div className="footer-bottom">
           <span>© BOHACK COLLECTIVE 2026</span>
