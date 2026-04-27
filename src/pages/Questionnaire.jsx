@@ -407,6 +407,7 @@ export default function Questionnaire() {
         if (!alive) return;
         setRegistration(current);
         setAns(answersFromRegistration(current));
+        setDone(Boolean(current));
       } catch (error) {
         if (!alive) return;
         if (error.status === 401) {
