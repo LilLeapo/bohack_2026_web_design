@@ -33,7 +33,7 @@ const QUESTIONS = [
     key: 'nickname',
     q: '昵称',
     hint: '用于报名沟通、微信群备注和现场识别。',
-    required: false,
+    required: true,
     placeholder: '例如：小波',
     max: 40,
   },
@@ -43,7 +43,7 @@ const QUESTIONS = [
     key: 'realName',
     q: '姓名',
     hint: '请填写真实姓名，用于参赛资格确认。',
-    required: false,
+    required: true,
     placeholder: '例如：李家豪',
     max: 40,
   },
@@ -53,7 +53,7 @@ const QUESTIONS = [
     key: 'gender',
     q: '性别',
     hint: '仅用于活动统计和服务准备。',
-    required: false,
+    required: true,
     options: [
       { v: 'male', lbl: '男' },
       { v: 'female', lbl: '女' },
@@ -67,7 +67,7 @@ const QUESTIONS = [
     key: 'ageGroup',
     q: '年龄段',
     hint: '请选择与你当前情况最接近的一项。',
-    required: false,
+    required: true,
     options: [
       { v: 'under_18', lbl: '18 岁以下' },
       { v: '18_22', lbl: '18-22 岁' },
@@ -82,7 +82,7 @@ const QUESTIONS = [
     key: 'organization',
     q: '学校/机构 + 专业',
     hint: '例如：天津大学 / 计算机科学与技术。',
-    required: false,
+    required: true,
     placeholder: '学校或机构 / 专业或方向',
     max: 100,
   },
@@ -92,7 +92,7 @@ const QUESTIONS = [
     key: 'contact',
     q: '电话/微信',
     hint: '请填写至少一种可联系到你的方式。',
-    required: false,
+    required: true,
     placeholder: '手机号或微信号',
     max: 32,
   },
@@ -102,7 +102,7 @@ const QUESTIONS = [
     key: 'email',
     q: '邮箱',
     hint: '请确保您的邮箱能收到消息，未来重要通知将通过邮箱和微信群发送。',
-    required: false,
+    required: true,
     type: 'email',
     placeholder: 'you@example.com',
     max: 100,
@@ -113,7 +113,7 @@ const QUESTIONS = [
     key: 'resume',
     q: '个人简历',
     hint: '可填写简历链接、作品集链接，或简单介绍你的经历。',
-    required: false,
+    required: true,
     placeholder: '简历链接、作品集、个人主页，或一段简短介绍。',
     max: 500,
   },
@@ -124,7 +124,7 @@ const QUESTIONS = [
     extraKey: 'skillsOther',
     q: '你擅长的技术或产品技能',
     hint: '可多选。选出你能带进团队的主要能力，也可以补充具体技术栈。',
-    required: false,
+    required: true,
     options: SKILL_OPTIONS,
     placeholder: '补充具体技术栈，例如 React、LLM Agent、Arduino、路演等。',
     max: 240,
@@ -134,8 +134,8 @@ const QUESTIONS = [
     section: '技能信息',
     key: 'keywords',
     q: '用几个关键词形容自己',
-    hint: '可选。用逗号、空格或短句都可以。',
-    required: false,
+    hint: '用逗号、空格或短句都可以。',
+    required: true,
     placeholder: '例如：好奇、执行快、会讲故事',
     max: 120,
   },
@@ -145,7 +145,7 @@ const QUESTIONS = [
     key: 'projects',
     q: '请列出你过去的活动/项目/奖项',
     hint: '不限类型。黑客松、课程项目、创业项目、论文、比赛、社团经历都可以。',
-    required: false,
+    required: true,
     placeholder: '项目名称 + 你的角色 + 结果，简单列出即可。',
     max: 800,
   },
@@ -155,7 +155,7 @@ const QUESTIONS = [
     key: 'why',
     q: '你为什么想要参加这次世界智能产业博览会·智能创新黑客松大赛？',
     hint: '请写出你的真实动机：你期待遇见什么、验证什么、创造什么。',
-    required: false,
+    required: true,
     placeholder: '告诉我们你想来的原因。',
     max: 800,
   },
@@ -165,7 +165,7 @@ const QUESTIONS = [
     key: 'nonstandard',
     q: '你觉得自己身上最“不像标准答案”的地方是什么？',
     hint: '我们想看到你的独特性，而不是模板答案。',
-    required: false,
+    required: true,
     placeholder: '一个特质、一段经历，或一个你长期在意的问题。',
     max: 800,
   },
@@ -195,7 +195,7 @@ const QUESTIONS = [
     key: 'availability',
     q: '你是否能完整参加黑客松主要赛程？',
     hint: '主要赛程为线下黑客松、项目辅导与智博会线下展演相关安排。',
-    required: false,
+    required: true,
     options: [
       { v: 'full', lbl: '可以完整参加' },
       { v: 'mostly', lbl: '大部分时间可以参加' },
@@ -304,9 +304,16 @@ function answersFromRegistration(registration) {
   };
 }
 
-function fieldMessage(question, value) {
+function fieldMessage(question, value, answers = {}) {
   const text = valueText(value);
-  if (question.kind === 'skillCards') return '可多选';
+  if (question.kind === 'skillCards') {
+    const hasSkill =
+      (Array.isArray(value) && value.length > 0) ||
+      valueText(answers[question.extraKey]).length > 0;
+    if (!question.required && !hasSkill) return '可选';
+    if (question.required && !hasSkill) return '必填';
+    return '看起来不错。';
+  }
   if (!question.required && !text) return '可选';
   if (question.type === 'email' && !isEmail(text)) return '请输入有效邮箱';
   if (question.required && text.length < (question.min || 1)) return '必填';
@@ -316,6 +323,7 @@ function fieldMessage(question, value) {
 function isQuestionValid(question, answers) {
   const value = answers[question.key];
   if (question.kind === 'skillCards') {
+    if (!question.required) return true;
     return (
       (Array.isArray(value) && value.length > 0) ||
       valueText(answers[question.extraKey]).length > 0
@@ -771,7 +779,9 @@ export default function Questionnaire() {
                           maxLength={question.max}
                         />
                         <div className="q-meta">
-                          <span>{fieldMessage(question, ans[question.key])}</span>
+                          <span>
+                            {fieldMessage(question, ans[question.key], ans)}
+                          </span>
                           <span>
                             {(ans[question.extraKey] || '').length} / {question.max}
                           </span>
