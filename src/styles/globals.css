@@ -286,7 +286,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .hero-wie-logo {
   height: 64px; width: 100%;
-  background: url('/wie-2026-lockup.png') center left / contain no-repeat;
+  background: url('/WIE-logo-white.svg') center left / contain no-repeat;
   filter: brightness(1.05);
 }
 
