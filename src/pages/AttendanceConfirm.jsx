@@ -16,6 +16,11 @@ export default function AttendanceConfirm() {
   const statusLabel = useMemo(() => STATUS_TEXT[status] || '确认到场', [status]);
 
   useEffect(() => {
+    document.body.classList.add('auth-body');
+    return () => document.body.classList.remove('auth-body');
+  }, []);
+
+  useEffect(() => {
     let alive = true;
 
     async function confirm() {
@@ -38,13 +43,13 @@ export default function AttendanceConfirm() {
   }, [token, status]);
 
   return (
-    <div className="auth-shell">
-      <main className="auth-panel" style={{ width: '100%', minHeight: '100vh' }}>
+    <div className="auth-shell attendance-confirm-shell">
+      <main className="auth-panel attendance-confirm-panel">
         <div className="auth-topbar">
           <Link to="/" className="auth-back">← 返回主页</Link>
           <span className="auth-topbar-meta">/ 参赛时间确认</span>
         </div>
-        <div className="auth-form">
+        <div className="auth-form attendance-confirm-form">
           <div className="auth-eyebrow">Attendance Confirmation</div>
           <h1 className="auth-h1">
             {state.loading ? '正在确认。' : state.error ? '确认失败。' : statusLabel}

@@ -57,8 +57,6 @@ const QUESTIONS = [
     options: [
       { v: 'male', lbl: '男' },
       { v: 'female', lbl: '女' },
-      { v: 'other', lbl: '其他' },
-      { v: 'prefer_not_to_say', lbl: '不便透露' },
     ],
   },
   {

@@ -2166,6 +2166,20 @@ body.auth-body { background: var(--ink); overflow: auto; }
 }
 .auth-foot a:hover { color: var(--ink); opacity: 1; }
 
+.attendance-confirm-shell {
+  display: block;
+  min-height: 100dvh;
+  overflow-y: auto;
+}
+.attendance-confirm-panel {
+  width: 100%;
+  min-height: 100dvh;
+}
+.attendance-confirm-form {
+  min-height: calc(100dvh - 144px);
+  justify-content: center;
+}
+
 /* ---- Register page extras ---- */
 .auth-steps {
   display: flex; align-items: center; gap: 8px;
@@ -2438,6 +2452,28 @@ body.auth-body { background: var(--ink); overflow: auto; }
   .auth-h1 { font-size: clamp(44px, 11vw, 64px); }
   .auth-chip-group { gap: 6px; }
   .auth-skill-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .attendance-confirm-panel {
+    padding: calc(20px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));
+  }
+  .attendance-confirm-panel .auth-topbar {
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.5;
+  }
+  .attendance-confirm-form {
+    min-height: calc(100dvh - 112px);
+    padding: 28px 0 0;
+  }
+  .attendance-confirm-form .auth-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+  .attendance-confirm-form .auth-sub {
+    font-size: 15px;
+  }
+  .attendance-confirm-form .auth-submit {
+    width: 100%;
+  }
 }
 
 /* ──────────────────────────────────────────────
