@@ -148,7 +148,6 @@ export default function Hero() {
             <div className="hero-stats">
               <div><b>42</b>小时</div>
               <div><b>100+</b>选手</div>
-              <div><b>¥50K+</b>奖金池</div>
             </div>
           </div>
         </div>
