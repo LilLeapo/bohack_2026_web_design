@@ -179,8 +179,15 @@ export default function Login() {
           </div>
 
           <div className="auth-foot">
-            遇到问题?在 <a href="#">Discord</a> 联系我们,或发邮件至{' '}
-            <a href="mailto:hello@bohack.io">hello@bohack.io</a>。
+            遇到问题?在{' '}
+            <a
+              href="https://my.feishu.cn/wiki/ScTpwjJdbilzPlkP2P5c9fJQnhb"
+              target="_blank"
+              rel="noreferrer"
+            >
+              微信群聊
+            </a>{' '}
+            联系我们,或发邮件至 <a href="mailto:contact@bohack.top">contact@bohack.top</a>。
           </div>
         </form>
       </main>
