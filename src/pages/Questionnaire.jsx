@@ -92,7 +92,7 @@ const QUESTIONS = [
     hint: '请填写至少一种可联系到你的方式。',
     required: true,
     placeholder: '手机号或微信号',
-    max: 32,
+    max: 80,
   },
   {
     kind: 'input',
