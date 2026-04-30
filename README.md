@@ -25,7 +25,22 @@ VITE_API_BASE_URL=http://127.0.0.1:8080 npm run dev
 
 - `npm run dev` — start the Vite dev server with HMR
 - `npm run build` — production build to `dist/`
+- `npm run deploy` — build and sync `dist/` to `/var/www/bohack.top/current`
 - `npm run preview` — preview the production build locally
+
+## Deploy
+
+```bash
+npm run deploy
+```
+
+Useful overrides:
+
+```bash
+SKIP_BUILD=1 npm run deploy
+DEPLOY_TARGET=/some/other/path npm run deploy
+DEPLOY_OWNER='' npm run deploy
+```
 
 ## Project structure
 

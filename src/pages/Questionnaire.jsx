@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 import {
@@ -116,6 +116,17 @@ const QUESTIONS = [
     max: 500,
   },
   {
+    kind: 'file',
+    section: '基础信息',
+    key: 'resumeFile',
+    q: '上传简历文件',
+    hint: '请上传 PDF 或 Word 格式的简历，文件大小不超过 5MB。',
+    required: true,
+    accept: '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    maxSize: 5 * 1024 * 1024,
+    allowedExt: ['pdf', 'doc', 'docx'],
+  },
+  {
     kind: 'skillCards',
     section: '技能信息',
     key: 'skills',
@@ -216,7 +227,7 @@ const QUESTION_GROUPS = [
     section: '基础信息',
     title: '联系方式与背景',
     subtitle: '后续重要通知将通过邮箱和微信群发送。',
-    keys: ['organization', 'contact', 'email', 'resume'],
+    keys: ['organization', 'contact', 'email', 'resume', 'resumeFile'],
   },
   {
     section: '技能信息',
@@ -304,6 +315,23 @@ function answersFromRegistration(registration) {
 
 function fieldMessage(question, value, answers = {}) {
   const text = valueText(value);
+  if (question.kind === 'file') {
+    if (!value) return question.required ? '必填' : '可选';
+    if (value instanceof File) {
+      if (question.maxSize && value.size > question.maxSize) {
+        return `文件超出 ${Math.round(question.maxSize / 1024 / 1024)}MB 限制`;
+      }
+      const ext = (value.name.split('.').pop() || '').toLowerCase();
+      if (question.allowedExt && !question.allowedExt.includes(ext)) {
+        return `仅支持 ${question.allowedExt.join(' / ')} 格式`;
+      }
+      return `已选择：${value.name}`;
+    }
+    if (typeof value === 'object' && value.fileName) {
+      return `已上传：${value.fileName}`;
+    }
+    return '看起来不错。';
+  }
   if (question.kind === 'skillCards') {
     const hasSkill =
       (Array.isArray(value) && value.length > 0) ||
@@ -320,6 +348,18 @@ function fieldMessage(question, value, answers = {}) {
 
 function isQuestionValid(question, answers) {
   const value = answers[question.key];
+  if (question.kind === 'file') {
+    if (!question.required && !value) return true;
+    if (!value) return false;
+    if (value instanceof File) {
+      if (question.maxSize && value.size > question.maxSize) return false;
+      const ext = (value.name.split('.').pop() || '').toLowerCase();
+      if (question.allowedExt && !question.allowedExt.includes(ext)) return false;
+      return true;
+    }
+    // already-uploaded attachment object
+    return Boolean(value && (value.id || value.fileName));
+  }
   if (question.kind === 'skillCards') {
     if (!question.required) return true;
     return (
@@ -386,6 +426,7 @@ export default function Questionnaire() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState('');
+  const [resumeUploadErr, setResumeUploadErr] = useState('');
 
   useEffect(() => {
     document.body.classList.add('q-body');
@@ -412,7 +453,20 @@ export default function Questionnaire() {
         });
         if (!alive) return;
         setRegistration(current);
-        setAns(answersFromRegistration(current));
+        const baseAnswers = answersFromRegistration(current);
+        if (current) {
+          try {
+            const list = await api.listAttachments();
+            const resumeAtt = Array.isArray(list)
+              ? list.find((item) => item.kind === 'resume') || list[0]
+              : null;
+            if (resumeAtt) baseAnswers.resumeFile = resumeAtt;
+          } catch {
+            // non-fatal; user can re-upload
+          }
+        }
+        if (!alive) return;
+        setAns(baseAnswers);
         setDone(Boolean(current));
       } catch (error) {
         if (!alive) return;
@@ -498,11 +552,35 @@ export default function Questionnaire() {
 
     setSubmitting(true);
     setErr('');
+    setResumeUploadErr('');
     try {
       const saved = registration
         ? await api.updateRegistration(payload)
         : await api.createRegistration(payload);
       setRegistration(saved);
+
+      // Upload resume file (if user picked a fresh File). Existing attachment
+      // objects (already uploaded) are skipped.
+      const resumeFile = ans.resumeFile;
+      if (resumeFile instanceof File) {
+        try {
+          const formData = new FormData();
+          formData.append('file', resumeFile);
+          formData.append('kind', 'resume');
+          const created = await api.uploadAttachment(formData);
+          setAns((a) => ({ ...a, resumeFile: created }));
+        } catch (uploadError) {
+          if (uploadError.status === 401) {
+            clearAuthSession();
+            navigate('/login', { replace: true });
+            return;
+          }
+          setResumeUploadErr(
+            `报名信息已保存，但简历上传失败：${userFacingError(uploadError)}。请稍后在“修改回答”中重新上传。`,
+          );
+        }
+      }
+
       setDone(true);
     } catch (error) {
       if (error.status === 401) {
@@ -788,6 +866,14 @@ export default function Questionnaire() {
                     </>
                   )}
 
+                  {question.kind === 'file' && (
+                    <FileDropField
+                      question={question}
+                      value={ans[question.key]}
+                      onChange={(file) => up(question.key, file)}
+                    />
+                  )}
+
                   {question.kind === 'text' && (
                     <div className="q-text">
                       <textarea
@@ -859,6 +945,11 @@ export default function Questionnaire() {
             <p>
               后续重要通知将通过邮箱和微信群发送。请保持联系方式可用，并留意活动审核与赛程安排。
             </p>
+            {resumeUploadErr && (
+              <div className="auth-err" style={{ marginTop: 12 }}>
+                {resumeUploadErr}
+              </div>
+            )}
             <div className="q-summary">
               {summaryItems.map(([label, value]) => (
                 <div className="s" key={label}>
