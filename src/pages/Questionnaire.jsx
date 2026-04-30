@@ -271,6 +271,10 @@ function optionValue(question, value) {
   return question.options.find((o) => o.v === value || o.lbl === value)?.v;
 }
 
+function isFileValue(value) {
+  return typeof File !== 'undefined' && value instanceof File;
+}
+
 function parseExtra(registration) {
   if (!registration?.extra) return {};
   if (typeof registration.extra === 'string') {
@@ -317,7 +321,7 @@ function fieldMessage(question, value, answers = {}) {
   const text = valueText(value);
   if (question.kind === 'file') {
     if (!value) return question.required ? '必填' : '可选';
-    if (value instanceof File) {
+    if (isFileValue(value)) {
       if (question.maxSize && value.size > question.maxSize) {
         return `文件超出 ${Math.round(question.maxSize / 1024 / 1024)}MB 限制`;
       }
@@ -351,7 +355,7 @@ function isQuestionValid(question, answers) {
   if (question.kind === 'file') {
     if (!question.required && !value) return true;
     if (!value) return false;
-    if (value instanceof File) {
+    if (isFileValue(value)) {
       if (question.maxSize && value.size > question.maxSize) return false;
       const ext = (value.name.split('.').pop() || '').toLowerCase();
       if (question.allowedExt && !question.allowedExt.includes(ext)) return false;
@@ -411,6 +415,40 @@ function Ring({ pct }) {
         />
       </svg>
       <div className="label">{Math.round(pct * 100)}%</div>
+    </div>
+  );
+}
+
+function FileDropField({ question, value, onChange }) {
+  const inputId = `q-file-${question.key}`;
+  const fileName = isFileValue(value)
+    ? value.name
+    : value?.fileName || value?.name || '';
+
+  return (
+    <div className="q-text q-file">
+      <label className="q-file-box" htmlFor={inputId}>
+        <span className="q-file-k">{fileName ? '当前简历' : '选择文件'}</span>
+        <span className="q-file-name">
+          {fileName || '点击上传 PDF / DOC / DOCX 简历'}
+        </span>
+        <span className="q-file-action">浏览文件 ↗</span>
+      </label>
+      <input
+        id={inputId}
+        type="file"
+        accept={question.accept}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onChange(file);
+        }}
+      />
+      <div className="q-meta">
+        <span>{fieldMessage(question, value)}</span>
+        {question.maxSize && (
+          <span>上限 {Math.round(question.maxSize / 1024 / 1024)}MB</span>
+        )}
+      </div>
     </div>
   );
 }
@@ -562,7 +600,7 @@ export default function Questionnaire() {
       // Upload resume file (if user picked a fresh File). Existing attachment
       // objects (already uploaded) are skipped.
       const resumeFile = ans.resumeFile;
-      if (resumeFile instanceof File) {
+      if (isFileValue(resumeFile)) {
         try {
           const formData = new FormData();
           formData.append('file', resumeFile);
