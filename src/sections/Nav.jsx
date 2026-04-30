@@ -9,9 +9,9 @@ import {
 
 const LINKS = [
   { href: '#about', label: '简介' },
-  { href: '#tracks', label: '赛道' },
-  { href: '#schedule', label: '日程' },
-  { href: '#prizes', label: '奖项' },
+  { href: '#tracks', label: '赛制' },
+  { href: '#prizes', label: '获得' },
+  { href: '#schedule', label: '流程' },
   { href: '#sponsors', label: '合作' },
   { href: '#faq', label: '答疑' },
 ];

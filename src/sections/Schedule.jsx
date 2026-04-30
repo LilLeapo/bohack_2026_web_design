@@ -2,30 +2,43 @@ import { Fragment } from 'react';
 
 const DAYS = [
   {
-    n: 'Phase 01',
-    t: '5 月 22—24 日 · 线下黑客松',
+    n: '报名阶段',
+    t: '即日起开放报名。',
     rows: [
-      { time: '5/22', title: '入场签到、开幕仪式、组队与开 Hack', tag: '启动' },
-      { time: '5/23', title: '42 小时集中构建、导师 Office Hours、工作坊', tag: '构建' },
-      { time: '5/24', title: '项目提交、Demo 初评、进入孵化辅导名单', tag: '提交' },
+      { time: '即日起', title: '名额有限，滚动录取，先到先得。', tag: '报名' },
     ],
   },
   {
-    n: 'Phase 02',
-    t: '5 月 24—28 日 · 项目孵化辅导赋能',
+    n: '5月22日 16:00',
+    t: '线下签到入场',
     rows: [
-      { time: '5/24', title: '项目梳理与孵化计划确认', tag: '孵化' },
-      { time: '5/25—27', title: '基金、风投机构与产业导师辅导,线上线下同步', tag: '辅导' },
-      { time: '5/28', title: '展演材料、路演脚本与现场 Demo 彩排', tag: '彩排' },
+      { time: '地点', title: '天开高教科创园', tag: '签到' },
+      { time: '现场', title: '完成签到、组队确认、赛道确认与规则说明。', tag: '确认' },
     ],
   },
   {
-    n: 'Phase 03',
-    t: '5 月 28—31 日 · 国家会展中心智博会线下展演',
+    n: '5月22日—5月24日',
+    t: '42小时线下黑客松',
     rows: [
-      { time: '5/28', title: '国家会展中心布展、签到与展区预演', tag: '展演' },
-      { time: '5/29—30', title: '世界智能产业博览会现场展示、交流与投融资对接', tag: '展会' },
-      { time: '5/31', title: '终评、成果发布与闭幕', tag: '收官' },
+      { time: '42小时', title: '在此时空，拒绝虚浮辞藻，只致敬真实力量。', tag: '开发' },
+      { time: 'Demo', title: '在42小时内，完成从想法到 Demo 的跨越。', tag: '产出' },
+      { time: '真实', title: '它未必完美，但必须真实。', tag: '标准' },
+    ],
+  },
+  {
+    n: '5月24日—5月28日',
+    t: '线上项目打磨与赋能',
+    rows: [
+      { time: '赋能', title: '围绕产品完善、用户运营、技术更新、路演展示展开深度赋能。', tag: '打磨' },
+      { time: '作品', title: '比起完成一场比赛，我们更希望陪你雕琢一件真正的作品。', tag: '进化' },
+    ],
+  },
+  {
+    n: '5月28日—5月31日',
+    t: '世界智能产业博览会现场展演',
+    rows: [
+      { time: '舞台', title: '经过洗礼的创新火种，将在2026世界智能产业博览会的舞台上与产业巨头同台共振。', tag: '展演' },
+      { time: '现场', title: '展览、路演、评比、资源对接，在主流媒体与专业机构的注视中，让作品被世界看见。', tag: '连接' },
     ],
   },
 ];
@@ -36,13 +49,13 @@ export default function Schedule() {
       <div className="container">
         <div className="chapter-row reveal">
           <div>
-            <div className="eyebrow">Chapter 03 / 时间线</div>
-            <div className="chapter-num" data-parallax="0.08">03</div>
+            <div className="eyebrow">Chapter 04 / 活动流程</div>
+            <div className="chapter-num" data-parallax="0.08">04</div>
           </div>
-          <h2 className="title" data-parallax="-0.04">
-            三段时间线,<br />
-            从 Hack 到展演。
-          </h2>
+          <div className="title-block" data-parallax="-0.04">
+            <h2 className="title">活动流程</h2>
+            <p className="section-subtitle">从42小时极限开发，到世界智博会现场展演。</p>
+          </div>
         </div>
 
         <div className="schedule-timeline reveal">

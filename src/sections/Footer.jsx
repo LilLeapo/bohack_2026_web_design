@@ -7,49 +7,50 @@ export default function Footer() {
         <div className="eyebrow reveal" style={{ marginBottom: 24 }}>
           ◉ 活动周期 / EVENT WINDOW · 2026.05.22—05.31
         </div>
-        <div className="footer-big reveal">
-          BUILD{' '}
-          <span className="accent" data-parallax="0.12" data-parallax-rot="-2">
-            SOMETHING
-          </span>
-          <br />
-          WEIRD.
+        <div className="footer-big footer-cta-title reveal">
+          别让好的想法只停留在备忘录里
+        </div>
+        <div className="footer-copy reveal">
+          <p>42小时，让构想落地。</p>
+          <p>5昼夜，让项目进化。</p>
+          <p>世界智博会，让作品被看见。</p>
         </div>
         <div
           style={{ marginTop: 48, display: 'flex', gap: 20, flexWrap: 'wrap' }}
           className="reveal"
         >
           <Link to="/questionnaire" className="btn btn-primary magnet">
-            立即报名 BOHACK <span className="arrow">↗</span>
+            报名参加黑客松 <span className="arrow">↗</span>
           </Link>
-          <a href="#" className="btn magnet">
+          <a href="#sponsors" className="btn magnet">
             成为合作伙伴 <span className="arrow">↗</span>
           </a>
         </div>
+        <p className="footer-note reveal">下一批登上世界舞台的项目，也许就从这里开始。</p>
 
         <div className="footer-grid">
           <div>
             <h4>活动 / Event</h4>
             <ul>
               <li><a href="#about">简介</a></li>
-              <li><a href="#tracks">赛道</a></li>
-              <li><a href="#schedule">日程</a></li>
-              <li><a href="#prizes">奖项</a></li>
+              <li><a href="#tracks">赛制</a></li>
+              <li><a href="#prizes">你将获得什么</a></li>
+              <li><a href="#schedule">活动流程</a></li>
             </ul>
           </div>
           <div>
             <h4>参与方式 / Get involved</h4>
             <ul>
-              <li><Link to="/questionnaire">以黑客身份报名</Link></li>
-              <li><a href="#">成为导师</a></li>
-              <li><a href="#">成为合作伙伴</a></li>
+              <li><Link to="/questionnaire">报名参加黑客松</Link></li>
+              <li><a href="#sponsors">成为导师</a></li>
+              <li><a href="#sponsors">成为合作伙伴</a></li>
               <li><a href="#">志愿者招募</a></li>
             </ul>
           </div>
           <div>
             <h4>联系 / Contact</h4>
             <ul>
-              <li><a href="#">hello@bohack.io</a></li>
+              <li><a href="mailto:contact@bohack.top">contact@bohack.top</a></li>
               <li><a href="#">微信公众号</a></li>
               <li><a href="#">小红书</a></li>
               <li><a href="#">GitHub</a></li>

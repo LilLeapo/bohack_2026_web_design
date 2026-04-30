@@ -139,8 +139,11 @@ export default function Hero() {
 
           <div className="hero-meta">
             <p className="hero-tag">
-              5.22—24 线下黑客松,5.24—28 项目孵化辅导,5.28—31 国家会展中心智博会线下展演。
-              带一个还没想清楚的点子来,带一件能跑的作品、一支队伍、一段故事走。
+              42小时极限突围，让构想落地。
+              <br />
+              5昼夜深度赋能，让项目进化。
+              <br />
+              最终，登上2026世界智能产业博览会舞台。
             </p>
             <div className="hero-stats">
               <div><b>42</b>小时</div>

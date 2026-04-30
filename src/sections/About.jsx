@@ -6,38 +6,34 @@ export default function About() {
       <div className="container">
         <div className="chapter-row reveal">
           <div>
-            <div className="eyebrow">Chapter 01 / 缘起</div>
+            <div className="eyebrow">Chapter 01 / 关于这场黑客</div>
             <div className="chapter-num" data-parallax="0.08">01</div>
           </div>
-          <h2 className="title" data-parallax="-0.04">
-            四十二小时。<br />
-            一个离谱到可行的点子。
-          </h2>
+          <div className="title-block" data-parallax="-0.04">
+            <h2 className="title">从旁观，到主场</h2>
+            <p className="section-subtitle">
+              这不是一次短跑式比赛，而是一条从想法到作品、从作品到舞台的成长路径。
+            </p>
+          </div>
         </div>
 
         <div className="about-grid">
           <div className="reveal">
             <p className="about-lede">
-              BOHACK 是一场写给全国高校造物者的黑客松——把<span className="hl">5.22—5.31</span>当一道
-              开卷题来做。带上你的笔记本、朋友,还有那个<span className="hl">还没想清楚</span>的念头。
-              剩下的——三餐、导师、孵化辅导、<span className="hl">智博会展演</span>——都交给我们。
+              <span className="hl">2026世界智能产业博览会</span>，汇聚全球智能科技力量，孵化未来的无限可能。
+              智能创新黑客松大赛，是其中的<span className="hl">新增板块</span>。
+              这一次，我们希望在天津发现更多<span className="hl">敢想、敢做、敢把想法落地</span>的人。
             </p>
           </div>
           <div className="about-side reveal" data-stagger="true">
             <p>
-              全国高校,100+ 位选手,先在 5 月 22—24 日完成 42 小时线下创作,
-              再进入 5 月 24—28 日项目孵化辅导阶段。
+              它面向高校学生、开发者、设计师、产品经理、创业者等所有创造者开放。
             </p>
             <p>
-              你会做出一件真正跑得起来的东西——跑在芯片上、跑在服务器上,也跑上
-              5 月 28—31 日国家会展中心世界智能产业博览会的线下展演舞台。
+              本次活动以<span className="hl">发现—赋能—绽放</span>为主线：先用<span className="hl">42小时线下黑客松</span>，让想法快速落地；再用<span className="hl">5昼夜深度赋能</span>，让项目持续进化；最后把经过打磨的作品带到<span className="hl">世界智能产业博览会现场</span>，与产业、资本、媒体和更广阔的创新生态相遇。
             </p>
-            <div className="about-stats">
-              <div className="s"><div className="n">100+</div><div className="t">参赛选手</div></div>
-              <div className="s"><div className="n">42h</div><div className="t">线下创作</div></div>
-              <div className="s"><div className="n">¥50K+</div><div className="t">总奖金池</div></div>
-              <div className="s"><div className="n">∞</div><div className="t">冷萃咖啡</div></div>
-            </div>
+            <p>项目未必完美，但<span className="hl">必须真实</span>。</p>
+            <p>这一次，我们寻找下一位<span className="hl">“造物者”</span>。</p>
           </div>
         </div>
 
