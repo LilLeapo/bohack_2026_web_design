@@ -8,14 +8,43 @@ import {
   userFacingError,
 } from '../lib/api.js';
 
-const QUESTIONNAIRE_TITLE =
-  '2026世界智能产业博览会·智能创新黑客松报名问卷';
+const FORM_TYPES = {
+  hackathon: {
+    id: 'hackathon',
+    label: '42h 黑客松个人报名',
+    short: '黑客松报名',
+    blurb: '作为参赛黑客加入团队，完成 42 小时线下连续创作并进入后续赋能与展演。',
+    points: ['面向个人参赛者', '现场组队 · 42h 连续创作', '入选可登智博会舞台'],
+    glyph: '⟁',
+    title: '2026世界智能产业博览会·智能创新黑客松报名问卷',
+    intro: [
+      '欢迎报名参加本次智能创新黑客松大赛。',
+      '本问卷将用于参赛资格筛选，请认真填写。',
+      '所有信息仅用于本次活动使用，我们将严格保密。',
+    ],
+  },
+  roadshow: {
+    id: 'roadshow',
+    label: '路演项目招募',
+    short: '路演项目招募',
+    blurb: '已有项目或作品，希望进入智博会现场路演与展演通道，与产业资源对接。',
+    points: ['面向已有项目团队', '智博会现场路演展示', '导师与产业资源对接'],
+    glyph: '◇',
+    title: '2026世界智能产业博览会·智能创新黑客松路演项目招募问卷',
+    intro: [
+      '欢迎报名参加本次智博会·智能创新黑客松路演项目招募。',
+      '本问卷将用于路演项目筛选，请认真填写。',
+      '所有信息仅用于本次活动使用，我们将严格保密。',
+    ],
+  },
+};
 
-const INTRO_LINES = [
-  '欢迎报名参加本次智能创新黑客松大赛。',
-  '本问卷将用于参赛资格筛选，请认真填写。',
-  '所有信息仅用于本次活动使用，我们将严格保密。',
-];
+const FORM_TYPE_LIST = [FORM_TYPES.hackathon, FORM_TYPES.roadshow];
+
+function resolveFormType(value) {
+  if (value && FORM_TYPES[value]) return value;
+  return null;
+}
 
 const SKILL_OPTIONS = [
   { v: 'engineering', lbl: '工程', glyph: '{ }' },
@@ -26,7 +55,7 @@ const SKILL_OPTIONS = [
   { v: 'creative', lbl: '创作 / 影像', glyph: '✦' },
 ];
 
-const QUESTIONS = [
+const HACKATHON_QUESTIONS = [
   {
     kind: 'input',
     section: '基础信息',
@@ -214,9 +243,9 @@ const QUESTIONS = [
   },
 ];
 
-const SECTIONS = ['基础信息', '技能信息', '思考问题'];
+const HACKATHON_SECTIONS = ['基础信息', '技能信息', '思考问题'];
 
-const QUESTION_GROUPS = [
+const HACKATHON_GROUPS = [
   {
     section: '基础信息',
     title: '先确认你的基础信息',
@@ -249,10 +278,446 @@ const QUESTION_GROUPS = [
   },
 ].map((group) => ({
   ...group,
-  questions: group.keys.map((key) => QUESTIONS.find((q) => q.key === key)),
+  questions: group.keys.map((key) => HACKATHON_QUESTIONS.find((q) => q.key === key)),
 }));
 
-const QUESTION_BY_KEY = Object.fromEntries(QUESTIONS.map((q) => [q.key, q]));
+const HACKATHON_BY_KEY = Object.fromEntries(
+  HACKATHON_QUESTIONS.map((q) => [q.key, q]),
+);
+
+const HACKATHON_FILE_FIELDS = [{ key: 'resumeFile', kind: 'resume' }];
+
+const PRODUCT_FORM_OPTIONS = [
+  { v: 'software', lbl: '软件产品' },
+  { v: 'hardware', lbl: '硬件产品' },
+  { v: 'software_hardware', lbl: '软件 + 硬件结合' },
+  { v: 'ai', lbl: 'AI / 大模型应用' },
+  { v: 'tool_platform', lbl: '工具 / 平台类产品' },
+  { v: 'content_interactive', lbl: '内容 / 交互体验类项目' },
+  { v: 'other', lbl: '其他，请说明' },
+];
+
+const PROJECT_STAGE_OPTIONS = [
+  { v: 'idea', lbl: '已有明确想法和方案' },
+  { v: 'prototype', lbl: '已完成原型设计' },
+  { v: 'demo', lbl: '已完成 Demo' },
+  { v: 'product', lbl: '已完成可演示产品' },
+  { v: 'user_test', lbl: '已有真实用户测试' },
+  { v: 'launched', lbl: '已经上线 / 投入使用' },
+  { v: 'commercial', lbl: '已获得合作或商业化进展' },
+  { v: 'other', lbl: '其他，请说明' },
+];
+
+const SOFTWARE_FORM_VALUES = [
+  'software',
+  'software_hardware',
+  'ai',
+  'tool_platform',
+  'content_interactive',
+];
+const HARDWARE_FORM_VALUES = ['hardware', 'software_hardware'];
+
+function isSoftwareProject(answers) {
+  const list = Array.isArray(answers?.productForm) ? answers.productForm : [];
+  return list.some((v) => SOFTWARE_FORM_VALUES.includes(v));
+}
+
+function isHardwareProject(answers) {
+  const list = Array.isArray(answers?.productForm) ? answers.productForm : [];
+  return list.some((v) => HARDWARE_FORM_VALUES.includes(v));
+}
+
+const ROADSHOW_QUESTIONS = [
+  // 一、项目简介
+  {
+    kind: 'input',
+    section: '项目简介',
+    key: 'projectName',
+    q: '项目名称',
+    hint: '请填写项目正式名称或当前暂定名称。',
+    required: true,
+    placeholder: '例如：BoHack 智能体平台',
+    max: 60,
+  },
+  {
+    kind: 'input',
+    section: '项目简介',
+    key: 'projectTagline',
+    q: '项目一句话介绍',
+    hint: '请用一句话说明你的项目是什么。',
+    required: true,
+    placeholder: '一句话讲清楚项目是什么。',
+    max: 100,
+  },
+  {
+    kind: 'text',
+    section: '项目简介',
+    key: 'projectIntro',
+    q: '项目简介',
+    hint: '建议 200 字以内，讲清楚项目在做什么、解决什么问题。可包括：项目背景 · 目标用户/场景 · 当前痛点 · 解决方案 · 核心亮点。',
+    required: true,
+    placeholder: '项目背景、用户场景、痛点、解决方案、核心亮点。',
+    max: 600,
+  },
+  {
+    kind: 'multi',
+    section: '项目简介',
+    key: 'productForm',
+    extraKey: 'productFormOther',
+    otherValue: 'other',
+    q: '项目目前的产品形态',
+    hint: '可多选。决定后续展示材料的范围（软件 / 硬件等）。',
+    required: true,
+    options: PRODUCT_FORM_OPTIONS,
+    placeholder: '若选择"其他"，请补充说明。',
+    max: 120,
+  },
+
+  // 二、团队信息
+  {
+    kind: 'input',
+    section: '团队信息',
+    key: 'roadshowTeamName',
+    q: '团队名称',
+    required: true,
+    placeholder: '团队名称',
+    max: 60,
+  },
+  {
+    kind: 'input',
+    section: '团队信息',
+    key: 'leaderName',
+    q: '团队负责人姓名',
+    required: true,
+    placeholder: '负责人姓名',
+    max: 40,
+  },
+  {
+    kind: 'input',
+    section: '团队信息',
+    key: 'leaderContact',
+    q: '团队负责人联系方式',
+    hint: '请填写手机号或微信号，便于后续联系。',
+    required: true,
+    placeholder: '手机号或微信号',
+    max: 80,
+  },
+  {
+    kind: 'text',
+    section: '团队信息',
+    key: 'teamMembers',
+    q: '团队成员信息',
+    hint: '建议字段：姓名 · 学校/单位 · 专业/岗位 · 项目角色 · 联系方式（可选）。',
+    required: true,
+    placeholder: '示例：\n张三 · 天津大学 · 计算机 · 全栈 · 138xxxx',
+    max: 1500,
+  },
+
+  // 三、项目阶段说明
+  {
+    kind: 'multi',
+    section: '项目阶段',
+    key: 'projectStage',
+    extraKey: 'projectStageOther',
+    otherValue: 'other',
+    q: '项目当前所处阶段',
+    hint: '可多选。',
+    required: true,
+    options: PROJECT_STAGE_OPTIONS,
+    placeholder: '若选择"其他"，请补充说明。',
+    max: 120,
+  },
+  {
+    kind: 'text',
+    section: '项目阶段',
+    key: 'achievements',
+    q: '已有成果说明',
+    hint: '请说明项目目前取得的成果，例如 Demo、原型、用户测试、技术验证、实际应用、合作进展等。',
+    required: true,
+    placeholder: '已经做出的产出或验证。',
+    max: 1200,
+  },
+  {
+    kind: 'text',
+    section: '项目阶段',
+    key: 'nextPlan',
+    q: '下一步计划',
+    hint: '请说明项目接下来计划完善的方向，例如功能迭代、产品优化、用户拓展、硬件改进、商业合作等。',
+    required: true,
+    placeholder: '后续计划。',
+    max: 1200,
+  },
+
+  // 四、展示材料
+  {
+    kind: 'file',
+    section: '展示材料',
+    key: 'pitchDeck',
+    q: '路演 PPT 上传',
+    hint: '请上传项目路演 PPT，用于初筛及后续展示评审。支持 PDF / PPT / PPTX。',
+    required: true,
+    accept: '.pdf,.ppt,.pptx',
+    maxSize: 50 * 1024 * 1024,
+    allowedExt: ['pdf', 'ppt', 'pptx'],
+  },
+  {
+    kind: 'input',
+    section: '展示材料',
+    key: 'codeRepo',
+    q: '代码链接',
+    hint: '软件项目必填；纯硬件项目可填"无"。可填 GitHub / Gitee / 其他可访问的代码仓库链接。',
+    required: false,
+    requiredIf: isSoftwareProject,
+    placeholder: 'https://github.com/...',
+    max: 300,
+  },
+  {
+    kind: 'text',
+    section: '展示材料',
+    key: 'hardwareDesc',
+    q: '硬件说明（文字）',
+    hint: '硬件项目必填；纯软件项目可填"无"。请说明硬件结构、功能、使用方式与演示条件。',
+    required: false,
+    requiredIf: isHardwareProject,
+    placeholder: '硬件结构、功能、使用方式、演示条件。',
+    max: 1500,
+  },
+  {
+    kind: 'file',
+    section: '展示材料',
+    key: 'hardwareSpecFile',
+    q: '硬件说明材料（可选上传）',
+    hint: '可选。补充硬件结构图、说明文档等，仅硬件项目需要。',
+    required: false,
+    accept: '.pdf,.doc,.docx,.zip,.png,.jpg,.jpeg',
+    maxSize: 50 * 1024 * 1024,
+    allowedExt: ['pdf', 'doc', 'docx', 'zip', 'png', 'jpg', 'jpeg'],
+  },
+  {
+    kind: 'file',
+    section: '展示材料',
+    key: 'otherMaterials',
+    q: '其他展示材料',
+    hint: '可选。可补充上传产品介绍、设计图、测试视频、技术文档等。',
+    required: false,
+    accept: '.pdf,.doc,.docx,.zip,.png,.jpg,.jpeg,.mp4,.mov',
+    maxSize: 100 * 1024 * 1024,
+    allowedExt: ['pdf', 'doc', 'docx', 'zip', 'png', 'jpg', 'jpeg', 'mp4', 'mov'],
+  },
+
+  // 五、视频材料
+  {
+    kind: 'file',
+    section: '视频材料',
+    key: 'demoVideo',
+    q: '产品演示视频',
+    hint: '请上传可以展示项目效果的演示视频。支持 mp4 / mov，建议不超过 200MB。',
+    required: true,
+    accept: 'video/*,.mp4,.mov,.m4v',
+    maxSize: 200 * 1024 * 1024,
+    allowedExt: ['mp4', 'mov', 'm4v'],
+  },
+  {
+    kind: 'file',
+    section: '视频材料',
+    key: 'pitchVideo',
+    q: '模拟路演视频上传',
+    hint: '请提交一段模拟路演视频（限时 3 分钟），用于了解项目表达和展示效果。',
+    required: true,
+    accept: 'video/*,.mp4,.mov,.m4v',
+    maxSize: 200 * 1024 * 1024,
+    allowedExt: ['mp4', 'mov', 'm4v'],
+  },
+
+  // 六、补充材料
+  {
+    kind: 'text',
+    section: '补充材料',
+    key: 'awardsText',
+    q: '获奖经历',
+    hint: '选填。如项目或团队曾获得奖项，请填写奖项名称、时间、主办方。',
+    required: false,
+    placeholder: '奖项名称 + 时间 + 主办方。',
+    max: 1000,
+  },
+  {
+    kind: 'file',
+    section: '补充材料',
+    key: 'awardsFile',
+    q: '获奖证明材料（可选）',
+    hint: '选填。上传相关证明材料。',
+    required: false,
+    accept: '.pdf,.png,.jpg,.jpeg,.zip',
+    maxSize: 30 * 1024 * 1024,
+    allowedExt: ['pdf', 'png', 'jpg', 'jpeg', 'zip'],
+  },
+  {
+    kind: 'text',
+    section: '补充材料',
+    key: 'pastCompetitions',
+    q: '过往参赛记录',
+    hint: '选填。如项目曾参加其他比赛、路演、营队或展示活动，请简要说明。',
+    required: false,
+    placeholder: '比赛 / 路演名称 + 时间 + 主办方 + 结果。',
+    max: 1000,
+  },
+  {
+    kind: 'text',
+    section: '补充材料',
+    key: 'mediaReportsText',
+    q: '媒体报道（链接）',
+    hint: '选填。如项目曾被媒体、公众号、视频平台等报道，请提交相关链接。',
+    required: false,
+    placeholder: '媒体名称 + 链接。',
+    max: 600,
+  },
+  {
+    kind: 'file',
+    section: '补充材料',
+    key: 'mediaReportsFile',
+    q: '媒体报道截图（可选）',
+    hint: '选填。补充上传媒体报道截图等。',
+    required: false,
+    accept: '.pdf,.png,.jpg,.jpeg,.zip',
+    maxSize: 30 * 1024 * 1024,
+    allowedExt: ['pdf', 'png', 'jpg', 'jpeg', 'zip'],
+  },
+  {
+    kind: 'text',
+    section: '补充材料',
+    key: 'userFeedbackText',
+    q: '用户反馈',
+    hint: '选填。如项目已有用户使用、测试或反馈，请提交相关说明或数据。',
+    required: false,
+    placeholder: '用户反馈摘要、数据指标等。',
+    max: 1000,
+  },
+  {
+    kind: 'file',
+    section: '补充材料',
+    key: 'userFeedbackFile',
+    q: '用户反馈材料（可选）',
+    hint: '选填。上传截图、报告等。',
+    required: false,
+    accept: '.pdf,.png,.jpg,.jpeg,.zip',
+    maxSize: 30 * 1024 * 1024,
+    allowedExt: ['pdf', 'png', 'jpg', 'jpeg', 'zip'],
+  },
+  {
+    kind: 'text',
+    section: '补充材料',
+    key: 'cooperation',
+    q: '合作进展',
+    hint: '选填。如项目已有企业、学校、机构、园区或其他合作方，请说明合作内容和当前进展。',
+    required: false,
+    placeholder: '合作方 + 合作内容 + 当前进展。',
+    max: 1000,
+  },
+];
+
+const ROADSHOW_GROUPS = [
+  {
+    section: '项目简介',
+    title: '一、项目简介',
+    subtitle: '简要介绍项目在做什么、解决什么问题。',
+    keys: ['projectName', 'projectTagline', 'projectIntro', 'productForm'],
+  },
+  {
+    section: '团队信息',
+    title: '二、团队信息',
+    subtitle: '请填写负责人和成员的关键信息，便于后续沟通。',
+    keys: ['roadshowTeamName', 'leaderName', 'leaderContact', 'teamMembers'],
+  },
+  {
+    section: '项目阶段',
+    title: '三、项目阶段说明',
+    subtitle: '说明当前进度、已有成果与下一步计划。',
+    keys: ['projectStage', 'achievements', 'nextPlan'],
+  },
+  {
+    section: '展示材料',
+    title: '四、展示材料提交',
+    subtitle: 'PPT 必传；软件项目请补代码链接，硬件项目请补硬件说明。',
+    keys: [
+      'pitchDeck',
+      'codeRepo',
+      'hardwareDesc',
+      'hardwareSpecFile',
+      'otherMaterials',
+    ],
+  },
+  {
+    section: '视频材料',
+    title: '五、视频材料提交',
+    subtitle: '产品演示视频 + 模拟路演视频，请尽量保证清晰可辨。',
+    keys: ['demoVideo', 'pitchVideo'],
+  },
+  {
+    section: '补充材料',
+    title: '六、补充材料（选填）',
+    subtitle: '获奖、参赛、媒体、用户反馈、合作进展可按需补充。',
+    keys: [
+      'awardsText',
+      'awardsFile',
+      'pastCompetitions',
+      'mediaReportsText',
+      'mediaReportsFile',
+      'userFeedbackText',
+      'userFeedbackFile',
+      'cooperation',
+    ],
+  },
+].map((group) => ({
+  ...group,
+  questions: group.keys.map((key) =>
+    ROADSHOW_QUESTIONS.find((q) => q.key === key),
+  ),
+}));
+
+const ROADSHOW_SECTIONS = [
+  '项目简介',
+  '团队信息',
+  '项目阶段',
+  '展示材料',
+  '视频材料',
+  '补充材料',
+];
+
+const ROADSHOW_BY_KEY = Object.fromEntries(
+  ROADSHOW_QUESTIONS.map((q) => [q.key, q]),
+);
+
+const ROADSHOW_FILE_FIELDS = [
+  { key: 'pitchDeck', kind: 'roadshow_pitch_deck' },
+  { key: 'hardwareSpecFile', kind: 'roadshow_hardware_spec' },
+  { key: 'otherMaterials', kind: 'roadshow_other_materials' },
+  { key: 'demoVideo', kind: 'roadshow_demo_video' },
+  { key: 'pitchVideo', kind: 'roadshow_pitch_video' },
+  { key: 'awardsFile', kind: 'roadshow_awards' },
+  { key: 'mediaReportsFile', kind: 'roadshow_media_reports' },
+  { key: 'userFeedbackFile', kind: 'roadshow_user_feedback' },
+];
+
+function getFormConfig(formType) {
+  if (formType === 'roadshow') {
+    return {
+      type: 'roadshow',
+      questions: ROADSHOW_QUESTIONS,
+      groups: ROADSHOW_GROUPS,
+      sections: ROADSHOW_SECTIONS,
+      byKey: ROADSHOW_BY_KEY,
+      fileFields: ROADSHOW_FILE_FIELDS,
+    };
+  }
+  return {
+    type: 'hackathon',
+    questions: HACKATHON_QUESTIONS,
+    groups: HACKATHON_GROUPS,
+    sections: HACKATHON_SECTIONS,
+    byKey: HACKATHON_BY_KEY,
+    fileFields: HACKATHON_FILE_FIELDS,
+  };
+}
 
 function isEmail(value) {
   return /.+@.+\..+/.test(value);
@@ -287,7 +752,14 @@ function parseExtra(registration) {
   return registration.extra;
 }
 
-function answersFromRegistration(registration) {
+function effectiveRequired(question, answers) {
+  if (typeof question.requiredIf === 'function') {
+    return Boolean(question.requiredIf(answers || {}));
+  }
+  return Boolean(question.required);
+}
+
+function answersFromHackathon(registration) {
   if (!registration) return {};
 
   const extra = parseExtra(registration);
@@ -296,8 +768,8 @@ function answersFromRegistration(registration) {
   return {
     nickname: valueText(questionnaire.nickname || extra.nickname),
     realName: valueText(questionnaire.realName || registration.realName),
-    gender: optionValue(QUESTION_BY_KEY.gender, questionnaire.gender || extra.gender),
-    ageGroup: optionValue(QUESTION_BY_KEY.ageGroup, questionnaire.ageGroup || extra.ageGroup),
+    gender: optionValue(HACKATHON_BY_KEY.gender, questionnaire.gender || extra.gender),
+    ageGroup: optionValue(HACKATHON_BY_KEY.ageGroup, questionnaire.ageGroup || extra.ageGroup),
     organization: valueText(questionnaire.organization || registration.school),
     contact: valueText(questionnaire.contact || registration.phone),
     email: valueText(questionnaire.email || registration.emailSnapshot),
@@ -311,16 +783,53 @@ function answersFromRegistration(registration) {
     answerOrQuestion: valueText(questionnaire.answerOrQuestion || extra.answerOrQuestion),
     postScarcityWork: valueText(questionnaire.postScarcityWork || extra.postScarcityWork),
     availability: optionValue(
-      QUESTION_BY_KEY.availability,
+      HACKATHON_BY_KEY.availability,
       questionnaire.availability || extra.availability || registration.teamName
     ),
   };
 }
 
+function answersFromRoadshow(registration) {
+  if (!registration) return {};
+
+  const extra = parseExtra(registration);
+  const q = extra.questionnaire || {};
+  const arr = (v) => (Array.isArray(v) ? v : []);
+
+  return {
+    projectName: valueText(q.projectName),
+    projectTagline: valueText(q.projectTagline),
+    projectIntro: valueText(q.projectIntro),
+    productForm: arr(q.productForm),
+    productFormOther: valueText(q.productFormOther),
+    roadshowTeamName: valueText(q.roadshowTeamName || registration.teamName),
+    leaderName: valueText(q.leaderName || registration.realName),
+    leaderContact: valueText(q.leaderContact || registration.phone),
+    teamMembers: valueText(q.teamMembers),
+    projectStage: arr(q.projectStage),
+    projectStageOther: valueText(q.projectStageOther),
+    achievements: valueText(q.achievements),
+    nextPlan: valueText(q.nextPlan),
+    codeRepo: valueText(q.codeRepo),
+    hardwareDesc: valueText(q.hardwareDesc),
+    awardsText: valueText(q.awardsText),
+    pastCompetitions: valueText(q.pastCompetitions),
+    mediaReportsText: valueText(q.mediaReportsText),
+    userFeedbackText: valueText(q.userFeedbackText),
+    cooperation: valueText(q.cooperation),
+  };
+}
+
+function answersFromRegistration(registration, formType) {
+  if (formType === 'roadshow') return answersFromRoadshow(registration);
+  return answersFromHackathon(registration);
+}
+
 function fieldMessage(question, value, answers = {}) {
+  const required = effectiveRequired(question, answers);
   const text = valueText(value);
   if (question.kind === 'file') {
-    if (!value) return question.required ? '必填' : '可选';
+    if (!value) return required ? '必填' : '可选';
     if (isFileValue(value)) {
       if (question.maxSize && value.size > question.maxSize) {
         return `文件超出 ${Math.round(question.maxSize / 1024 / 1024)}MB 限制`;
@@ -340,20 +849,30 @@ function fieldMessage(question, value, answers = {}) {
     const hasSkill =
       (Array.isArray(value) && value.length > 0) ||
       valueText(answers[question.extraKey]).length > 0;
-    if (!question.required && !hasSkill) return '可选';
-    if (question.required && !hasSkill) return '必填';
+    if (!required && !hasSkill) return '可选';
+    if (required && !hasSkill) return '必填';
     return '看起来不错。';
   }
-  if (!question.required && !text) return '可选';
+  if (question.kind === 'multi') {
+    const list = Array.isArray(value) ? value : [];
+    const otherSelected = question.otherValue && list.includes(question.otherValue);
+    const otherFilled = valueText(answers[question.extraKey]).length > 0;
+    if (!required && list.length === 0) return '可选';
+    if (required && list.length === 0) return '必填';
+    if (otherSelected && !otherFilled) return '请补充"其他"说明';
+    return '看起来不错。';
+  }
+  if (!required && !text) return '可选';
   if (question.type === 'email' && !isEmail(text)) return '请输入有效邮箱';
-  if (question.required && text.length < (question.min || 1)) return '必填';
+  if (required && text.length < (question.min || 1)) return '必填';
   return '看起来不错。';
 }
 
 function isQuestionValid(question, answers) {
   const value = answers[question.key];
+  const required = effectiveRequired(question, answers);
   if (question.kind === 'file') {
-    if (!question.required && !value) return true;
+    if (!required && !value) return true;
     if (!value) return false;
     if (isFileValue(value)) {
       if (question.maxSize && value.size > question.maxSize) return false;
@@ -361,17 +880,28 @@ function isQuestionValid(question, answers) {
       if (question.allowedExt && !question.allowedExt.includes(ext)) return false;
       return true;
     }
-    // already-uploaded attachment object
     return Boolean(value && (value.id || value.fileName));
   }
   if (question.kind === 'skillCards') {
-    if (!question.required) return true;
+    if (!required) return true;
     return (
       (Array.isArray(value) && value.length > 0) ||
       valueText(answers[question.extraKey]).length > 0
     );
   }
-  if (!question.required) {
+  if (question.kind === 'multi') {
+    const list = Array.isArray(value) ? value : [];
+    if (required && list.length === 0) return false;
+    if (
+      question.otherValue &&
+      list.includes(question.otherValue) &&
+      !valueText(answers[question.extraKey])
+    ) {
+      return false;
+    }
+    return true;
+  }
+  if (!required) {
     if (question.type === 'email' && valueText(value)) {
       return isEmail(valueText(value));
     }
@@ -388,6 +918,16 @@ function formatSkillAnswer(answers) {
     .filter(Boolean);
   const extra = valueText(answers.skillsOther);
   return [...selected, extra].filter(Boolean).join(' · ');
+}
+
+function formatMultiAnswer(answers, key, options, otherValue, extraKey) {
+  const list = Array.isArray(answers[key]) ? answers[key] : [];
+  const labels = list
+    .filter((v) => v !== otherValue)
+    .map((v) => options.find((o) => o.v === v)?.lbl)
+    .filter(Boolean);
+  const otherText = list.includes(otherValue) ? valueText(answers[extraKey]) : '';
+  return [...labels, otherText].filter(Boolean).join(' · ');
 }
 
 function Ring({ pct }) {
@@ -461,10 +1001,13 @@ export default function Questionnaire() {
   const [ans, setAns] = useState({});
   const [done, setDone] = useState(false);
   const [registration, setRegistration] = useState(null);
+  const [formType, setFormType] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState('');
   const [resumeUploadErr, setResumeUploadErr] = useState('');
+
+  const formMeta = formType ? FORM_TYPES[formType] : null;
 
   useEffect(() => {
     document.body.classList.add('q-body');
@@ -491,14 +1034,34 @@ export default function Questionnaire() {
         });
         if (!alive) return;
         setRegistration(current);
-        const baseAnswers = answersFromRegistration(current);
+
+        let persistedType = null;
         if (current) {
+          const extra = parseExtra(current);
+          persistedType =
+            resolveFormType(extra.formType) ||
+            resolveFormType(extra.questionnaire?.formType) ||
+            'hackathon';
+        }
+
+        const baseAnswers = answersFromRegistration(current, persistedType);
+        if (current) {
+          const cfgForLoad = getFormConfig(persistedType || 'hackathon');
           try {
             const list = await api.listAttachments();
-            const resumeAtt = Array.isArray(list)
-              ? list.find((item) => item.kind === 'resume') || list[0]
-              : null;
-            if (resumeAtt) baseAnswers.resumeFile = resumeAtt;
+            if (Array.isArray(list)) {
+              for (const { key, kind } of cfgForLoad.fileFields) {
+                const att = list.find((item) => item.kind === kind);
+                if (att) baseAnswers[key] = att;
+              }
+              if (
+                cfgForLoad.type === 'hackathon' &&
+                !baseAnswers.resumeFile &&
+                list.length > 0
+              ) {
+                baseAnswers.resumeFile = list[0];
+              }
+            }
           } catch {
             // non-fatal; user can re-upload
           }
@@ -506,6 +1069,7 @@ export default function Questionnaire() {
         if (!alive) return;
         setAns(baseAnswers);
         setDone(Boolean(current));
+        if (persistedType) setFormType(persistedType);
       } catch (error) {
         if (!alive) return;
         if (error.status === 401) {
@@ -526,26 +1090,34 @@ export default function Questionnaire() {
     };
   }, [navigate]);
 
-  const page = QUESTION_GROUPS[i];
-  const total = QUESTION_GROUPS.length;
-  const pct = done ? 1 : i / total;
+  const cfg = useMemo(
+    () => getFormConfig(formType || 'hackathon'),
+    [formType],
+  );
+
+  const page = formType ? cfg.groups[i] : null;
+  const total = cfg.groups.length;
+  const pct = done ? 1 : formType ? i / total : 0;
 
   const canNext = useCallback(() => {
     if (!page) return true;
     return page.questions.every((question) => isQuestionValid(question, ans));
   }, [page, ans]);
 
-  const saveQuestionnaire = useCallback(async () => {
-    if (!canNext()) return;
-
+  const buildHackathonPayload = useCallback(() => {
     const skillsText = formatSkillAnswer(ans);
-    const availability = optionLabel(QUESTION_BY_KEY.availability, ans.availability);
+    const availability = optionLabel(
+      HACKATHON_BY_KEY.availability,
+      ans.availability,
+    );
     const questionnaire = {
-      title: QUESTIONNAIRE_TITLE,
+      title: formMeta.title,
+      formType: formMeta.id,
+      formLabel: formMeta.label,
       nickname: valueText(ans.nickname),
       realName: valueText(ans.realName),
-      gender: optionLabel(QUESTION_BY_KEY.gender, ans.gender),
-      ageGroup: optionLabel(QUESTION_BY_KEY.ageGroup, ans.ageGroup),
+      gender: optionLabel(HACKATHON_BY_KEY.gender, ans.gender),
+      ageGroup: optionLabel(HACKATHON_BY_KEY.ageGroup, ans.ageGroup),
       organization: valueText(ans.organization),
       contact: valueText(ans.contact),
       email: valueText(ans.email).toLowerCase(),
@@ -564,6 +1136,8 @@ export default function Questionnaire() {
     const extra = {
       ...parseExtra(registration),
       questionnaire,
+      formType: formMeta.id,
+      formLabel: formMeta.label,
       nickname: questionnaire.nickname,
       gender: questionnaire.gender,
       ageGroup: questionnaire.ageGroup,
@@ -576,17 +1150,100 @@ export default function Questionnaire() {
       postScarcityWork: questionnaire.postScarcityWork,
       availability: questionnaire.availability,
     };
-    const payload = {
+    return {
       realName: questionnaire.realName,
       phone: questionnaire.contact,
       school: questionnaire.organization,
       bio: questionnaire.why,
       teamName: questionnaire.availability,
       rolePreference: skillsText.slice(0, 50),
-      source: 'bohack-questionnaire',
+      source: `bohack-questionnaire-${formMeta.id}`,
       note: questionnaire.why,
       extra,
     };
+  }, [ans, formMeta, registration]);
+
+  const buildRoadshowPayload = useCallback(() => {
+    const productFormText = formatMultiAnswer(
+      ans,
+      'productForm',
+      PRODUCT_FORM_OPTIONS,
+      'other',
+      'productFormOther',
+    );
+    const projectStageText = formatMultiAnswer(
+      ans,
+      'projectStage',
+      PROJECT_STAGE_OPTIONS,
+      'other',
+      'projectStageOther',
+    );
+    const questionnaire = {
+      title: formMeta.title,
+      formType: formMeta.id,
+      formLabel: formMeta.label,
+      projectName: valueText(ans.projectName),
+      projectTagline: valueText(ans.projectTagline),
+      projectIntro: valueText(ans.projectIntro),
+      productForm: Array.isArray(ans.productForm) ? ans.productForm : [],
+      productFormOther: valueText(ans.productFormOther),
+      productFormText,
+      roadshowTeamName: valueText(ans.roadshowTeamName),
+      leaderName: valueText(ans.leaderName),
+      leaderContact: valueText(ans.leaderContact),
+      teamMembers: valueText(ans.teamMembers),
+      projectStage: Array.isArray(ans.projectStage) ? ans.projectStage : [],
+      projectStageOther: valueText(ans.projectStageOther),
+      projectStageText,
+      achievements: valueText(ans.achievements),
+      nextPlan: valueText(ans.nextPlan),
+      codeRepo: valueText(ans.codeRepo),
+      hardwareDesc: valueText(ans.hardwareDesc),
+      awardsText: valueText(ans.awardsText),
+      pastCompetitions: valueText(ans.pastCompetitions),
+      mediaReportsText: valueText(ans.mediaReportsText),
+      userFeedbackText: valueText(ans.userFeedbackText),
+      cooperation: valueText(ans.cooperation),
+      isSoftwareProject: isSoftwareProject(ans),
+      isHardwareProject: isHardwareProject(ans),
+    };
+    const extra = {
+      ...parseExtra(registration),
+      questionnaire,
+      formType: formMeta.id,
+      formLabel: formMeta.label,
+      projectName: questionnaire.projectName,
+      projectTagline: questionnaire.projectTagline,
+      productForm: questionnaire.productFormText,
+      projectStage: questionnaire.projectStageText,
+      isSoftwareProject: questionnaire.isSoftwareProject,
+      isHardwareProject: questionnaire.isHardwareProject,
+    };
+    const rolePreference = (questionnaire.productFormText || '路演项目').slice(
+      0,
+      50,
+    );
+    return {
+      realName: questionnaire.leaderName || questionnaire.projectName,
+      phone: questionnaire.leaderContact,
+      school: questionnaire.roadshowTeamName,
+      bio: questionnaire.projectIntro || questionnaire.projectTagline,
+      teamName: questionnaire.roadshowTeamName,
+      rolePreference,
+      source: `bohack-questionnaire-${formMeta.id}`,
+      note: questionnaire.projectTagline || questionnaire.projectIntro,
+      extra,
+    };
+  }, [ans, formMeta, registration]);
+
+  const saveQuestionnaire = useCallback(async () => {
+    if (!canNext()) return;
+    if (!formMeta) return;
+
+    const payload =
+      cfg.type === 'roadshow'
+        ? buildRoadshowPayload()
+        : buildHackathonPayload();
 
     setSubmitting(true);
     setErr('');
@@ -597,26 +1254,31 @@ export default function Questionnaire() {
         : await api.createRegistration(payload);
       setRegistration(saved);
 
-      // Upload resume file (if user picked a fresh File). Existing attachment
-      // objects (already uploaded) are skipped.
-      const resumeFile = ans.resumeFile;
-      if (isFileValue(resumeFile)) {
+      const failedUploads = [];
+      for (const { key, kind } of cfg.fileFields) {
+        const file = ans[key];
+        if (!isFileValue(file)) continue;
         try {
           const formData = new FormData();
-          formData.append('file', resumeFile);
-          formData.append('kind', 'resume');
+          formData.append('file', file);
+          formData.append('kind', kind);
           const created = await api.uploadAttachment(formData);
-          setAns((a) => ({ ...a, resumeFile: created }));
+          setAns((a) => ({ ...a, [key]: created }));
         } catch (uploadError) {
           if (uploadError.status === 401) {
             clearAuthSession();
             navigate('/login', { replace: true });
             return;
           }
-          setResumeUploadErr(
-            `报名信息已保存，但简历上传失败：${userFacingError(uploadError)}。请稍后在“修改回答”中重新上传。`,
+          failedUploads.push(
+            `${key}: ${userFacingError(uploadError)}`,
           );
         }
+      }
+      if (failedUploads.length) {
+        setResumeUploadErr(
+          `报名信息已保存，但部分文件上传失败：${failedUploads.join('；')}。请在"修改回答"中重新上传。`,
+        );
       }
 
       setDone(true);
@@ -630,19 +1292,34 @@ export default function Questionnaire() {
     } finally {
       setSubmitting(false);
     }
-  }, [ans, canNext, navigate, registration]);
+  }, [
+    ans,
+    buildHackathonPayload,
+    buildRoadshowPayload,
+    canNext,
+    cfg,
+    formMeta,
+    navigate,
+    registration,
+  ]);
 
   const next = useCallback(() => {
     if (i >= total - 1) saveQuestionnaire();
     else setI(i + 1);
   }, [i, total, saveQuestionnaire]);
 
+  const canReturnToChooser = !registration;
+
   const back = useCallback(() => {
     if (done) {
       setDone(false);
       setI(total - 1);
     } else if (i > 0) setI(i - 1);
-  }, [done, i, total]);
+    else if (canReturnToChooser) {
+      setFormType(null);
+      setI(0);
+    }
+  }, [canReturnToChooser, done, i, total]);
 
   const up = (k, v) => setAns((a) => ({ ...a, [k]: v }));
   const toggleSkill = (value) =>
@@ -655,21 +1332,32 @@ export default function Questionnaire() {
           : [...current, value],
       };
     });
+  const toggleListValue = (key, value) =>
+    setAns((a) => {
+      const current = Array.isArray(a[key]) ? a[key] : [];
+      return {
+        ...a,
+        [key]: current.includes(value)
+          ? current.filter((item) => item !== value)
+          : [...current, value],
+      };
+    });
 
   useEffect(() => {
     const onKey = (e) => {
       if (done || submitting) return;
+      if (!formType) return;
       const tag = e.target?.tagName;
       if (e.key === 'Enter' && tag !== 'TEXTAREA' && canNext()) next();
       if (e.key === 'Backspace' && e.metaKey) back();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [done, submitting, canNext, next, back]);
+  }, [done, submitting, formType, canNext, next, back]);
 
   const sectionStatus = (name) => {
-    const firstIdx = QUESTION_GROUPS.findIndex((x) => x.section === name);
-    const lastIdx = QUESTION_GROUPS.map((x) => x.section).lastIndexOf(name);
+    const firstIdx = cfg.groups.findIndex((x) => x.section === name);
+    const lastIdx = cfg.groups.map((x) => x.section).lastIndexOf(name);
     if (done) return 'done';
     if (i > lastIdx) return 'done';
     if (i >= firstIdx && i <= lastIdx) return 'cur';
@@ -678,14 +1366,48 @@ export default function Questionnaire() {
 
   const today = useMemo(() => new Date().toLocaleDateString('zh-CN'), []);
 
-  const summaryItems = [
-    ['昵称', ans.nickname],
-    ['姓名', ans.realName],
-    ['学校/机构', ans.organization],
-    ['联系', ans.contact],
-    ['技能', formatSkillAnswer(ans)],
-    ['赛程', optionLabel(QUESTION_BY_KEY.availability, ans.availability)],
-  ];
+  const summaryItems =
+    cfg.type === 'roadshow'
+      ? [
+          ['报名类型', formMeta?.label],
+          ['项目名称', ans.projectName],
+          ['一句话介绍', ans.projectTagline],
+          ['团队名称', ans.roadshowTeamName],
+          ['负责人', ans.leaderName],
+          ['联系方式', ans.leaderContact],
+          [
+            '产品形态',
+            formatMultiAnswer(
+              ans,
+              'productForm',
+              PRODUCT_FORM_OPTIONS,
+              'other',
+              'productFormOther',
+            ),
+          ],
+          [
+            '项目阶段',
+            formatMultiAnswer(
+              ans,
+              'projectStage',
+              PROJECT_STAGE_OPTIONS,
+              'other',
+              'projectStageOther',
+            ),
+          ],
+        ]
+      : [
+          ['报名类型', formMeta?.label],
+          ['昵称', ans.nickname],
+          ['姓名', ans.realName],
+          ['学校/机构', ans.organization],
+          ['联系', ans.contact],
+          ['技能', formatSkillAnswer(ans)],
+          [
+            '赛程',
+            optionLabel(HACKATHON_BY_KEY.availability, ans.availability),
+          ],
+        ];
 
   if (loading) {
     return (
@@ -723,27 +1445,39 @@ export default function Questionnaire() {
               <em>问卷。</em>
             </div>
             <p className="q-sub">
-              {QUESTIONNAIRE_TITLE}
-              <br />
-              {INTRO_LINES.map((line) => (
-                <span key={line}>
-                  {line}
+              {formMeta ? (
+                <>
+                  {formMeta.title}
                   <br />
-                </span>
-              ))}
+                  {formMeta.intro.map((line) => (
+                    <span key={line}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                </>
+              ) : (
+                <>
+                  请先选择本次报名的类型。
+                  <br />
+                  42h 黑客松个人报名 与 路演项目招募 各自独立填写。
+                </>
+              )}
             </p>
           </div>
-          <div className="progress-ring">
-            <Ring pct={pct} />
-            <div className="progress-text">
-              <div className="k">Progress</div>
-              <div className="v">
-                {done ? '已完成' : `${i + 1} / ${total}`}
+          {formType && (
+            <div className="progress-ring">
+              <Ring pct={pct} />
+              <div className="progress-text">
+                <div className="k">Progress</div>
+                <div className="v">
+                  {done ? '已完成' : `${i + 1} / ${total}`}
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="q-sections">
-            {SECTIONS.map((s, idx) => {
+            {(formType ? cfg.sections : []).map((s, idx) => {
               const st = sectionStatus(s);
               return (
                 <div
@@ -782,14 +1516,71 @@ export default function Questionnaire() {
         <div className="q-top">
           <Link to="/user">← 控制台</Link>
           <span>
-            Questionnaire · {done ? '已完成' : `Page ${i + 1} / ${total}`}
+            Questionnaire ·{' '}
+            {!formType
+              ? '选择报名类型'
+              : done
+                ? '已完成'
+                : `Page ${i + 1} / ${total}`}
           </span>
         </div>
 
-        {!done && page && (
+        {!formType && !done && (
+          <div className="q-card q-chooser">
+            <div className="q-step-label">Step 00 · 选择类型</div>
+            <h1 className="q-question">
+              你来报名的<br />
+              <em>是哪一类？</em>
+            </h1>
+            <p className="q-hint">
+              请选择本次填写的报名类型。两类问卷会分别记录与审核，提交后仍可在控制台修改。
+            </p>
+
+            <div className="q-choose-grid">
+              {FORM_TYPE_LIST.map((opt, idx) => (
+                <button
+                  type="button"
+                  key={opt.id}
+                  className="q-choose-card magnet"
+                  onClick={() => {
+                    setFormType(opt.id);
+                    setI(0);
+                  }}
+                >
+                  <div className="q-choose-head">
+                    <span className="q-choose-glyph">{opt.glyph}</span>
+                    <span className="q-choose-n">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className="q-choose-body">
+                    <h2>{opt.label}</h2>
+                    <p>{opt.blurb}</p>
+                  </div>
+                  <ul className="q-choose-points">
+                    {opt.points.map((p) => (
+                      <li key={p}>
+                        <span className="dot" /> {p}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="q-choose-foot">
+                    开始填写 <span className="arrow">↗</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <p className="q-choose-note">
+              暂时两类问卷题目相同，提交后会按类型区分留档；后续会针对路演项目进一步定制题目。
+            </p>
+          </div>
+        )}
+
+        {formType && !done && page && (
           <div className="q-card">
             <div className="q-step-label">
-              {page.section} · 第 {i + 1} 页 ·{' '}
+              {formMeta?.short} · {page.section} · 第 {i + 1} 页 ·{' '}
               {page.questions.filter((question) => question.required).length} 项必填
             </div>
             <h1 className="q-question">{page.title}</h1>
@@ -801,7 +1592,9 @@ export default function Questionnaire() {
                   <div className="q-field-head">
                     <h2>
                       {question.q}
-                      <span>{question.required ? '必填' : '可选'}</span>
+                      <span>
+                        {effectiveRequired(question, ans) ? '必填' : '可选'}
+                      </span>
                     </h2>
                     {question.hint && <p>{question.hint}</p>}
                   </div>
@@ -844,7 +1637,9 @@ export default function Questionnaire() {
                         maxLength={question.max}
                       />
                       <div className="q-meta">
-                        <span>{fieldMessage(question, ans[question.key])}</span>
+                        <span>
+                          {fieldMessage(question, ans[question.key], ans)}
+                        </span>
                         {question.max && (
                           <span>
                             {(ans[question.key] || '').length} / {question.max}
@@ -852,6 +1647,62 @@ export default function Questionnaire() {
                         )}
                       </div>
                     </div>
+                  )}
+
+                  {question.kind === 'multi' && (
+                    <>
+                      <div className="q-multi">
+                        {question.options.map((option, n) => {
+                          const selected = (ans[question.key] || []).includes(
+                            option.v,
+                          );
+                          return (
+                            <label
+                              key={option.v}
+                              className={'q-multi-opt' + (selected ? ' on' : '')}
+                            >
+                              <span className="key">{n + 1}</span>
+                              <span className="lbl">{option.lbl}</span>
+                              <span className="mk" />
+                              <input
+                                type="checkbox"
+                                checked={selected}
+                                onChange={() =>
+                                  toggleListValue(question.key, option.v)
+                                }
+                              />
+                            </label>
+                          );
+                        })}
+                      </div>
+                      {question.extraKey && (
+                        <div className="q-text q-input q-multi-extra">
+                          <input
+                            value={ans[question.extraKey] || ''}
+                            onChange={(e) =>
+                              up(question.extraKey, e.target.value)
+                            }
+                            placeholder={question.placeholder}
+                            maxLength={question.max}
+                            disabled={
+                              question.otherValue &&
+                              !(ans[question.key] || []).includes(
+                                question.otherValue,
+                              )
+                            }
+                          />
+                          <div className="q-meta">
+                            <span>
+                              {fieldMessage(question, ans[question.key], ans)}
+                            </span>
+                            <span>
+                              {(ans[question.extraKey] || '').length} /{' '}
+                              {question.max}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
 
                   {question.kind === 'skillCards' && (
@@ -922,7 +1773,9 @@ export default function Questionnaire() {
                         maxLength={question.max}
                       />
                       <div className="q-meta">
-                        <span>{fieldMessage(question, ans[question.key])}</span>
+                        <span>
+                          {fieldMessage(question, ans[question.key], ans)}
+                        </span>
                         {question.max && (
                           <span>
                             {(ans[question.key] || '').length} / {question.max}
@@ -943,10 +1796,13 @@ export default function Questionnaire() {
                   type="button"
                   className="auth-ghost magnet"
                   onClick={back}
-                  disabled={i === 0 || submitting}
-                  style={{ opacity: i === 0 || submitting ? 0.4 : 1 }}
+                  disabled={(i === 0 && !canReturnToChooser) || submitting}
+                  style={{
+                    opacity:
+                      (i === 0 && !canReturnToChooser) || submitting ? 0.4 : 1,
+                  }}
                 >
-                  ← 返回
+                  {i === 0 && canReturnToChooser ? '← 选择类型' : '← 返回'}
                 </button>
               </div>
               <div

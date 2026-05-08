@@ -339,6 +339,12 @@ export const api = {
       body: payload,
     });
   },
+  uploadAttendanceConfirmation(formData) {
+    return request('/attendance/confirm/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  },
 };
 
 export function triggerBlobDownload(blob, filename) {
