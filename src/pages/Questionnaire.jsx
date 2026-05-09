@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMagnet } from '../hooks/useMagnet.js';
 import {
   api,
@@ -40,6 +40,15 @@ const FORM_TYPES = {
 };
 
 const FORM_TYPE_LIST = [FORM_TYPES.hackathon, FORM_TYPES.roadshow];
+
+const STATUS_LABELS = {
+  draft: '草稿',
+  submitted: '已提交',
+  under_review: '审核中',
+  approved: '已通过',
+  rejected: '未通过',
+  cancelled: '已取消',
+};
 
 function resolveFormType(value) {
   if (value && FORM_TYPES[value]) return value;
@@ -752,6 +761,83 @@ function parseExtra(registration) {
   return registration.extra;
 }
 
+function questionnairesFromExtra(extra) {
+  const questionnaires =
+    extra?.questionnaires && typeof extra.questionnaires === 'object'
+      ? { ...extra.questionnaires }
+      : {};
+  const legacyType = resolveFormType(extra?.formType || extra?.questionnaire?.formType);
+  if (legacyType && extra?.questionnaire && !questionnaires[legacyType]) {
+    questionnaires[legacyType] = extra.questionnaire;
+  }
+  return questionnaires;
+}
+
+function questionnaireForType(registration, formType) {
+  if (!registration || !formType) return {};
+  const extra = parseExtra(registration);
+  return questionnairesFromExtra(extra)[formType] || {};
+}
+
+function hasQuestionnaire(registration, formType) {
+  if (!registration || !formType) return false;
+
+  const extra = parseExtra(registration);
+  const questionnaire = questionnairesFromExtra(extra)[formType];
+  if (
+    questionnaire &&
+    typeof questionnaire === 'object' &&
+    Object.keys(questionnaire).length > 0
+  ) {
+    return true;
+  }
+
+  if (
+    Array.isArray(extra.submittedQuestionnaires) &&
+    extra.submittedQuestionnaires.includes(formType)
+  ) {
+    return true;
+  }
+
+  return (
+    resolveFormType(extra.formType || extra.questionnaire?.formType) === formType ||
+    registration.source === `bohack-questionnaire-${formType}` ||
+    (formType === 'hackathon' && registration.source === 'bohack-questionnaire')
+  );
+}
+
+function formStatusFor(registration, formType) {
+  const submitted = hasQuestionnaire(registration, formType);
+  return {
+    submitted,
+    status: submitted ? registration?.status || 'submitted' : null,
+  };
+}
+
+function formStatusText(status) {
+  if (!status?.submitted) return '开始填写';
+  return `${STATUS_LABELS[status.status] || '已填写'} · 修改回答`;
+}
+
+function logChooserStatuses(registration, statuses) {
+  if (typeof console === 'undefined') return;
+
+  console.info('[Questionnaire chooser] form status check', {
+    registrationId: registration?.id || null,
+    registrationStatus: registration?.status || null,
+    registrationSource: registration?.source || null,
+    statuses: Object.fromEntries(
+      Object.entries(statuses).map(([type, status]) => [
+        type,
+        {
+          ...status,
+          buttonText: formStatusText(status),
+        },
+      ]),
+    ),
+  });
+}
+
 function effectiveRequired(question, answers) {
   if (typeof question.requiredIf === 'function') {
     return Boolean(question.requiredIf(answers || {}));
@@ -763,7 +849,7 @@ function answersFromHackathon(registration) {
   if (!registration) return {};
 
   const extra = parseExtra(registration);
-  const questionnaire = extra.questionnaire || {};
+  const questionnaire = questionnaireForType(registration, 'hackathon');
 
   return {
     nickname: valueText(questionnaire.nickname || extra.nickname),
@@ -792,8 +878,7 @@ function answersFromHackathon(registration) {
 function answersFromRoadshow(registration) {
   if (!registration) return {};
 
-  const extra = parseExtra(registration);
-  const q = extra.questionnaire || {};
+  const q = questionnaireForType(registration, 'roadshow');
   const arr = (v) => (Array.isArray(v) ? v : []);
 
   return {
@@ -996,12 +1081,18 @@ function FileDropField({ question, value, onChange }) {
 export default function Questionnaire() {
   useMagnet();
   const navigate = useNavigate();
+  const { formType: routeFormType } = useParams();
+  const forcedFormType = resolveFormType(routeFormType);
 
   const [i, setI] = useState(0);
   const [ans, setAns] = useState({});
   const [done, setDone] = useState(false);
   const [registration, setRegistration] = useState(null);
   const [formType, setFormType] = useState(null);
+  const [formStatuses, setFormStatuses] = useState({
+    hackathon: { submitted: false, status: null },
+    roadshow: { submitted: false, status: null },
+  });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState('');
@@ -1035,18 +1126,19 @@ export default function Questionnaire() {
         if (!alive) return;
         setRegistration(current);
 
-        let persistedType = null;
-        if (current) {
-          const extra = parseExtra(current);
-          persistedType =
-            resolveFormType(extra.formType) ||
-            resolveFormType(extra.questionnaire?.formType) ||
-            'hackathon';
-        }
+        const nextFormStatuses = {
+          hackathon: formStatusFor(current, 'hackathon'),
+          roadshow: formStatusFor(current, 'roadshow'),
+        };
+        setFormStatuses(nextFormStatuses);
+        logChooserStatuses(current, nextFormStatuses);
 
-        const baseAnswers = answersFromRegistration(current, persistedType);
-        if (current) {
-          const cfgForLoad = getFormConfig(persistedType || 'hackathon');
+        const selectedType = forcedFormType || null;
+        const baseAnswers = selectedType
+          ? answersFromRegistration(current, selectedType)
+          : {};
+        if (current && selectedType) {
+          const cfgForLoad = getFormConfig(selectedType);
           try {
             const list = await api.listAttachments();
             if (Array.isArray(list)) {
@@ -1068,8 +1160,8 @@ export default function Questionnaire() {
         }
         if (!alive) return;
         setAns(baseAnswers);
-        setDone(Boolean(current));
-        if (persistedType) setFormType(persistedType);
+        setDone(Boolean(selectedType && hasQuestionnaire(current, selectedType)));
+        setFormType(selectedType);
       } catch (error) {
         if (!alive) return;
         if (error.status === 401) {
@@ -1088,7 +1180,7 @@ export default function Questionnaire() {
     return () => {
       alive = false;
     };
-  }, [navigate]);
+  }, [forcedFormType, navigate]);
 
   const cfg = useMemo(
     () => getFormConfig(formType || 'hackathon'),
@@ -1133,8 +1225,15 @@ export default function Questionnaire() {
       postScarcityWork: valueText(ans.postScarcityWork),
       availability,
     };
+    const baseExtra = parseExtra(registration);
+    const questionnaires = {
+      ...questionnairesFromExtra(baseExtra),
+      [formMeta.id]: questionnaire,
+    };
     const extra = {
-      ...parseExtra(registration),
+      ...baseExtra,
+      questionnaires,
+      submittedQuestionnaires: Object.keys(questionnaires),
       questionnaire,
       formType: formMeta.id,
       formLabel: formMeta.label,
@@ -1207,8 +1306,15 @@ export default function Questionnaire() {
       isSoftwareProject: isSoftwareProject(ans),
       isHardwareProject: isHardwareProject(ans),
     };
+    const baseExtra = parseExtra(registration);
+    const questionnaires = {
+      ...questionnairesFromExtra(baseExtra),
+      [formMeta.id]: questionnaire,
+    };
     const extra = {
-      ...parseExtra(registration),
+      ...baseExtra,
+      questionnaires,
+      submittedQuestionnaires: Object.keys(questionnaires),
       questionnaire,
       formType: formMeta.id,
       formLabel: formMeta.label,
@@ -1253,6 +1359,13 @@ export default function Questionnaire() {
         ? await api.updateRegistration(payload)
         : await api.createRegistration(payload);
       setRegistration(saved);
+      setFormStatuses((current) => ({
+        ...current,
+        [formMeta.id]: {
+          submitted: true,
+          status: saved?.status || 'submitted',
+        },
+      }));
 
       const failedUploads = [];
       for (const { key, kind } of cfg.fileFields) {
@@ -1308,7 +1421,7 @@ export default function Questionnaire() {
     else setI(i + 1);
   }, [i, total, saveQuestionnaire]);
 
-  const canReturnToChooser = !registration;
+  const canReturnToChooser = !forcedFormType;
 
   const back = useCallback(() => {
     if (done) {
@@ -1543,8 +1656,7 @@ export default function Questionnaire() {
                   key={opt.id}
                   className="q-choose-card magnet"
                   onClick={() => {
-                    setFormType(opt.id);
-                    setI(0);
+                    navigate(`/questionnaire/${opt.id}`);
                   }}
                 >
                   <div className="q-choose-head">
@@ -1565,14 +1677,15 @@ export default function Questionnaire() {
                     ))}
                   </ul>
                   <div className="q-choose-foot">
-                    开始填写 <span className="arrow">↗</span>
+                    {formStatusText(formStatuses[opt.id])}{' '}
+                    <span className="arrow">↗</span>
                   </div>
                 </button>
               ))}
             </div>
 
             <p className="q-choose-note">
-              暂时两类问卷题目相同，提交后会按类型区分留档；后续会针对路演项目进一步定制题目。
+              两类问卷会分别记录。你可以只填写其中一个，也可以按需要分别提交两份。
             </p>
           </div>
         )}

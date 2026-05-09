@@ -83,9 +83,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/apply" element={<Questionnaire />} />
+        <Route path="/apply/:formType" element={<Questionnaire />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user" element={<User />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
+        <Route path="/questionnaire/:formType" element={<Questionnaire />} />
         <Route path="/attendance-confirm" element={<AttendanceConfirm />} />
         <Route path="*" element={<Site />} />
       </Routes>
