@@ -8,6 +8,8 @@ import {
   userFacingError,
 } from '../lib/api.js';
 
+const SUPPORT_EMAIL = 'contact@bohack.top';
+
 const FORM_TYPES = {
   hackathon: {
     id: 'hackathon',
@@ -532,7 +534,7 @@ const ROADSHOW_QUESTIONS = [
     key: 'pitchVideo',
     q: '模拟路演视频上传',
     hint: '请提交一段模拟路演视频（限时 3 分钟），用于了解项目表达和展示效果。',
-    required: true,
+    required: false,
     accept: 'video/*,.mp4,.mov,.m4v',
     maxSize: 200 * 1024 * 1024,
     allowedExt: ['mp4', 'mov', 'm4v'],
@@ -734,6 +736,60 @@ function isEmail(value) {
 
 function valueText(value) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function compactErrorData(data) {
+  if (!data) return '';
+  if (typeof data === 'string') return data.trim();
+  if (typeof data !== 'object') return String(data);
+
+  const direct = data.message || data.detail || data.error || data.reason;
+  if (typeof direct === 'string' && direct.trim()) return direct.trim();
+
+  if (data.errors && typeof data.errors === 'object') {
+    const lines = Object.entries(data.errors)
+      .map(([key, value]) => {
+        const text = Array.isArray(value) ? value.join('；') : String(value);
+        return `${key}: ${text}`;
+      })
+      .filter(Boolean);
+    if (lines.length) return lines.join('；');
+  }
+
+  try {
+    return JSON.stringify(data);
+  } catch {
+    return '';
+  }
+}
+
+function buildQuestionnaireError(error) {
+  const friendly = userFacingError(error);
+  const details = [];
+  const backendMessage = valueText(error?.message);
+  const backendData = compactErrorData(error?.data);
+
+  if (backendMessage && backendMessage !== friendly) {
+    details.push(`后端信息：${backendMessage}`);
+  }
+  if (error?.code !== undefined && error?.code !== null) {
+    details.push(`错误码：${error.code}`);
+  }
+  if (backendData && backendData !== backendMessage) {
+    details.push(`详细信息：${backendData}`);
+  }
+
+  return {
+    friendly,
+    details: details.map((line) =>
+      line.length > 600 ? `${line.slice(0, 600)}...` : line,
+    ),
+  };
+}
+
+function questionnaireErrorText(error) {
+  const { friendly, details } = buildQuestionnaireError(error);
+  return [friendly, ...details].join('；');
 }
 
 function optionLabel(question, value) {
@@ -1040,6 +1096,31 @@ function Ring({ pct }) {
         />
       </svg>
       <div className="label">{Math.round(pct * 100)}%</div>
+    </div>
+  );
+}
+
+function QuestionnaireError({ error }) {
+  if (!error) return null;
+  const detail = typeof error === 'string'
+    ? { friendly: error, details: [] }
+    : error;
+
+  return (
+    <div className="auth-err q-submit-err" role="alert">
+      <div>提交失败：{detail.friendly}</div>
+      {detail.details?.length > 0 && (
+        <ul>
+          {detail.details.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
+      <div className="q-submit-err-contact">
+        如果多次提交失败，请联系组委会邮箱{' '}
+        <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        ，并附上以上报错信息。
+      </div>
     </div>
   );
 }
@@ -1384,7 +1465,7 @@ export default function Questionnaire() {
             return;
           }
           failedUploads.push(
-            `${key}: ${userFacingError(uploadError)}`,
+            `${key}: ${questionnaireErrorText(uploadError)}`,
           );
         }
       }
@@ -1401,7 +1482,7 @@ export default function Questionnaire() {
         navigate('/login', { replace: true });
         return;
       }
-      setErr(userFacingError(error));
+      setErr(buildQuestionnaireError(error));
     } finally {
       setSubmitting(false);
     }
@@ -1901,7 +1982,7 @@ export default function Questionnaire() {
               ))}
             </div>
 
-            {err && <div className="auth-err">{err}</div>}
+            <QuestionnaireError error={err} />
 
             <div className="q-actions">
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>

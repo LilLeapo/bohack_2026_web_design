@@ -2080,6 +2080,28 @@ body.auth-body { background: var(--ink); overflow: auto; }
   margin-top: 4px;
 }
 .auth-form-err { margin-top: 18px; }
+.q-submit-err {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 107, 87, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 107, 87, 0.08);
+  line-height: 1.6;
+  text-transform: none;
+}
+.q-submit-err ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.q-submit-err-contact {
+  margin-top: 8px;
+  color: var(--bone);
+}
+.q-submit-err a {
+  color: var(--lime);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 .auth-row {
   display: flex; justify-content: space-between; align-items: center;
