@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+
+const CONTACT_EMAIL = 'contact@bohack.top';
+
 const PARTNERS = [
   {
     title: '资源支持合作',
@@ -13,7 +17,47 @@ const PARTNERS = [
   },
 ];
 
+function ContactEmailModal({ onClose }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div className="contact-email-overlay" onClick={onClose}>
+      <div
+        className="contact-email-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-email-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="contact-email-close"
+          aria-label="关闭邮箱弹窗"
+          onClick={onClose}
+        >
+          x
+        </button>
+        <p className="contact-email-kicker">CONTACT EMAIL</p>
+        <h3 id="contact-email-title">欢迎联系组委会</h3>
+        <a className="contact-email-address" href={`mailto:${CONTACT_EMAIL}`}>
+          {CONTACT_EMAIL}
+        </a>
+        <p className="contact-email-note">点击邮箱即可唤起邮件客户端，也可以复制后手动发送。</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Sponsors() {
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
   return (
     <section className="section light" id="sponsors">
       <div className="container">
@@ -43,11 +87,16 @@ export default function Sponsors() {
             <p>如果你希望成为本次活动的合作伙伴，欢迎联系组委会。</p>
             <p>这一次，让创新被看见，也让更多价值被连接。</p>
           </div>
-          <a href="mailto:contact@bohack.top" className="btn btn-primary magnet">
+          <button
+            type="button"
+            className="btn btn-primary magnet"
+            onClick={() => setIsContactOpen(true)}
+          >
             联系合作 <span className="arrow">↗</span>
-          </a>
+          </button>
         </div>
       </div>
+      {isContactOpen && <ContactEmailModal onClose={() => setIsContactOpen(false)} />}
     </section>
   );
 }

@@ -218,6 +218,15 @@ async function requestBlob(path, options = {}) {
   };
 }
 
+function registrationQuery(options) {
+  if (!options) return {};
+  if (typeof options === 'string') return { eventSlug: options };
+  return {
+    eventSlug: options.eventSlug,
+    registrationType: options.registrationType,
+  };
+}
+
 export const api = {
   login(payload) {
     return request('/auth/login', {
@@ -269,10 +278,10 @@ export const api = {
   currentEvent() {
     return request('/events/current');
   },
-  registrationStatus(eventSlug) {
+  registrationStatus(options) {
     return request('/registration/status', {
       auth: true,
-      query: { eventSlug },
+      query: registrationQuery(options),
     });
   },
   createRegistration(payload) {
@@ -289,17 +298,17 @@ export const api = {
       auth: true,
     });
   },
-  cancelRegistration(eventSlug) {
+  cancelRegistration(options) {
     return request('/registration', {
       method: 'DELETE',
       auth: true,
-      query: { eventSlug },
+      query: registrationQuery(options),
     });
   },
-  listAttachments(eventSlug) {
+  listAttachments(options) {
     return request('/registration/attachments', {
       auth: true,
-      query: { eventSlug },
+      query: registrationQuery(options),
     });
   },
   uploadAttachment(formData) {

@@ -9,6 +9,7 @@ import {
 } from '../lib/api.js';
 
 const SUPPORT_EMAIL = 'contact@bohack.top';
+const ROADSHOW_REGISTRATION_TYPE = 'roadshow';
 
 const FORM_TYPES = {
   hackathon: {
@@ -875,6 +876,17 @@ function formStatusText(status) {
   return `${STATUS_LABELS[status.status] || '已填写'} · 修改回答`;
 }
 
+function registrationForFormType(formType, registrations) {
+  if (formType === 'roadshow') {
+    if (registrations.roadshow) return registrations.roadshow;
+    if (hasQuestionnaire(registrations.participant, 'roadshow')) {
+      return registrations.participant;
+    }
+    return null;
+  }
+  return registrations.participant || null;
+}
+
 function logChooserStatuses(registration, statuses) {
   if (typeof console === 'undefined') return;
 
@@ -1200,28 +1212,53 @@ export default function Questionnaire() {
       setLoading(true);
       setErr('');
       try {
-        const current = await api.registrationStatus().catch((error) => {
-          if (error.status === 404) return null;
-          throw error;
-        });
+        const [participantRegistration, roadshowRegistration] = await Promise.all([
+          api.registrationStatus().catch((error) => {
+            if (error.status === 404) return null;
+            throw error;
+          }),
+          api
+            .registrationStatus({ registrationType: ROADSHOW_REGISTRATION_TYPE })
+            .catch((error) => {
+              if (error.status === 404) return null;
+              throw error;
+            }),
+        ]);
         if (!alive) return;
+        const registrations = {
+          participant: participantRegistration,
+          roadshow: roadshowRegistration,
+        };
+        const selectedType = forcedFormType || null;
+        const current = selectedType
+          ? registrationForFormType(selectedType, registrations)
+          : participantRegistration;
         setRegistration(current);
 
         const nextFormStatuses = {
-          hackathon: formStatusFor(current, 'hackathon'),
-          roadshow: formStatusFor(current, 'roadshow'),
+          hackathon: formStatusFor(participantRegistration, 'hackathon'),
+          roadshow: formStatusFor(
+            roadshowRegistration || participantRegistration,
+            'roadshow',
+          ),
         };
         setFormStatuses(nextFormStatuses);
-        logChooserStatuses(current, nextFormStatuses);
+        logChooserStatuses(
+          participantRegistration || roadshowRegistration,
+          nextFormStatuses,
+        );
 
-        const selectedType = forcedFormType || null;
         const baseAnswers = selectedType
           ? answersFromRegistration(current, selectedType)
           : {};
         if (current && selectedType) {
           const cfgForLoad = getFormConfig(selectedType);
           try {
-            const list = await api.listAttachments();
+            const list = await api.listAttachments(
+              selectedType === 'roadshow'
+                ? { registrationType: ROADSHOW_REGISTRATION_TYPE }
+                : undefined,
+            );
             if (Array.isArray(list)) {
               for (const { key, kind } of cfgForLoad.fileFields) {
                 const att = list.find((item) => item.kind === kind);
@@ -1411,6 +1448,7 @@ export default function Questionnaire() {
       50,
     );
     return {
+      registrationType: ROADSHOW_REGISTRATION_TYPE,
       realName: questionnaire.leaderName || questionnaire.projectName,
       phone: questionnaire.leaderContact,
       school: questionnaire.roadshowTeamName,
@@ -1456,6 +1494,9 @@ export default function Questionnaire() {
           const formData = new FormData();
           formData.append('file', file);
           formData.append('kind', kind);
+          if (cfg.type === 'roadshow') {
+            formData.append('registrationType', ROADSHOW_REGISTRATION_TYPE);
+          }
           const created = await api.uploadAttachment(formData);
           setAns((a) => ({ ...a, [key]: created }));
         } catch (uploadError) {

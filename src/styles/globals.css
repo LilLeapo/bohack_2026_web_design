@@ -701,6 +701,71 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   line-height: 1.55;
   opacity: 0.78;
 }
+.contact-email-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(8, 8, 8, 0.54);
+}
+.contact-email-modal {
+  position: relative;
+  width: min(100%, 460px);
+  padding: 34px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 24px;
+  background: var(--bone);
+  color: var(--ink);
+  box-shadow: 0 28px 80px rgba(0,0,0,0.28);
+}
+.contact-email-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.contact-email-close:hover {
+  background: var(--ink);
+  color: var(--bone);
+  border-color: var(--ink);
+}
+.contact-email-kicker {
+  margin-bottom: 18px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  opacity: 0.56;
+}
+.contact-email-modal h3 {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.contact-email-address {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: var(--f-mono);
+  font-size: clamp(18px, 3vw, 26px);
+  color: var(--ink);
+  border-bottom: 2px solid var(--lime);
+}
+.contact-email-note {
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  opacity: 0.64;
+}
 
 /* FAQ */
 .faq { max-width: 920px; margin: 0 auto; }
