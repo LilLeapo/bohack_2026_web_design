@@ -14,6 +14,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import User from './pages/User.jsx';
 import Questionnaire from './pages/Questionnaire.jsx';
+import RegistrationClosed from './pages/RegistrationClosed.jsx';
 import AttendanceConfirm from './pages/AttendanceConfirm.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 
@@ -82,11 +83,14 @@ export default function App() {
         <Route path="/" element={<Site />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/registration-closed" element={<RegistrationClosed />} />
         <Route path="/apply" element={<Questionnaire />} />
+        <Route path="/apply/hackathon" element={<RegistrationClosed />} />
         <Route path="/apply/:formType" element={<Questionnaire />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user" element={<User />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
+        <Route path="/questionnaire/hackathon" element={<RegistrationClosed />} />
         <Route path="/questionnaire/:formType" element={<Questionnaire />} />
         <Route path="/attendance-confirm" element={<AttendanceConfirm />} />
         <Route path="*" element={<Site />} />
