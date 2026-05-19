@@ -5,9 +5,19 @@ import {
   api,
   clearAuthSession,
   getAccessToken,
-  triggerBlobDownload,
+  resolveAttachmentUrl,
   userFacingError,
 } from '../lib/api.js';
+
+const SIGNED_URL_REFRESH_BUFFER_MS = 5 * 60 * 1000;
+
+function attachmentExpiresAt(item) {
+  if (!item?.downloadUrl) return 0;
+  const expiresIn = Number(item.downloadExpiresIn);
+  if (!Number.isFinite(expiresIn) || expiresIn <= 0) return 0;
+  const created = item.__signedAt || Date.parse(item.createdAt) || 0;
+  return created + expiresIn * 1000;
+}
 
 function useCountdown(target) {
   const [now, setNow] = useState(() => Date.now());
@@ -156,7 +166,13 @@ export default function User() {
           api
             .listAttachments()
             .then((items) => {
-              if (alive) setAttachments(Array.isArray(items) ? items : []);
+              if (!alive) return;
+              const now = Date.now();
+              setAttachments(
+                Array.isArray(items)
+                  ? items.map((item) => ({ ...item, __signedAt: now }))
+                  : [],
+              );
             })
             .catch((error) => {
               if (!alive) return;
@@ -248,7 +264,10 @@ export default function User() {
         formData.append('file', file);
         formData.append('kind', 'attachment');
         const created = await api.uploadAttachment(formData);
-        setAttachments((items) => [...items, created]);
+        setAttachments((items) => [
+          ...items,
+          { ...created, __signedAt: Date.now() },
+        ]);
       } catch (error) {
         if (error.status === 401) {
           clearAuthSession();
@@ -291,11 +310,40 @@ export default function User() {
     async (item) => {
       setAttachmentsErr('');
       try {
-        const { blob, filename } = await api.downloadAttachment(
-          item.id,
-          item.fileName || 'attachment',
-        );
-        triggerBlobDownload(blob, filename || item.fileName || 'attachment');
+        let downloadUrl = item.downloadUrl;
+        const expiresAt = attachmentExpiresAt(item);
+        const needsRefresh =
+          !downloadUrl ||
+          (expiresAt && expiresAt - Date.now() < SIGNED_URL_REFRESH_BUFFER_MS);
+        if (needsRefresh) {
+          const fresh = await api.getAttachmentSignedUrl(item.id);
+          downloadUrl = fresh?.downloadUrl || downloadUrl;
+          if (fresh?.downloadUrl) {
+            setAttachments((items) =>
+              items.map((it) =>
+                it.id === item.id
+                  ? {
+                      ...it,
+                      downloadUrl: fresh.downloadUrl,
+                      downloadExpiresIn: fresh.expiresIn,
+                      __signedAt: Date.now(),
+                    }
+                  : it,
+              ),
+            );
+          }
+        }
+        if (!downloadUrl) {
+          setAttachmentsErr('暂时无法获取下载链接，请稍后重试。');
+          return;
+        }
+        const a = document.createElement('a');
+        a.href = resolveAttachmentUrl(downloadUrl);
+        a.download = item.fileName || 'attachment';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       } catch (error) {
         if (error.status === 401) {
           clearAuthSession();

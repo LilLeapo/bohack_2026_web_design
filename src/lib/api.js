@@ -324,17 +324,10 @@ export const api = {
       auth: true,
     });
   },
-  async downloadAttachment(attachmentID, fallbackName = 'attachment') {
-    const response = await request(
-      `/registration/attachments/${attachmentID}/download`,
-      { auth: true, raw: true },
-    );
-    const blob = await response.blob();
-    const filename = inferFilenameFromDisposition(
-      response.headers.get('Content-Disposition'),
-      fallbackName,
-    );
-    return { blob, filename };
+  getAttachmentSignedUrl(attachmentID) {
+    return request(`/registration/attachments/${attachmentID}/signed-url`, {
+      auth: true,
+    });
   },
   downloadRegistrationCertificate(eventSlug) {
     return requestBlob('/registration/certificate', {
@@ -355,6 +348,13 @@ export const api = {
     });
   },
 };
+
+export function resolveAttachmentUrl(downloadUrl) {
+  if (!downloadUrl) return '';
+  if (/^https?:\/\//i.test(downloadUrl)) return downloadUrl;
+  const path = downloadUrl.startsWith('/') ? downloadUrl : `/${downloadUrl}`;
+  return `${API_BASE_URL}${path}`;
+}
 
 export function triggerBlobDownload(blob, filename) {
   const objectUrl = URL.createObjectURL(blob);
