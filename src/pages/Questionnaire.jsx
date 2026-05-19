@@ -524,7 +524,7 @@ const ROADSHOW_QUESTIONS = [
     key: 'demoVideo',
     q: '产品演示视频',
     hint: '请上传可以展示项目效果的演示视频。支持 mp4 / mov，建议不超过 200MB。',
-    required: true,
+    required: false,
     accept: 'video/*,.mp4,.mov,.m4v',
     maxSize: 200 * 1024 * 1024,
     allowedExt: ['mp4', 'mov', 'm4v'],
