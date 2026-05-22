@@ -102,8 +102,8 @@ function Ticker({ items, dark }) {
 
 // ——— COUNTDOWN ———
 function Countdown() {
-  // Target: May 15, 2026 18:00 local
-  const target = useMemo(() => new Date(2026, 4, 15, 18, 0, 0).getTime(), []);
+  // Target: May 22, 2026 16:00 local
+  const target = useMemo(() => new Date(2026, 4, 22, 16, 0, 0).getTime(), []);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);

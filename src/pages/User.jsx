@@ -124,7 +124,7 @@ export default function User() {
       ? new Date(event.registrationCloseAt).getTime()
       : null;
     if (fromEvent && !Number.isNaN(fromEvent)) return fromEvent;
-    return new Date(2026, 4, 22, 9, 0, 0).getTime();
+    return new Date(2026, 4, 22, 16, 0, 0).getTime();
   }, [event]);
   const cd = useCountdown(target);
 
