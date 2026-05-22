@@ -357,7 +357,7 @@ export const api = {
     if (!text) return {};
     try {
       const payload = JSON.parse(text);
-      return payload.data ?? payload;
+      return payload;
     } catch {
       return text;
     }

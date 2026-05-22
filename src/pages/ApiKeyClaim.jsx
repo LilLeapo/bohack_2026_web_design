@@ -46,6 +46,7 @@ export default function ApiKeyClaim() {
   const [claiming, setClaiming] = useState(false);
   const [claimed, setClaimed] = useState(null);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [copied, setCopied] = useState(false);
 
   useParticles(canvasRef);
@@ -66,12 +67,18 @@ export default function ApiKeyClaim() {
     if (claiming || apiKey) return;
     setClaiming(true);
     setError('');
+    setNotice('');
     setCopied(false);
     try {
       const data = await api.claimApiKey();
       setClaimed(data || {});
-      if (!extractApiKey(data)) {
+      const nextApiKey = extractApiKey(data);
+      if (!nextApiKey) {
         setError('领取请求已完成，但响应里没有找到 API Key，请联系现场工作人员。');
+      } else if (data?.message === 'api key already claimed') {
+        setNotice('你已经领取过 API Key，下面显示的是此前领取的同一个 Key。');
+      } else {
+        setNotice('领取成功，请立即保存你的 API Key。');
       }
     } catch (claimError) {
       if (claimError.status === 401) {
@@ -152,7 +159,7 @@ export default function ApiKeyClaim() {
           <h1 className="auth-h1">领取你的 API Key。</h1>
           <p className="auth-sub">
             点击下方按钮后，系统会为当前登录用户分配一个未被领取的 API Key。
-            每个用户只能领取一次，每个 Key 也只能被领取一次。
+            如果你已经领取过，系统会返回此前领取的同一个 Key。
           </p>
 
           {apiKey && (
@@ -166,6 +173,7 @@ export default function ApiKeyClaim() {
           )}
 
           {error && <div className="auth-err auth-form-err">{error}</div>}
+          {notice && <div className="auth-foot">{notice}</div>}
           {copied && <div className="auth-foot">已复制到剪贴板。</div>}
 
           <div className="auth-btn-row">
@@ -193,7 +201,7 @@ export default function ApiKeyClaim() {
           </div>
 
           <p className="auth-foot">
-            如果提示已经领取过，请使用首次领取时保存的 Key；如遇分发异常，请联系现场工作人员。
+            每个用户只会绑定一个 API Key，每个 Key 也只会分配给一个用户；如遇分发异常，请联系现场工作人员。
           </p>
         </div>
       </main>
