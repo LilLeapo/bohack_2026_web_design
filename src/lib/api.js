@@ -347,11 +347,20 @@ export const api = {
       body: formData,
     });
   },
-  claimApiKey() {
-    return request('/api/api-keys/claim', {
+  async claimApiKey() {
+    const response = await request('/api/api-keys/claim', {
       method: 'POST',
       auth: true,
+      raw: true,
     });
+    const text = await response.text();
+    if (!text) return {};
+    try {
+      const payload = JSON.parse(text);
+      return payload.data ?? payload;
+    } catch {
+      return text;
+    }
   },
 };
 

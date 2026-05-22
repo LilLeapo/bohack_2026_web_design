@@ -12,7 +12,22 @@ import {
 function extractApiKey(data) {
   if (!data) return '';
   if (typeof data === 'string') return data;
-  return data.apiKey || data.key || data.token || data.value || '';
+  const candidates = [
+    data.apiKey,
+    data.api_key,
+    data.key,
+    data.keyValue,
+    data.key_value,
+    data.token,
+    data.value,
+    data.secret,
+    data.data,
+  ];
+  for (const candidate of candidates) {
+    const value = extractApiKey(candidate);
+    if (value) return value;
+  }
+  return '';
 }
 
 function claimErrorText(error) {
@@ -48,13 +63,16 @@ export default function ApiKeyClaim() {
   const apiKey = useMemo(() => extractApiKey(claimed), [claimed]);
 
   const claim = async () => {
-    if (claiming || claimed) return;
+    if (claiming || apiKey) return;
     setClaiming(true);
     setError('');
     setCopied(false);
     try {
       const data = await api.claimApiKey();
       setClaimed(data || {});
+      if (!extractApiKey(data)) {
+        setError('领取请求已完成，但响应里没有找到 API Key，请联系现场工作人员。');
+      }
     } catch (claimError) {
       if (claimError.status === 401) {
         clearAuthSession();
