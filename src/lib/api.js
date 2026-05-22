@@ -347,6 +347,12 @@ export const api = {
       body: formData,
     });
   },
+  claimApiKey() {
+    return request('/api/api-keys/claim', {
+      method: 'POST',
+      auth: true,
+    });
+  },
 };
 
 export function resolveAttachmentUrl(downloadUrl) {

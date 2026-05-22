@@ -17,6 +17,7 @@ import Questionnaire from './pages/Questionnaire.jsx';
 import RegistrationClosed from './pages/RegistrationClosed.jsx';
 import AttendanceConfirm from './pages/AttendanceConfirm.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
+import ApiKeyClaim from './pages/ApiKeyClaim.jsx';
 
 import { useReveal } from './hooks/useReveal.js';
 import { useParallax } from './hooks/useParallax.js';
@@ -89,6 +90,7 @@ export default function App() {
         <Route path="/apply/:formType" element={<Questionnaire />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user" element={<User />} />
+        <Route path="/api-keys" element={<ApiKeyClaim />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
         <Route path="/questionnaire/hackathon" element={<RegistrationClosed />} />
         <Route path="/questionnaire/:formType" element={<Questionnaire />} />

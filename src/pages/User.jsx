@@ -576,6 +576,10 @@ export default function User() {
                     <span className="qk">✎</span>
                     <span className="ql">报名问卷</span>
                   </Link>
+                  <Link to="/api-keys" className="qa magnet">
+                    <span className="qk">API</span>
+                    <span className="ql">API Key</span>
+                  </Link>
                   <button
                     type="button"
                     className="qa magnet"
