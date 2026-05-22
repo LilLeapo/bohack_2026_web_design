@@ -118,6 +118,16 @@ export default function User() {
   const [pwBusy, setPwBusy] = useState(false);
   const [pwErr, setPwErr] = useState('');
   const [pwInfo, setPwInfo] = useState('');
+  const [team, setTeam] = useState(null);
+  const [teamLoading, setTeamLoading] = useState(false);
+  const [teamErr, setTeamErr] = useState('');
+  const [teamInfo, setTeamInfo] = useState('');
+  const [teamBusy, setTeamBusy] = useState(false);
+  const [createName, setCreateName] = useState('');
+  const [joinCode, setJoinCode] = useState('');
+  const [renameValue, setRenameValue] = useState('');
+  const [renameEditing, setRenameEditing] = useState(false);
+  const [transferTargetId, setTransferTargetId] = useState('');
   const fileInputRef = useRef(null);
   const target = useMemo(() => {
     const fromEvent = event?.registrationCloseAt
@@ -161,6 +171,27 @@ export default function User() {
         setMe(user);
         setRegistration(registrationStatus);
         setEvent(currentEvent);
+
+        const teamEventSlug =
+          currentEvent?.slug || registrationStatus?.eventSlug;
+        setTeamLoading(true);
+        api
+          .getMyTeam(teamEventSlug)
+          .then((data) => {
+            if (!alive) return;
+            setTeam(data || null);
+          })
+          .catch((error) => {
+            if (!alive) return;
+            if (error.status === 404) {
+              setTeam(null);
+              return;
+            }
+            setTeamErr(userFacingError(error));
+          })
+          .finally(() => {
+            if (alive) setTeamLoading(false);
+          });
 
         if (registrationStatus) {
           api
@@ -214,7 +245,8 @@ export default function User() {
   const tracks = Array.isArray(extra.tracks) && extra.tracks.length
     ? extra.tracks.join(' / ')
     : '待确认';
-  const team = registration?.teamName || extra.teamStatus || '待组队';
+  const teamDisplayName =
+    team?.name || registration?.teamName || extra.teamStatus || '待组队';
   const role = registration?.rolePreference || extra.experienceLevel || '待确认';
   const tshirt = extra.tshirt || '待确认';
   const availabilityLabel = questionnaire.availability || extra.availability || '待确认';
@@ -420,6 +452,193 @@ export default function User() {
     [pwForm, navigate],
   );
 
+  const myUserId = me?.id ?? me?.userId ?? me?.user_id ?? null;
+  const myUsername = me?.username ?? null;
+  const isMyMember = (m) =>
+    (myUserId != null && m.userId === myUserId) ||
+    (!!myUsername && m.username === myUsername);
+  const myMember = team?.members?.find(isMyMember) || null;
+  const isLeader =
+    !!myMember?.isLeader ||
+    (myUserId != null &&
+      !!team &&
+      (team.leaderId ?? team.leader_id) === myUserId);
+  const teamEventSlug =
+    team?.eventSlug || event?.slug || registration?.eventSlug || null;
+
+  const handleAuthError = useCallback(
+    (error) => {
+      if (error?.status === 401) {
+        clearAuthSession();
+        navigate('/login', { replace: true });
+        return true;
+      }
+      return false;
+    },
+    [navigate],
+  );
+
+  const handleCreateTeam = useCallback(
+    async (ev) => {
+      ev?.preventDefault();
+      setTeamErr('');
+      setTeamInfo('');
+      const name = createName.trim();
+      if (!name) {
+        setTeamErr('请填写队伍名称。');
+        return;
+      }
+      setTeamBusy(true);
+      try {
+        const created = await api.createTeam({
+          name,
+          event_slug: teamEventSlug || undefined,
+        });
+        setTeam(created || null);
+        setCreateName('');
+        setTeamInfo('队伍创建成功，邀请队友加入吧。');
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setTeamErr(userFacingError(error));
+      } finally {
+        setTeamBusy(false);
+      }
+    },
+    [createName, teamEventSlug, handleAuthError],
+  );
+
+  const handleJoinTeam = useCallback(
+    async (ev) => {
+      ev?.preventDefault();
+      setTeamErr('');
+      setTeamInfo('');
+      const code = joinCode.trim();
+      if (!code) {
+        setTeamErr('请填写邀请码。');
+        return;
+      }
+      setTeamBusy(true);
+      try {
+        const joined = await api.joinTeam({ invite_code: code });
+        setTeam(joined || null);
+        setJoinCode('');
+        setTeamInfo('加入成功。');
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setTeamErr(userFacingError(error));
+      } finally {
+        setTeamBusy(false);
+      }
+    },
+    [joinCode, handleAuthError],
+  );
+
+  const handleRenameTeam = useCallback(
+    async (ev) => {
+      ev?.preventDefault();
+      if (!team?.id) return;
+      setTeamErr('');
+      setTeamInfo('');
+      const name = renameValue.trim();
+      if (!name) {
+        setTeamErr('请填写新的队伍名称。');
+        return;
+      }
+      if (name === team.name) {
+        setRenameEditing(false);
+        return;
+      }
+      setTeamBusy(true);
+      try {
+        const updated = await api.updateTeam(team.id, { name });
+        setTeam(updated || null);
+        setRenameEditing(false);
+        setTeamInfo('队名已更新。');
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setTeamErr(userFacingError(error));
+      } finally {
+        setTeamBusy(false);
+      }
+    },
+    [team, renameValue, handleAuthError],
+  );
+
+  const handleLeaveTeam = useCallback(async () => {
+    if (!team?.id) return;
+    if (typeof window !== 'undefined' && !window.confirm('确认离开该队伍？')) {
+      return;
+    }
+    setTeamErr('');
+    setTeamInfo('');
+    setTeamBusy(true);
+    try {
+      await api.leaveTeam(team.id);
+      setTeam(null);
+      setTeamInfo('你已离开队伍。');
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      setTeamErr(userFacingError(error));
+    } finally {
+      setTeamBusy(false);
+    }
+  }, [team, handleAuthError]);
+
+  const handleDisbandTeam = useCallback(async () => {
+    if (!team?.id) return;
+    if (
+      typeof window !== 'undefined' &&
+      !window.confirm('确认解散队伍？所有成员都会被移出，此操作不可恢复。')
+    ) {
+      return;
+    }
+    setTeamErr('');
+    setTeamInfo('');
+    setTeamBusy(true);
+    try {
+      await api.disbandTeam(team.id);
+      setTeam(null);
+      setTeamInfo('队伍已解散。');
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      setTeamErr(userFacingError(error));
+    } finally {
+      setTeamBusy(false);
+    }
+  }, [team, handleAuthError]);
+
+  const handleTransferLeader = useCallback(async () => {
+    if (!team?.id || !transferTargetId) return;
+    setTeamErr('');
+    setTeamInfo('');
+    setTeamBusy(true);
+    try {
+      const updated = await api.transferTeam(team.id, {
+        user_id: Number(transferTargetId),
+      });
+      setTeam(updated || null);
+      setTransferTargetId('');
+      setTeamInfo('队长已转让。');
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      setTeamErr(userFacingError(error));
+    } finally {
+      setTeamBusy(false);
+    }
+  }, [team, transferTargetId, handleAuthError]);
+
+  const copyInviteCode = useCallback(async () => {
+    if (!team?.inviteCode) return;
+    setTeamErr('');
+    setTeamInfo('');
+    try {
+      await navigator.clipboard.writeText(team.inviteCode);
+      setTeamInfo('邀请码已复制到剪贴板。');
+    } catch {
+      setTeamErr('复制失败，请手动选中后复制。');
+    }
+  }, [team]);
+
   if (loading) {
     return (
       <div className="dash">
@@ -557,7 +776,7 @@ export default function User() {
                 </div>
                 <div className="status-row">
                   <span className="status-k">队伍</span>
-                  <span className="status-v">{team}</span>
+                  <span className="status-v">{teamDisplayName}</span>
                 </div>
                 <div className="status-row">
                   <span className="status-k">赛道</span>
@@ -618,20 +837,40 @@ export default function User() {
             <section className="dash-grid">
               <div className="dash-card">
                 <div className="section-h">
-                  <h2>我的队伍 · {team}</h2>
+                  <h2>我的队伍 · {teamDisplayName}</h2>
                   <button type="button" onClick={() => setTab('team')}>
                     管理队伍 →
                   </button>
                 </div>
                 <div className="team-roster">
-                  <div className="member">
-                    <div className="av">{initials}</div>
-                    <div className="member-meta">
-                      <div className="name">{name}</div>
-                      <div className="role">{role}</div>
-                    </div>
-                    <span className="tag">我</span>
-                  </div>
+                  {team?.members?.length
+                    ? team.members.map((m) => {
+                        const memberName = m.username || '队员';
+                        const memberRole = m.isLeader ? '队长' : '队员';
+                        const isMe = isMyMember(m);
+                        return (
+                          <div className="member" key={m.userId}>
+                            <div className="av">{initialsFrom(memberName)}</div>
+                            <div className="member-meta">
+                              <div className="name">{memberName}</div>
+                              <div className="role">{memberRole}</div>
+                            </div>
+                            <span className="tag">
+                              {isMe ? '我' : memberRole}
+                            </span>
+                          </div>
+                        );
+                      })
+                    : (
+                      <div className="member">
+                        <div className="av">{initials}</div>
+                        <div className="member-meta">
+                          <div className="name">{name}</div>
+                          <div className="role">{role}</div>
+                        </div>
+                        <span className="tag">我</span>
+                      </div>
+                    )}
                 </div>
 
                 <div className="section-h section-h-sp">
@@ -892,7 +1131,294 @@ export default function User() {
           </div>
         )}
 
-        {tab !== 'overview' && tab !== 'support' && (
+        {tab === 'team' && (
+          <div className="dash-card">
+            <div className="c-label">/ 我的队</div>
+            {teamLoading && !team && (
+              <p className="dash-empty-sub">正在读取队伍信息…</p>
+            )}
+
+            {!teamLoading && !team && (
+              <>
+                <h1 className="dash-empty-title">
+                  还没<br />
+                  <em>组队。</em>
+                </h1>
+                <p className="dash-empty-sub">
+                  创建一支新队伍，或用邀请码加入现有队伍。每队最多 4 人。
+                </p>
+
+                <form
+                  className="auth-form"
+                  onSubmit={handleCreateTeam}
+                  noValidate
+                  style={{ maxWidth: 520, marginTop: 24 }}
+                >
+                  <div className="auth-field">
+                    <label>
+                      创建队伍
+                      <span className="hint">1–100 字符</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={createName}
+                      onChange={(e) => setCreateName(e.target.value)}
+                      placeholder="给队伍起个名字"
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="auth-btn-row">
+                    <button
+                      type="submit"
+                      className="auth-submit magnet"
+                      disabled={teamBusy}
+                    >
+                      <span>{teamBusy ? '处理中…' : '创建队伍'}</span>
+                      <span className="arrow">↗</span>
+                    </button>
+                  </div>
+                </form>
+
+                <form
+                  className="auth-form"
+                  onSubmit={handleJoinTeam}
+                  noValidate
+                  style={{ maxWidth: 520, marginTop: 32 }}
+                >
+                  <div className="auth-field">
+                    <label>
+                      通过邀请码加入
+                      <span className="hint">大小写不敏感</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(e.target.value)}
+                      placeholder="A1B2C3D4"
+                      autoCapitalize="characters"
+                    />
+                  </div>
+                  <div className="auth-btn-row">
+                    <button
+                      type="submit"
+                      className="auth-submit magnet"
+                      disabled={teamBusy}
+                    >
+                      <span>{teamBusy ? '处理中…' : '加入队伍'}</span>
+                      <span className="arrow">↗</span>
+                    </button>
+                  </div>
+                </form>
+
+                {teamErr && (
+                  <div className="auth-err" style={{ marginTop: 16 }}>
+                    {teamErr}
+                  </div>
+                )}
+                {teamInfo && !teamErr && (
+                  <div className="auth-foot" style={{ marginTop: 16 }}>
+                    {teamInfo}
+                  </div>
+                )}
+              </>
+            )}
+
+            {team && (
+              <>
+                <div className="section-h">
+                  {renameEditing ? (
+                    <form
+                      onSubmit={handleRenameTeam}
+                      style={{
+                        display: 'flex',
+                        gap: 8,
+                        flex: 1,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <input
+                        type="text"
+                        value={renameValue}
+                        onChange={(e) => setRenameValue(e.target.value)}
+                        maxLength={100}
+                        autoFocus
+                        style={{ flex: 1 }}
+                      />
+                      <button type="submit" disabled={teamBusy}>
+                        保存
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRenameEditing(false);
+                          setRenameValue(team.name || '');
+                        }}
+                      >
+                        取消
+                      </button>
+                    </form>
+                  ) : (
+                    <>
+                      <h2>我的队伍 · {team.name}</h2>
+                      {isLeader && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRenameValue(team.name || '');
+                            setRenameEditing(true);
+                          }}
+                        >
+                          重命名 →
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div
+                  className="status-row"
+                  style={{ marginTop: 8 }}
+                >
+                  <span className="status-k">邀请码</span>
+                  <span className="status-v">
+                    <code
+                      style={{
+                        fontFamily: 'var(--f-mono)',
+                        letterSpacing: '0.18em',
+                        marginRight: 12,
+                      }}
+                    >
+                      {team.inviteCode}
+                    </code>
+                    <button
+                      type="button"
+                      onClick={copyInviteCode}
+                      style={{
+                        background: 'none',
+                        border: '1px solid var(--rule)',
+                        padding: '4px 10px',
+                        borderRadius: 999,
+                        fontFamily: 'var(--f-mono)',
+                        fontSize: 11,
+                        letterSpacing: '0.14em',
+                        textTransform: 'uppercase',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      复制
+                    </button>
+                  </span>
+                </div>
+                <div className="status-row">
+                  <span className="status-k">成员</span>
+                  <span className="status-v">
+                    {team.memberCount ?? team.members?.length ?? 0} /{' '}
+                    {team.maxMembers ?? 4}
+                  </span>
+                </div>
+                {team.eventSlug && (
+                  <div className="status-row">
+                    <span className="status-k">赛事</span>
+                    <span className="status-v">{team.eventSlug}</span>
+                  </div>
+                )}
+
+                <div className="team-roster">
+                  {(team.members || []).map((m) => {
+                    const memberName = m.username || '队员';
+                    const memberRole = m.isLeader ? '队长' : '队员';
+                    const isMe = myUserId != null && m.userId === myUserId;
+                    return (
+                      <div className="member" key={m.userId}>
+                        <div className="av">{initialsFrom(memberName)}</div>
+                        <div className="member-meta">
+                          <div className="name">{memberName}</div>
+                          <div className="role">{memberRole}</div>
+                        </div>
+                        <span className="tag">
+                          {isMe ? '我' : memberRole}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {isLeader && team.members?.length > 1 && (
+                  <div
+                    className="auth-field"
+                    style={{ marginTop: 24 }}
+                  >
+                    <label>
+                      转让队长
+                      <span className="hint">选择一名队员</span>
+                    </label>
+                    <select
+                      value={transferTargetId}
+                      onChange={(e) => setTransferTargetId(e.target.value)}
+                    >
+                      <option value="">选择队员…</option>
+                      {team.members
+                        .filter((m) => !isMyMember(m))
+                        .map((m) => (
+                          <option key={m.userId} value={m.userId}>
+                            {m.username}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+
+                {teamErr && (
+                  <div className="auth-err" style={{ marginTop: 16 }}>
+                    {teamErr}
+                  </div>
+                )}
+                {teamInfo && !teamErr && (
+                  <div className="auth-foot" style={{ marginTop: 16 }}>
+                    {teamInfo}
+                  </div>
+                )}
+
+                <div className="auth-btn-row" style={{ marginTop: 24 }}>
+                  {isLeader ? (
+                    <>
+                      {team.members?.length > 1 && (
+                        <button
+                          type="button"
+                          className="auth-submit magnet"
+                          onClick={handleTransferLeader}
+                          disabled={teamBusy || !transferTargetId}
+                        >
+                          <span>{teamBusy ? '处理中…' : '转让队长'}</span>
+                          <span className="arrow">↗</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="auth-ghost magnet"
+                        onClick={handleDisbandTeam}
+                        disabled={teamBusy}
+                      >
+                        解散队伍
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="auth-ghost magnet"
+                      onClick={handleLeaveTeam}
+                      disabled={teamBusy}
+                    >
+                      离开队伍
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {tab !== 'overview' && tab !== 'support' && tab !== 'team' && (
           <div className="dash-card dash-empty">
             <div className="c-label">/ {currentTab?.label}</div>
             <h1 className="dash-empty-title">

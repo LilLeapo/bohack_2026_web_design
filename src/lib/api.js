@@ -347,6 +347,55 @@ export const api = {
       body: formData,
     });
   },
+  createTeam(payload) {
+    return request('/teams', {
+      method: 'POST',
+      body: payload,
+      auth: true,
+    });
+  },
+  getMyTeam(eventSlug) {
+    return request('/teams/me', {
+      auth: true,
+      query: eventSlug ? { event_slug: eventSlug } : undefined,
+    });
+  },
+  getTeam(teamId) {
+    return request(`/teams/${teamId}`, { auth: true });
+  },
+  updateTeam(teamId, payload) {
+    return request(`/teams/${teamId}`, {
+      method: 'PATCH',
+      body: payload,
+      auth: true,
+    });
+  },
+  disbandTeam(teamId) {
+    return request(`/teams/${teamId}`, {
+      method: 'DELETE',
+      auth: true,
+    });
+  },
+  joinTeam(payload) {
+    return request('/teams/join', {
+      method: 'POST',
+      body: payload,
+      auth: true,
+    });
+  },
+  leaveTeam(teamId) {
+    return request(`/teams/${teamId}/leave`, {
+      method: 'POST',
+      auth: true,
+    });
+  },
+  transferTeam(teamId, payload) {
+    return request(`/teams/${teamId}/transfer`, {
+      method: 'POST',
+      body: payload,
+      auth: true,
+    });
+  },
   async claimApiKey() {
     const response = await request('/api/api-keys/claim', {
       method: 'POST',
@@ -427,6 +476,30 @@ export function userFacingError(error) {
       return '新密码需要与当前密码不同。';
     case 42219:
       return '角色偏好太长（最多 50 字符）。';
+    case 40140:
+      return '登录已过期，请重新登录。';
+    case 40340:
+      return '只有队长可以执行该操作。';
+    case 40430:
+      return '队伍不存在或你尚未加入。';
+    case 40431:
+      return '邀请码无效，请检查后重试。';
+    case 40432:
+      return '该用户不是队伍成员。';
+    case 40930:
+      return '你已经在该活动加入了其他队伍。';
+    case 40931:
+      return '队伍人数已满（上限 4 人）。';
+    case 40932:
+      return '队名已被占用，换一个试试。';
+    case 40933:
+      return '队长不能直接离队，请先转让或解散队伍。';
+    case 42230:
+      return '队名长度需要 1–100 字符。';
+    case 42231:
+      return '邀请码格式不正确。';
+    case 42232:
+      return '队伍 ID 不合法。';
     default:
       return error.message || '操作失败，请稍后重试。';
   }
