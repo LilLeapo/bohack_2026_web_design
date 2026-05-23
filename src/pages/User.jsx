@@ -150,7 +150,8 @@ export default function User() {
   const [votingLoading, setVotingLoading] = useState(false);
   const [votingErr, setVotingErr] = useState('');
   const [votingInfo, setVotingInfo] = useState('');
-  const [votingBusyId, setVotingBusyId] = useState(null);
+  const [selectedProjectIds, setSelectedProjectIds] = useState(() => new Set());
+  const [votingSubmitting, setVotingSubmitting] = useState(false);
   const fileInputRef = useRef(null);
   const pptInputRef = useRef(null);
   const target = useMemo(() => {
@@ -927,66 +928,76 @@ export default function User() {
     }));
   }, []);
 
-  const handleCastVote = useCallback(
-    async (teamProjectId) => {
+  const toggleProjectSelection = useCallback(
+    (teamProjectId) => {
       if (!teamProjectId) return;
-      setVotingErr('');
-      setVotingInfo('');
-      setVotingBusyId(teamProjectId);
-      try {
-        const result = await api.castVote(votingEventSlug, teamProjectId);
-        applyVoteCount(result);
-        if (result?.vote) {
-          setMyVotes((prev) => {
-            if (prev.some((v) => v.teamProjectId === teamProjectId)) return prev;
-            return [...prev, result.vote];
-          });
-        } else {
-          setMyVotes((prev) =>
-            prev.some((v) => v.teamProjectId === teamProjectId)
-              ? prev
-              : [...prev, { teamProjectId }],
-          );
+      setSelectedProjectIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(teamProjectId)) {
+          next.delete(teamProjectId);
+          return next;
         }
-        setVotingInfo('已投出一票。');
-      } catch (error) {
-        if (handleAuthError(error)) return;
-        setVotingErr(userFacingError(error));
-      } finally {
-        setVotingBusyId(null);
-      }
+        const cap = votingStatus?.votesLeft ?? votingStatus?.votesPerUser ?? 3;
+        if (next.size >= cap) return prev;
+        next.add(teamProjectId);
+        return next;
+      });
     },
-    [votingEventSlug, applyVoteCount, handleAuthError],
+    [votingStatus],
   );
 
-  const handleRevokeVote = useCallback(
-    async (teamProjectId) => {
-      if (!teamProjectId) return;
-      if (
-        typeof window !== 'undefined' &&
-        !window.confirm('确认撤回这一票？')
-      ) {
-        return;
-      }
-      setVotingErr('');
-      setVotingInfo('');
-      setVotingBusyId(teamProjectId);
+  const handleConfirmVotes = useCallback(async () => {
+    const ids = Array.from(selectedProjectIds);
+    if (ids.length === 0) return;
+    if (
+      typeof window !== 'undefined' &&
+      !window.confirm(
+        `确认提交这 ${ids.length} 票？投出后不可撤回。`,
+      )
+    ) {
+      return;
+    }
+    setVotingErr('');
+    setVotingInfo('');
+    setVotingSubmitting(true);
+    let cast = 0;
+    let failure = null;
+    let lastResult = null;
+    for (const id of ids) {
       try {
-        const result = await api.revokeVote(votingEventSlug, teamProjectId);
-        applyVoteCount(result);
-        setMyVotes((prev) =>
-          prev.filter((v) => v.teamProjectId !== teamProjectId),
-        );
-        setVotingInfo('已撤回该投票。');
+        lastResult = await api.castVote(votingEventSlug, id);
+        cast += 1;
       } catch (error) {
-        if (handleAuthError(error)) return;
-        setVotingErr(userFacingError(error));
-      } finally {
-        setVotingBusyId(null);
+        failure = error;
+        break;
       }
-    },
-    [votingEventSlug, applyVoteCount, handleAuthError],
-  );
+    }
+    if (lastResult) applyVoteCount(lastResult);
+    try {
+      const refresh = await api.getMyVotes(votingEventSlug);
+      if (refresh) {
+        applyVoteCount(refresh);
+        if (Array.isArray(refresh.votes)) setMyVotes(refresh.votes);
+      }
+    } catch (refreshError) {
+      if (handleAuthError(refreshError)) return;
+    }
+    setSelectedProjectIds(new Set());
+    setVotingSubmitting(false);
+    if (failure) {
+      if (handleAuthError(failure)) return;
+      setVotingErr(
+        `${userFacingError(failure)}（已成功投出 ${cast} 票）`,
+      );
+    } else {
+      setVotingInfo(`已成功投出 ${cast} 票，本届投票完成。`);
+    }
+  }, [
+    selectedProjectIds,
+    votingEventSlug,
+    applyVoteCount,
+    handleAuthError,
+  ]);
 
   if (loading) {
     return (
@@ -1802,9 +1813,10 @@ export default function User() {
             votingLoading={votingLoading}
             votingErr={votingErr}
             votingInfo={votingInfo}
-            votingBusyId={votingBusyId}
-            onCastVote={handleCastVote}
-            onRevokeVote={handleRevokeVote}
+            selectedProjectIds={selectedProjectIds}
+            votingSubmitting={votingSubmitting}
+            onToggleSelection={toggleProjectSelection}
+            onConfirm={handleConfirmVotes}
           />
         )}
 
@@ -2412,9 +2424,10 @@ function VotingTab({
   votingLoading,
   votingErr,
   votingInfo,
-  votingBusyId,
-  onCastVote,
-  onRevokeVote,
+  selectedProjectIds,
+  votingSubmitting,
+  onToggleSelection,
+  onConfirm,
 }) {
   if (votingLoading && !votingStatus && votingProjects.length === 0) {
     return (
@@ -2433,10 +2446,19 @@ function VotingTab({
   const votesPerUser = votingStatus?.votesPerUser ?? 3;
   const votesUsed = votingStatus?.votesUsed ?? 0;
   const votesLeft = votingStatus?.votesLeft ?? Math.max(0, votesPerUser - votesUsed);
+  const hasVotedAlready = votesUsed > 0;
   const myTeamId = team?.id ?? null;
   const votedByProjectId = new Map(
     (myVotes || []).map((v) => [v.teamProjectId, v]),
   );
+  const selectionCount = selectedProjectIds?.size ?? 0;
+  const selectionCap = votesLeft;
+  const canConfirm =
+    !hasVotedAlready &&
+    votingOpen &&
+    !!team &&
+    !votingSubmitting &&
+    selectionCount > 0;
 
   return (
     <div className="dash-card">
@@ -2447,7 +2469,8 @@ function VotingTab({
         <em>项目投票。</em>
       </h1>
       <p className="dash-empty-sub" style={{ marginTop: 0 }}>
-        每人 {votesPerUser} 票，不能投自己队，同一项目最多投 1 票。
+        每人 {votesPerUser} 票，挑出最多 {votesPerUser}{' '}
+        个项目后一次性确认。<strong>提交后无法撤回，请慎重选择。</strong>
       </p>
 
       <div className="status-row" style={{ marginTop: 16 }}>
@@ -2457,9 +2480,20 @@ function VotingTab({
         </span>
       </div>
       <div className="status-row">
-        <span className="status-k">剩余票数</span>
+        <span className="status-k">投票进度</span>
         <span className="status-v">
-          <strong>{votesLeft}</strong> / {votesPerUser}（已投 {votesUsed}）
+          {hasVotedAlready ? (
+            <>
+              已完成投票 · <strong>{votesUsed}</strong> / {votesPerUser}
+            </>
+          ) : (
+            <>
+              已选 <strong>{selectionCount}</strong> / {votesPerUser}
+              {selectionCount > 0 && selectionCount < votesPerUser
+                ? `（还可再选 ${votesPerUser - selectionCount} 个）`
+                : ''}
+            </>
+          )}
         </span>
       </div>
 
@@ -2499,34 +2533,51 @@ function VotingTab({
             const state = item.state;
             const isMyTeam = myTeamId != null && item.teamId === myTeamId;
             const isSkipped = state === 'skipped';
-            const myVote = votedByProjectId.get(projectId);
-            const hasVoted = !!myVote;
-            const quotaFull = votesLeft <= 0;
-            const busy = votingBusyId === projectId;
+            const isSelected = selectedProjectIds?.has(projectId) ?? false;
+            const alreadyVotedFor = votedByProjectId.has(projectId);
 
-            let label;
-            let onClick;
-            let disabled;
-            if (isMyTeam) {
-              label = '自己队';
-              disabled = true;
-            } else if (isSkipped) {
-              label = '不参与';
-              disabled = true;
-            } else if (hasVoted) {
-              label = busy ? '撤回中…' : '撤回';
-              onClick = () => onRevokeVote(projectId);
-              disabled = !votingOpen || busy;
+            let chipLabel;
+            let chipHandler;
+            let chipDisabled;
+            let chipFilled = false;
+
+            if (hasVotedAlready) {
+              if (alreadyVotedFor) {
+                chipLabel = '✓ 已投';
+                chipFilled = true;
+              } else if (isMyTeam) {
+                chipLabel = '自己队';
+              } else if (isSkipped) {
+                chipLabel = '不参与';
+              } else {
+                chipLabel = '—';
+              }
+              chipDisabled = true;
             } else if (!votingOpen) {
-              label = '未开放';
-              disabled = true;
-            } else if (quotaFull) {
-              label = '票已用完';
-              disabled = true;
+              chipLabel = '未开放';
+              chipDisabled = true;
+            } else if (isMyTeam) {
+              chipLabel = '自己队';
+              chipDisabled = true;
+            } else if (isSkipped) {
+              chipLabel = '不参与';
+              chipDisabled = true;
+            } else if (votingSubmitting) {
+              chipLabel = isSelected ? '已选' : '选择';
+              chipFilled = isSelected;
+              chipDisabled = true;
+            } else if (isSelected) {
+              chipLabel = '✓ 已选';
+              chipFilled = true;
+              chipHandler = () => onToggleSelection(projectId);
+              chipDisabled = false;
+            } else if (selectionCount >= selectionCap) {
+              chipLabel = '已选满';
+              chipDisabled = true;
             } else {
-              label = busy ? '投票中…' : '投一票';
-              onClick = () => onCastVote(projectId);
-              disabled = busy;
+              chipLabel = '选择';
+              chipHandler = () => onToggleSelection(projectId);
+              chipDisabled = false;
             }
 
             return (
@@ -2544,11 +2595,11 @@ function VotingTab({
                 </div>
                 <button
                   type="button"
-                  onClick={onClick}
-                  disabled={disabled}
+                  onClick={chipHandler}
+                  disabled={chipDisabled}
                   style={{
-                    background: hasVoted ? 'var(--ink)' : 'var(--paper)',
-                    color: hasVoted ? 'var(--lime)' : 'var(--ink)',
+                    background: chipFilled ? 'var(--ink)' : 'var(--paper)',
+                    color: chipFilled ? 'var(--lime)' : 'var(--ink)',
                     border: '1px solid var(--rule)',
                     borderRadius: 999,
                     padding: '6px 14px',
@@ -2556,17 +2607,42 @@ function VotingTab({
                     fontSize: 11,
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
-                    cursor: disabled ? 'not-allowed' : 'pointer',
-                    opacity: disabled && !hasVoted ? 0.55 : 1,
+                    cursor: chipDisabled ? 'not-allowed' : 'pointer',
+                    opacity: chipDisabled && !chipFilled ? 0.55 : 1,
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {label}
+                  {chipLabel}
                 </button>
               </div>
             );
           })}
         </div>
+      )}
+
+      {!hasVotedAlready && votingOpen && team && votingProjects.length > 0 && (
+        <>
+          <div className="auth-btn-row" style={{ marginTop: 24 }}>
+            <button
+              type="button"
+              className="auth-submit magnet"
+              onClick={onConfirm}
+              disabled={!canConfirm}
+            >
+              <span>
+                {votingSubmitting
+                  ? '提交中…'
+                  : selectionCount === 0
+                    ? '请先选择项目'
+                    : `确认投票 · 提交 ${selectionCount} 票`}
+              </span>
+              <span className="arrow">↗</span>
+            </button>
+          </div>
+          <p className="auth-foot" style={{ marginTop: 12 }}>
+            一旦确认提交，所有票次锁定，不能撤回或调整。请确认完毕再点击。
+          </p>
+        </>
       )}
     </div>
   );
