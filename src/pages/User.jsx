@@ -2491,7 +2491,7 @@ function VotingTab({
       ) : (
         <div className="tickets">
           {votingProjects.map((item, idx) => {
-            const projectId = item.teamProjectId ?? item.projectId ?? null;
+            const projectId = item.teamProjectId;
             const projectName =
               item.projectName || item.teamName || '未命名项目';
             const teamName = item.teamName || '—';
@@ -2499,19 +2499,15 @@ function VotingTab({
             const state = item.state;
             const isMyTeam = myTeamId != null && item.teamId === myTeamId;
             const isSkipped = state === 'skipped';
-            const myVote = projectId != null ? votedByProjectId.get(projectId) : null;
+            const myVote = votedByProjectId.get(projectId);
             const hasVoted = !!myVote;
             const quotaFull = votesLeft <= 0;
             const busy = votingBusyId === projectId;
-            const missingProjectId = projectId == null;
 
             let label;
             let onClick;
             let disabled;
-            if (missingProjectId) {
-              label = '—';
-              disabled = true;
-            } else if (isMyTeam) {
+            if (isMyTeam) {
               label = '自己队';
               disabled = true;
             } else if (isSkipped) {
@@ -2534,7 +2530,7 @@ function VotingTab({
             }
 
             return (
-              <div className="ticket" key={projectId ?? `idx-${idx}`}>
+              <div className="ticket" key={projectId}>
                 <span className="id">{String(idx + 1).padStart(2, '0')}</span>
                 <div>
                   <div className="tt">{projectName}</div>
