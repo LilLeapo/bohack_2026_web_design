@@ -396,6 +396,64 @@ export const api = {
       auth: true,
     });
   },
+  getTeamProject(teamId) {
+    return request(`/teams/${teamId}/project`, { auth: true });
+  },
+  submitTeamProject(teamId, formData) {
+    return request(`/teams/${teamId}/project`, {
+      method: 'POST',
+      body: formData,
+      auth: true,
+    });
+  },
+  updateTeamProject(teamId, formData) {
+    return request(`/teams/${teamId}/project`, {
+      method: 'PATCH',
+      body: formData,
+      auth: true,
+    });
+  },
+  pickProjectSlot(teamId, slot) {
+    return request(`/teams/${teamId}/project/pick`, {
+      method: 'POST',
+      body: { slot },
+      auth: true,
+    });
+  },
+  getProjectPptSignedUrl(teamId) {
+    return request(`/teams/${teamId}/project/ppt/signed-url`, { auth: true });
+  },
+  getRoadshowSlots(eventSlug) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/roadshow/slots`, { auth: true });
+  },
+  getRoadshowQueue(eventSlug) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/roadshow/queue`, { auth: true });
+  },
+  getVotingStatus(eventSlug) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/voting/status`, { auth: true });
+  },
+  getMyVotes(eventSlug) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/votes/me`, { auth: true });
+  },
+  castVote(eventSlug, teamProjectId) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/votes`, {
+      method: 'POST',
+      body: { team_project_id: teamProjectId },
+      auth: true,
+    });
+  },
+  revokeVote(eventSlug, teamProjectId) {
+    const slug = eventSlug || 'default';
+    return request(`/events/${slug}/votes/${teamProjectId}`, {
+      method: 'DELETE',
+      auth: true,
+    });
+  },
   async claimApiKey() {
     const response = await request('/api/api-keys/claim', {
       method: 'POST',
@@ -500,6 +558,54 @@ export function userFacingError(error) {
       return '邀请码格式不正确。';
     case 42232:
       return '队伍 ID 不合法。';
+    case 40437:
+      return '还没有提交项目。';
+    case 40940:
+      return '项目已经提交过，请改为更新。';
+    case 40941:
+      return '项目已锁定，无法再修改。';
+    case 40942:
+      return '还没轮到你们队选号，请稍候。';
+    case 40943:
+      return '该序号已被其他队伍选走，请挑一个还未占用的。';
+    case 42250:
+      return '项目名称不能为空。';
+    case 42251:
+      return '项目名称太长（最多 100 字符）。';
+    case 42252:
+      return '项目介绍长度需要在 1–5000 字符。';
+    case 42253:
+      return '请填写有效的项目仓库链接（http/https 开头）。';
+    case 42254:
+      return '备份链接格式不正确。';
+    case 42255:
+      return 'PPT 文件不符合要求（仅支持 ppt/pptx/pdf/key 且大小受限）。';
+    case 42256:
+      return '路演序号必须在 1–30 之间。';
+    case 42257:
+      return '所选特别单元包含未支持的值，请重新选择。';
+    case 40360:
+      return '需要加入队伍后才能投票。';
+    case 40361:
+      return '不能给自己队伍的项目投票。';
+    case 40435:
+      return '活动不存在，请刷新页面。';
+    case 40439:
+      return '该项目还没投过，无法撤回。';
+    case 40960:
+      return '投票暂未开放或已结束。';
+    case 40961:
+      return '已经给该项目投过票了。';
+    case 40962:
+      return '你的 3 票已经投完。';
+    case 40963:
+      return '该项目当前不参与投票。';
+    case 42270:
+      return '请选择要投票的项目。';
+    case 42271:
+      return '项目 ID 不合法。';
+    case 42272:
+      return '项目与活动不匹配，请刷新页面。';
     default:
       return error.message || '操作失败，请稍后重试。';
   }

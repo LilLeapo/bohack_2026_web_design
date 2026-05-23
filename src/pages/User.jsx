@@ -55,6 +55,7 @@ const TABS = [
   { id: 'team', label: '我的队' },
   { id: 'schedule', label: '日程' },
   { id: 'project', label: '项目' },
+  { id: 'voting', label: '互投' },
   { id: 'support', label: '支持' },
 ];
 
@@ -128,7 +129,30 @@ export default function User() {
   const [renameValue, setRenameValue] = useState('');
   const [renameEditing, setRenameEditing] = useState(false);
   const [transferTargetId, setTransferTargetId] = useState('');
+  const [project, setProject] = useState(null);
+  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectErr, setProjectErr] = useState('');
+  const [projectInfo, setProjectInfo] = useState('');
+  const [projectBusy, setProjectBusy] = useState(false);
+  const [projectEditing, setProjectEditing] = useState(false);
+  const [projectForm, setProjectForm] = useState({
+    name: '',
+    introduction: '',
+    repoUrl: '',
+    backupUrl: '',
+    specialUnits: [],
+  });
+  const [pptFile, setPptFile] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [votingStatus, setVotingStatus] = useState(null);
+  const [myVotes, setMyVotes] = useState([]);
+  const [votingProjects, setVotingProjects] = useState([]);
+  const [votingLoading, setVotingLoading] = useState(false);
+  const [votingErr, setVotingErr] = useState('');
+  const [votingInfo, setVotingInfo] = useState('');
+  const [votingBusyId, setVotingBusyId] = useState(null);
   const fileInputRef = useRef(null);
+  const pptInputRef = useRef(null);
   const target = useMemo(() => {
     const fromEvent = event?.registrationCloseAt
       ? new Date(event.registrationCloseAt).getTime()
@@ -638,6 +662,331 @@ export default function User() {
       setTeamErr('复制失败，请手动选中后复制。');
     }
   }, [team]);
+
+  useEffect(() => {
+    if (!team?.id) {
+      setProject(null);
+      setProjectErr('');
+      setProjectEditing(false);
+      return undefined;
+    }
+    let alive = true;
+    setProjectLoading(true);
+    setProjectErr('');
+    api
+      .getTeamProject(team.id)
+      .then((data) => {
+        if (!alive) return;
+        setProject(data || null);
+      })
+      .catch((error) => {
+        if (!alive) return;
+        if (error.status === 404) {
+          setProject(null);
+          return;
+        }
+        if (handleAuthError(error)) return;
+        setProjectErr(userFacingError(error));
+      })
+      .finally(() => {
+        if (alive) setProjectLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [team?.id, handleAuthError]);
+
+  useEffect(() => {
+    if (tab !== 'project') return undefined;
+    if (!team?.id) return undefined;
+    const state = project?.state;
+    if (state !== 'pending' && state !== 'picking') return undefined;
+    const timerId = window.setInterval(() => {
+      api
+        .getTeamProject(team.id)
+        .then((data) => setProject(data || null))
+        .catch((error) => {
+          if (error.status === 404) {
+            setProject(null);
+          }
+        });
+    }, 5000);
+    return () => window.clearInterval(timerId);
+  }, [tab, team?.id, project?.state]);
+
+  const startProjectEdit = useCallback(() => {
+    if (!project) return;
+    setProjectForm({
+      name: project.name || '',
+      introduction: project.introduction || '',
+      repoUrl: project.repoUrl || '',
+      backupUrl: project.backupUrl || '',
+      specialUnits: Array.isArray(project.specialUnits)
+        ? [...project.specialUnits]
+        : [],
+    });
+    setPptFile(null);
+    setProjectErr('');
+    setProjectInfo('');
+    setProjectEditing(true);
+  }, [project]);
+
+  const cancelProjectEdit = useCallback(() => {
+    setProjectEditing(false);
+    setPptFile(null);
+    setProjectErr('');
+  }, []);
+
+  const handleSubmitProject = useCallback(
+    async (ev) => {
+      ev?.preventDefault();
+      if (!team?.id) return;
+      const isUpdate = !!project;
+      setProjectErr('');
+      setProjectInfo('');
+
+      const name = projectForm.name.trim();
+      const introduction = projectForm.introduction.trim();
+      const repoUrl = projectForm.repoUrl.trim();
+      const backupUrl = projectForm.backupUrl.trim();
+
+      if (!isUpdate) {
+        if (!name) {
+          setProjectErr('请填写项目名称。');
+          return;
+        }
+        if (!introduction) {
+          setProjectErr('请填写项目介绍。');
+          return;
+        }
+        if (!/^https?:\/\//i.test(repoUrl)) {
+          setProjectErr('请填写有效的仓库链接（http/https 开头）。');
+          return;
+        }
+        if (!pptFile) {
+          setProjectErr('请选择 PPT 文件。');
+          return;
+        }
+      }
+
+      const formData = new FormData();
+      if (!isUpdate || name !== (project?.name || '')) {
+        formData.append('name', name);
+      }
+      if (!isUpdate || introduction !== (project?.introduction || '')) {
+        formData.append('introduction', introduction);
+      }
+      if (!isUpdate || repoUrl !== (project?.repoUrl || '')) {
+        formData.append('repo_url', repoUrl);
+      }
+      if (backupUrl !== (project?.backupUrl || '')) {
+        formData.append('backup_url', backupUrl);
+      }
+      if (pptFile) {
+        formData.append('ppt', pptFile);
+      }
+
+      const selectedUnits = Array.isArray(projectForm.specialUnits)
+        ? projectForm.specialUnits
+        : [];
+      const currentUnits = Array.isArray(project?.specialUnits)
+        ? project.specialUnits
+        : [];
+      const unitsChanged =
+        selectedUnits.length !== currentUnits.length ||
+        selectedUnits.some((u) => !currentUnits.includes(u));
+      if (!isUpdate ? selectedUnits.length > 0 : unitsChanged) {
+        if (selectedUnits.length === 0) {
+          formData.append('special_units', '[]');
+        } else {
+          selectedUnits.forEach((u) => formData.append('special_units', u));
+        }
+      }
+
+      setProjectBusy(true);
+      try {
+        const result = isUpdate
+          ? await api.updateTeamProject(team.id, formData)
+          : await api.submitTeamProject(team.id, formData);
+        setProject(result || null);
+        setProjectEditing(false);
+        setPptFile(null);
+        setProjectInfo(
+          isUpdate ? '项目已更新。' : '项目已提交，等待选号轮次。',
+        );
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setProjectErr(userFacingError(error));
+      } finally {
+        setProjectBusy(false);
+      }
+    },
+    [team, project, projectForm, pptFile, handleAuthError],
+  );
+
+  const handlePickSlot = useCallback(async () => {
+    if (!team?.id || !selectedSlot) return;
+    setProjectErr('');
+    setProjectInfo('');
+    setProjectBusy(true);
+    try {
+      const result = await api.pickProjectSlot(team.id, Number(selectedSlot));
+      setProject(result || null);
+      setSelectedSlot(null);
+      setProjectInfo(`已选定路演序号 ${result?.slotNumber ?? selectedSlot}。`);
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      setProjectErr(userFacingError(error));
+    } finally {
+      setProjectBusy(false);
+    }
+  }, [team, selectedSlot, handleAuthError]);
+
+  const handleDownloadPpt = useCallback(async () => {
+    if (!team?.id) return;
+    setProjectErr('');
+    try {
+      const data = await api.getProjectPptSignedUrl(team.id);
+      const url =
+        data?.downloadUrl ||
+        data?.signedUrl ||
+        data?.pptSignedUrl ||
+        data?.url;
+      if (!url) {
+        setProjectErr('暂时无法获取下载链接，请稍后重试。');
+        return;
+      }
+      window.open(resolveAttachmentUrl(url), '_blank', 'noopener');
+    } catch (error) {
+      if (handleAuthError(error)) return;
+      setProjectErr(userFacingError(error));
+    }
+  }, [team, handleAuthError]);
+
+  const votingEventSlug = event?.slug || registration?.eventSlug || null;
+
+  useEffect(() => {
+    if (tab !== 'voting') return undefined;
+    let alive = true;
+    setVotingLoading(true);
+    setVotingErr('');
+    Promise.all([
+      api.getMyVotes(votingEventSlug).catch((error) => {
+        if (error.status === 404) return null;
+        throw error;
+      }),
+      api.getRoadshowQueue(votingEventSlug).catch((error) => {
+        if (error.status === 404) return null;
+        throw error;
+      }),
+    ])
+      .then(([votesData, queueData]) => {
+        if (!alive) return;
+        if (votesData) {
+          setVotingStatus({
+            eventSlug: votesData.eventSlug,
+            votingOpen: !!votesData.votingOpen,
+            votesPerUser: votesData.votesPerUser ?? 3,
+            votesUsed: votesData.votesUsed ?? 0,
+            votesLeft:
+              votesData.votesLeft ??
+              (votesData.votesPerUser ?? 3) - (votesData.votesUsed ?? 0),
+          });
+          setMyVotes(Array.isArray(votesData.votes) ? votesData.votes : []);
+        } else {
+          setVotingStatus(null);
+          setMyVotes([]);
+        }
+        setVotingProjects(
+          Array.isArray(queueData?.queue) ? queueData.queue : [],
+        );
+      })
+      .catch((error) => {
+        if (!alive) return;
+        if (handleAuthError(error)) return;
+        setVotingErr(userFacingError(error));
+      })
+      .finally(() => {
+        if (alive) setVotingLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [tab, votingEventSlug, handleAuthError]);
+
+  const applyVoteCount = useCallback((next) => {
+    if (!next) return;
+    setVotingStatus((prev) => ({
+      ...(prev || {}),
+      votesPerUser: next.votesPerUser ?? prev?.votesPerUser ?? 3,
+      votesUsed: next.votesUsed ?? prev?.votesUsed ?? 0,
+      votesLeft:
+        next.votesLeft ??
+        (next.votesPerUser ?? prev?.votesPerUser ?? 3) -
+          (next.votesUsed ?? prev?.votesUsed ?? 0),
+    }));
+  }, []);
+
+  const handleCastVote = useCallback(
+    async (teamProjectId) => {
+      if (!teamProjectId) return;
+      setVotingErr('');
+      setVotingInfo('');
+      setVotingBusyId(teamProjectId);
+      try {
+        const result = await api.castVote(votingEventSlug, teamProjectId);
+        applyVoteCount(result);
+        if (result?.vote) {
+          setMyVotes((prev) => {
+            if (prev.some((v) => v.teamProjectId === teamProjectId)) return prev;
+            return [...prev, result.vote];
+          });
+        } else {
+          setMyVotes((prev) =>
+            prev.some((v) => v.teamProjectId === teamProjectId)
+              ? prev
+              : [...prev, { teamProjectId }],
+          );
+        }
+        setVotingInfo('已投出一票。');
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setVotingErr(userFacingError(error));
+      } finally {
+        setVotingBusyId(null);
+      }
+    },
+    [votingEventSlug, applyVoteCount, handleAuthError],
+  );
+
+  const handleRevokeVote = useCallback(
+    async (teamProjectId) => {
+      if (!teamProjectId) return;
+      if (
+        typeof window !== 'undefined' &&
+        !window.confirm('确认撤回这一票？')
+      ) {
+        return;
+      }
+      setVotingErr('');
+      setVotingInfo('');
+      setVotingBusyId(teamProjectId);
+      try {
+        const result = await api.revokeVote(votingEventSlug, teamProjectId);
+        applyVoteCount(result);
+        setMyVotes((prev) =>
+          prev.filter((v) => v.teamProjectId !== teamProjectId),
+        );
+        setVotingInfo('已撤回该投票。');
+      } catch (error) {
+        if (handleAuthError(error)) return;
+        setVotingErr(userFacingError(error));
+      } finally {
+        setVotingBusyId(null);
+      }
+    },
+    [votingEventSlug, applyVoteCount, handleAuthError],
+  );
 
   if (loading) {
     return (
@@ -1418,7 +1767,48 @@ export default function User() {
           </div>
         )}
 
-        {tab !== 'overview' && tab !== 'support' && tab !== 'team' && (
+        {tab === 'project' && (
+          <ProjectTab
+            team={team}
+            project={project}
+            projectLoading={projectLoading}
+            projectErr={projectErr}
+            projectInfo={projectInfo}
+            projectBusy={projectBusy}
+            projectEditing={projectEditing}
+            projectForm={projectForm}
+            setProjectForm={setProjectForm}
+            pptFile={pptFile}
+            setPptFile={setPptFile}
+            pptInputRef={pptInputRef}
+            selectedSlot={selectedSlot}
+            setSelectedSlot={setSelectedSlot}
+            isLeader={isLeader}
+            onStartEdit={startProjectEdit}
+            onCancelEdit={cancelProjectEdit}
+            onSubmit={handleSubmitProject}
+            onPickSlot={handlePickSlot}
+            onDownloadPpt={handleDownloadPpt}
+            onGoToTeam={() => setTab('team')}
+          />
+        )}
+
+        {tab === 'voting' && (
+          <VotingTab
+            team={team}
+            votingStatus={votingStatus}
+            myVotes={myVotes}
+            votingProjects={votingProjects}
+            votingLoading={votingLoading}
+            votingErr={votingErr}
+            votingInfo={votingInfo}
+            votingBusyId={votingBusyId}
+            onCastVote={handleCastVote}
+            onRevokeVote={handleRevokeVote}
+          />
+        )}
+
+        {tab !== 'overview' && tab !== 'support' && tab !== 'team' && tab !== 'project' && tab !== 'voting' && (
           <div className="dash-card dash-empty">
             <div className="c-label">/ {currentTab?.label}</div>
             <h1 className="dash-empty-title">
@@ -1437,6 +1827,751 @@ export default function User() {
           </div>
         )}
       </main>
+    </div>
+  );
+}
+
+const PROJECT_STATE_LABELS = {
+  pending: '排队中',
+  picking: '轮到你们了',
+  picked: '已选号',
+  skipped: '已跳过',
+};
+
+const SPECIAL_UNITS = ['AI+空间硬件', 'AI+文旅', 'AI+康养'];
+
+function ProjectTab({
+  team,
+  project,
+  projectLoading,
+  projectErr,
+  projectInfo,
+  projectBusy,
+  projectEditing,
+  projectForm,
+  setProjectForm,
+  pptFile,
+  setPptFile,
+  pptInputRef,
+  selectedSlot,
+  setSelectedSlot,
+  isLeader,
+  onStartEdit,
+  onCancelEdit,
+  onSubmit,
+  onPickSlot,
+  onDownloadPpt,
+  onGoToTeam,
+}) {
+  if (!team) {
+    return (
+      <div className="dash-card dash-empty">
+        <div className="c-label">/ 项目</div>
+        <h1 className="dash-empty-title">
+          先去<em>组队</em>。
+        </h1>
+        <p className="dash-empty-sub">
+          项目提交以队伍为单位。请先加入或创建一支队伍。
+        </p>
+        <button
+          type="button"
+          className="auth-submit magnet dash-empty-back"
+          onClick={onGoToTeam}
+        >
+          去组队 <span className="arrow">↗</span>
+        </button>
+      </div>
+    );
+  }
+
+  if (projectLoading && !project) {
+    return (
+      <div className="dash-card dash-empty">
+        <div className="c-label">/ 项目</div>
+        <h1 className="dash-empty-title">
+          正在读取
+          <br />
+          <em>项目信息。</em>
+        </h1>
+      </div>
+    );
+  }
+
+  const showForm = !project || projectEditing;
+  const isUpdate = !!project;
+  const isPicked = project?.state === 'picked';
+  const isPicking = project?.state === 'picking';
+  const isMyTurn = !!project?.isMyTurn;
+  const canEdit = isLeader && project && !isPicked && project.state !== 'skipped';
+  const stateLabel = project
+    ? PROJECT_STATE_LABELS[project.state] || project.state
+    : '';
+
+  return (
+    <div className="dash-card">
+      <div className="c-label">/ 项目</div>
+
+      {!project && !isLeader && (
+        <>
+          <h1 className="dash-empty-title">
+            还没<br />
+            <em>提交项目。</em>
+          </h1>
+          <p className="dash-empty-sub">
+            项目由队长统一提交，请联系队长完善项目信息。
+          </p>
+        </>
+      )}
+
+      {showForm && isLeader && (
+        <form
+          className="auth-form"
+          onSubmit={onSubmit}
+          noValidate
+          style={{ maxWidth: 720, marginTop: 8 }}
+        >
+          <h2 style={{ marginTop: 0 }}>
+            {isUpdate ? '更新项目' : '提交你们的项目'}
+          </h2>
+          <p className="dash-empty-sub" style={{ marginTop: 0 }}>
+            {isUpdate
+              ? '只会更新填写的字段；不上传新 PPT 则保留原文件。'
+              : '首次提交后即按提交时间排队选号，PPT 必填。'}
+          </p>
+
+          <div className="auth-field">
+            <label>
+              项目名称
+              <span className="hint">最多 100 字符</span>
+            </label>
+            <input
+              type="text"
+              value={projectForm.name}
+              maxLength={100}
+              onChange={(e) =>
+                setProjectForm((s) => ({ ...s, name: e.target.value }))
+              }
+              placeholder="给项目起个名字"
+            />
+          </div>
+
+          <div className="auth-field">
+            <label>
+              项目介绍
+              <span className="hint">最多 5000 字符</span>
+            </label>
+            <textarea
+              rows={6}
+              maxLength={5000}
+              value={projectForm.introduction}
+              onChange={(e) =>
+                setProjectForm((s) => ({ ...s, introduction: e.target.value }))
+              }
+              placeholder="一句话说清楚你们做了什么、用了什么、解决了谁的问题。"
+            />
+          </div>
+
+          <div className="auth-field">
+            <label>
+              仓库链接
+              <span className="hint">http(s) 开头</span>
+            </label>
+            <input
+              type="url"
+              value={projectForm.repoUrl}
+              maxLength={500}
+              onChange={(e) =>
+                setProjectForm((s) => ({ ...s, repoUrl: e.target.value }))
+              }
+              placeholder="https://github.com/your-team/your-project"
+            />
+          </div>
+
+          <div className="auth-field">
+            <label>
+              备份链接
+              <span className="hint">可选，PPT 的备份地址</span>
+            </label>
+            <input
+              type="url"
+              value={projectForm.backupUrl}
+              maxLength={500}
+              onChange={(e) =>
+                setProjectForm((s) => ({ ...s, backupUrl: e.target.value }))
+              }
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="auth-field">
+            <label>
+              特别单元
+              <span className="hint">可选 · 可多选</span>
+            </label>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 8,
+                marginTop: 4,
+              }}
+            >
+              {SPECIAL_UNITS.map((unit) => {
+                const checked = projectForm.specialUnits.includes(unit);
+                return (
+                  <label
+                    key={unit}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '8px 14px',
+                      borderRadius: 999,
+                      border: '1px solid var(--rule)',
+                      background: checked ? 'var(--ink)' : 'var(--paper)',
+                      color: checked ? 'var(--lime)' : 'var(--ink)',
+                      fontFamily: 'var(--f-cn)',
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      style={{ display: 'none' }}
+                      onChange={() =>
+                        setProjectForm((s) => {
+                          const set = new Set(s.specialUnits);
+                          if (set.has(unit)) set.delete(unit);
+                          else set.add(unit);
+                          return { ...s, specialUnits: Array.from(set) };
+                        })
+                      }
+                    />
+                    {checked ? '◆' : '◇'} {unit}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="auth-field">
+            <label>
+              PPT 文件
+              <span className="hint">
+                {isUpdate ? '不选则保留原文件' : '必填 · ppt / pptx / pdf / key'}
+              </span>
+            </label>
+            <input
+              ref={pptInputRef}
+              type="file"
+              accept=".ppt,.pptx,.pdf,.key"
+              onChange={(e) => setPptFile(e.target.files?.[0] || null)}
+            />
+            {pptFile && (
+              <div className="auth-foot" style={{ marginTop: 6 }}>
+                已选择：{pptFile.name}
+              </div>
+            )}
+            {isUpdate && !pptFile && project?.pptFilename && (
+              <div className="auth-foot" style={{ marginTop: 6 }}>
+                当前文件：{project.pptFilename}
+              </div>
+            )}
+          </div>
+
+          {projectErr && (
+            <div className="auth-err" style={{ marginTop: 16 }}>
+              {projectErr}
+            </div>
+          )}
+          {projectInfo && !projectErr && (
+            <div className="auth-foot" style={{ marginTop: 16 }}>
+              {projectInfo}
+            </div>
+          )}
+
+          <div className="auth-btn-row" style={{ marginTop: 16 }}>
+            <button
+              type="submit"
+              className="auth-submit magnet"
+              disabled={projectBusy}
+            >
+              <span>
+                {projectBusy
+                  ? '提交中…'
+                  : isUpdate
+                    ? '保存修改'
+                    : '提交项目'}
+              </span>
+              <span className="arrow">↗</span>
+            </button>
+            {isUpdate && (
+              <button
+                type="button"
+                className="auth-ghost magnet"
+                onClick={onCancelEdit}
+                disabled={projectBusy}
+              >
+                取消
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+
+      {project && !projectEditing && (
+        <>
+          <div className="section-h">
+            <h2>{project.name}</h2>
+            {canEdit && (
+              <button type="button" onClick={onStartEdit}>
+                编辑项目 →
+              </button>
+            )}
+          </div>
+
+          <div className="status-row" style={{ marginTop: 8 }}>
+            <span className="status-k">状态</span>
+            <span
+              className={
+                isPicked || isMyTurn ? 'badge-ok' : 'badge-wait'
+              }
+            >
+              ◆ {stateLabel}
+            </span>
+          </div>
+
+          {isPicked && project.slotNumber != null && (
+            <div
+              style={{
+                margin: '16px 0 24px',
+                padding: '24px 28px',
+                border: '1px solid var(--rule)',
+                borderRadius: 18,
+                background: 'var(--lime)',
+              }}
+            >
+              <div className="c-label" style={{ marginBottom: 8 }}>
+                / 路演序号
+              </div>
+              <div
+                style={{
+                  fontFamily: 'var(--f-mono)',
+                  fontSize: 64,
+                  lineHeight: 1,
+                  fontWeight: 600,
+                }}
+              >
+                {String(project.slotNumber).padStart(2, '0')}
+              </div>
+            </div>
+          )}
+
+          {!isPicked && project.state !== 'skipped' && (
+            <>
+              <div className="status-row">
+                <span className="status-k">排队位置</span>
+                <span className="status-v">
+                  {project.queuePosition != null
+                    ? `第 ${project.queuePosition + 1} 位 / 共 ${
+                        project.totalQueued ?? '?'
+                      } 队`
+                    : '—'}
+                </span>
+              </div>
+              {!isMyTurn && (
+                <p
+                  className="dash-empty-sub"
+                  style={{ marginTop: 12, marginBottom: 12 }}
+                >
+                  前面还有
+                  {' '}
+                  <strong>{project.queuePosition ?? 0}</strong>
+                  {' '}
+                  支队伍在选号，页面每 5 秒自动刷新，轮到你们时会自动展示选号面板。
+                </p>
+              )}
+            </>
+          )}
+
+          {isMyTurn && isLeader && !isPicked && (
+            <SlotPicker
+              availableSlots={project.availableSlots || []}
+              selectedSlot={selectedSlot}
+              onSelect={setSelectedSlot}
+              onConfirm={onPickSlot}
+              busy={projectBusy}
+            />
+          )}
+
+          {isMyTurn && !isLeader && !isPicked && (
+            <div className="auth-foot" style={{ marginTop: 12 }}>
+              已经轮到你们队，请提醒队长在此页面选号。
+            </div>
+          )}
+
+          <div className="section-h section-h-sp">
+            <h2 className="section-h-sm">项目信息</h2>
+          </div>
+          <div className="status-row">
+            <span className="status-k">仓库</span>
+            <span className="status-v">
+              {project.repoUrl ? (
+                <a
+                  href={project.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {project.repoUrl}
+                </a>
+              ) : (
+                '—'
+              )}
+            </span>
+          </div>
+          {project.backupUrl && (
+            <div className="status-row">
+              <span className="status-k">备份</span>
+              <span className="status-v">
+                <a
+                  href={project.backupUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {project.backupUrl}
+                </a>
+              </span>
+            </div>
+          )}
+          {Array.isArray(project.specialUnits) && project.specialUnits.length > 0 && (
+            <div className="status-row">
+              <span className="status-k">特别单元</span>
+              <span className="status-v">
+                {project.specialUnits.map((u) => (
+                  <span
+                    key={u}
+                    style={{
+                      display: 'inline-block',
+                      padding: '3px 10px',
+                      marginRight: 6,
+                      borderRadius: 999,
+                      border: '1px solid var(--rule)',
+                      fontFamily: 'var(--f-cn)',
+                      fontSize: 12,
+                    }}
+                  >
+                    ◆ {u}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
+          <div className="status-row">
+            <span className="status-k">PPT</span>
+            <span className="status-v">
+              {project.pptFilename || '—'}
+              {project.pptFilename && (
+                <>
+                  {'  '}
+                  <button
+                    type="button"
+                    onClick={onDownloadPpt}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--rule)',
+                      padding: '4px 10px',
+                      borderRadius: 999,
+                      fontFamily: 'var(--f-mono)',
+                      fontSize: 11,
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      cursor: 'pointer',
+                      marginLeft: 12,
+                    }}
+                  >
+                    下载
+                  </button>
+                </>
+              )}
+            </span>
+          </div>
+          {project.introduction && (
+            <div style={{ marginTop: 18 }}>
+              <div className="c-label" style={{ marginBottom: 8 }}>
+                / 介绍
+              </div>
+              <p
+                style={{
+                  whiteSpace: 'pre-wrap',
+                  fontFamily: 'var(--f-cn)',
+                  lineHeight: 1.6,
+                }}
+              >
+                {project.introduction}
+              </p>
+            </div>
+          )}
+
+          {projectErr && (
+            <div className="auth-err" style={{ marginTop: 16 }}>
+              {projectErr}
+            </div>
+          )}
+          {projectInfo && !projectErr && (
+            <div className="auth-foot" style={{ marginTop: 16 }}>
+              {projectInfo}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function SlotPicker({ availableSlots, selectedSlot, onSelect, onConfirm, busy }) {
+  const slots = Array.from({ length: 30 }, (_, i) => i + 1);
+  const availableSet = new Set(availableSlots);
+  return (
+    <div style={{ marginTop: 20 }}>
+      <div className="c-label" style={{ marginBottom: 12 }}>
+        / 挑一个路演序号
+      </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+          gap: 8,
+        }}
+      >
+        {slots.map((slot) => {
+          const isAvail = availableSet.has(slot);
+          const isSelected = selectedSlot === slot;
+          return (
+            <button
+              key={slot}
+              type="button"
+              onClick={() => isAvail && onSelect(slot)}
+              disabled={!isAvail || busy}
+              style={{
+                fontFamily: 'var(--f-mono)',
+                fontSize: 18,
+                fontWeight: 600,
+                padding: '14px 0',
+                borderRadius: 12,
+                border: '1px solid var(--rule)',
+                background: isSelected
+                  ? 'var(--ink)'
+                  : isAvail
+                    ? 'var(--paper)'
+                    : 'rgba(0,0,0,0.04)',
+                color: isSelected
+                  ? 'var(--lime)'
+                  : isAvail
+                    ? 'var(--ink)'
+                    : 'rgba(0,0,0,0.32)',
+                cursor: isAvail && !busy ? 'pointer' : 'not-allowed',
+                textDecoration: !isAvail ? 'line-through' : 'none',
+              }}
+            >
+              {String(slot).padStart(2, '0')}
+            </button>
+          );
+        })}
+      </div>
+      <div className="auth-btn-row" style={{ marginTop: 16 }}>
+        <button
+          type="button"
+          className="auth-submit magnet"
+          onClick={onConfirm}
+          disabled={busy || !selectedSlot}
+        >
+          <span>
+            {busy
+              ? '提交中…'
+              : selectedSlot
+                ? `确认选 ${String(selectedSlot).padStart(2, '0')} 号`
+                : '请选择一个序号'}
+          </span>
+          <span className="arrow">↗</span>
+        </button>
+      </div>
+      <p className="auth-foot" style={{ marginTop: 12 }}>
+        选号一旦提交即锁定，无法在用户端修改；如需调整请联系现场工作人员。
+      </p>
+    </div>
+  );
+}
+
+function VotingTab({
+  team,
+  votingStatus,
+  myVotes,
+  votingProjects,
+  votingLoading,
+  votingErr,
+  votingInfo,
+  votingBusyId,
+  onCastVote,
+  onRevokeVote,
+}) {
+  if (votingLoading && !votingStatus && votingProjects.length === 0) {
+    return (
+      <div className="dash-card dash-empty">
+        <div className="c-label">/ 互投</div>
+        <h1 className="dash-empty-title">
+          正在读取
+          <br />
+          <em>投票状态。</em>
+        </h1>
+      </div>
+    );
+  }
+
+  const votingOpen = !!votingStatus?.votingOpen;
+  const votesPerUser = votingStatus?.votesPerUser ?? 3;
+  const votesUsed = votingStatus?.votesUsed ?? 0;
+  const votesLeft = votingStatus?.votesLeft ?? Math.max(0, votesPerUser - votesUsed);
+  const myTeamId = team?.id ?? null;
+  const votedByProjectId = new Map(
+    (myVotes || []).map((v) => [v.teamProjectId, v]),
+  );
+
+  return (
+    <div className="dash-card">
+      <div className="c-label">/ 互投</div>
+      <h1 className="dash-empty-title" style={{ marginBottom: 8 }}>
+        为最棒的
+        <br />
+        <em>项目投票。</em>
+      </h1>
+      <p className="dash-empty-sub" style={{ marginTop: 0 }}>
+        每人 {votesPerUser} 票，不能投自己队，同一项目最多投 1 票。
+      </p>
+
+      <div className="status-row" style={{ marginTop: 16 }}>
+        <span className="status-k">状态</span>
+        <span className={votingOpen ? 'badge-ok' : 'badge-wait'}>
+          ◆ {votingOpen ? '投票进行中' : '投票暂未开放'}
+        </span>
+      </div>
+      <div className="status-row">
+        <span className="status-k">剩余票数</span>
+        <span className="status-v">
+          <strong>{votesLeft}</strong> / {votesPerUser}（已投 {votesUsed}）
+        </span>
+      </div>
+
+      {!team && votingOpen && (
+        <div className="auth-foot" style={{ marginTop: 12 }}>
+          你还没加入任何队伍，需要先组队才能投票。
+        </div>
+      )}
+
+      {votingErr && (
+        <div className="auth-err" style={{ marginTop: 16 }}>
+          {votingErr}
+        </div>
+      )}
+      {votingInfo && !votingErr && (
+        <div className="auth-foot" style={{ marginTop: 16 }}>
+          {votingInfo}
+        </div>
+      )}
+
+      <div className="section-h section-h-sp">
+        <h2 className="section-h-sm">参赛项目</h2>
+      </div>
+
+      {votingProjects.length === 0 ? (
+        <p className="dash-empty-sub" style={{ marginTop: 12 }}>
+          暂时没有可投票的项目。
+        </p>
+      ) : (
+        <div className="tickets">
+          {votingProjects.map((item, idx) => {
+            const projectId = item.teamProjectId ?? item.projectId ?? null;
+            const projectName =
+              item.projectName || item.teamName || '未命名项目';
+            const teamName = item.teamName || '—';
+            const slot = item.slotNumber;
+            const state = item.state;
+            const isMyTeam = myTeamId != null && item.teamId === myTeamId;
+            const isSkipped = state === 'skipped';
+            const myVote = projectId != null ? votedByProjectId.get(projectId) : null;
+            const hasVoted = !!myVote;
+            const quotaFull = votesLeft <= 0;
+            const busy = votingBusyId === projectId;
+            const missingProjectId = projectId == null;
+
+            let label;
+            let onClick;
+            let disabled;
+            if (missingProjectId) {
+              label = '—';
+              disabled = true;
+            } else if (isMyTeam) {
+              label = '自己队';
+              disabled = true;
+            } else if (isSkipped) {
+              label = '不参与';
+              disabled = true;
+            } else if (hasVoted) {
+              label = busy ? '撤回中…' : '撤回';
+              onClick = () => onRevokeVote(projectId);
+              disabled = !votingOpen || busy;
+            } else if (!votingOpen) {
+              label = '未开放';
+              disabled = true;
+            } else if (quotaFull) {
+              label = '票已用完';
+              disabled = true;
+            } else {
+              label = busy ? '投票中…' : '投一票';
+              onClick = () => onCastVote(projectId);
+              disabled = busy;
+            }
+
+            return (
+              <div className="ticket" key={projectId ?? `idx-${idx}`}>
+                <span className="id">{String(idx + 1).padStart(2, '0')}</span>
+                <div>
+                  <div className="tt">{projectName}</div>
+                  <div className="th">
+                    {teamName}
+                    {slot != null ? ` · 序号 ${slot}` : ' · 尚未选号'}
+                    {state && state !== 'picked' && state !== 'pending'
+                      ? ` · ${state}`
+                      : ''}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClick}
+                  disabled={disabled}
+                  style={{
+                    background: hasVoted ? 'var(--ink)' : 'var(--paper)',
+                    color: hasVoted ? 'var(--lime)' : 'var(--ink)',
+                    border: '1px solid var(--rule)',
+                    borderRadius: 999,
+                    padding: '6px 14px',
+                    fontFamily: 'var(--f-mono)',
+                    fontSize: 11,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    opacity: disabled && !hasVoted ? 0.55 : 1,
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {label}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
