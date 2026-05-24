@@ -2072,13 +2072,12 @@ function ProjectTab({
             <label>
               PPT 文件
               <span className="hint">
-                {isUpdate ? '不选则保留原文件' : '必填 · ppt / pptx / pdf / key'}
+                {isUpdate ? '不选则保留原文件' : '必填'}
               </span>
             </label>
             <input
               ref={pptInputRef}
               type="file"
-              accept=".ppt,.pptx,.pdf,.key"
               onChange={(e) => setPptFile(e.target.files?.[0] || null)}
             />
             {pptFile && (
