@@ -2342,7 +2342,7 @@ function ProjectTab({
 }
 
 function SlotPicker({ availableSlots, selectedSlot, onSelect, onConfirm, busy }) {
-  const slots = Array.from({ length: 30 }, (_, i) => i + 1);
+  const slots = Array.from({ length: 40 }, (_, i) => i + 1);
   const availableSet = new Set(availableSlots);
   return (
     <div style={{ marginTop: 20 }}>

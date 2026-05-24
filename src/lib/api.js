@@ -581,7 +581,7 @@ export function userFacingError(error) {
     case 42255:
       return 'PPT 文件不符合要求（仅支持 ppt/pptx/pdf/key 且大小受限）。';
     case 42256:
-      return '路演序号必须在 1–30 之间。';
+      return '路演序号必须在 1–40 之间。';
     case 42257:
       return '所选特别单元包含未支持的值，请重新选择。';
     case 40360:
